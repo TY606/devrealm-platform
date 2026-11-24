@@ -1,0 +1,23 @@
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 依赖与构建
+node_modules/
+dist/
+build/
+
+# 环境变量与密钥
+.env
+.env.local
+*.key
+
+# 日志
+*.log
+npm-debug.log*
+
+# 过程截图（不纳入仓库）
+*.png
+*.jpg
+*.jpeg
+!assets/**
