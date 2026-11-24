@@ -10,9 +10,7 @@ truncate table public.posts, public.logs, public.channels, public.resources, pub
 
 -- ---------------------------------------------------------------------
 -- 1. 工作室成员
--- 注意：profiles.id 关联 auth.users。演示环境若尚未在 Auth 建对应用户，
---       下面用固定 uuid 占位；如外键报错，可临时注释 schema.sql 中
---       profiles.id 上的 auth.users 外键，或先在 Authentication 里创建用户。
+-- 说明：profiles.id 不绑定 auth.users，演示用固定 uuid 占位即可，无需先在 Auth 建账号。
 -- ---------------------------------------------------------------------
 insert into public.profiles (id, name, email, role, status, projects) values
   ('11111111-1111-1111-1111-111111111111', '陶云', 'taoyun@devrealm.dev',   'admin', '在线', 3),

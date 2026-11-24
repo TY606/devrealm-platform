@@ -1,16 +1,16 @@
 -- =====================================================================
 -- DevRealm 游戏开发者服务平台 · Supabase 数据库结构
 -- 目标数据库：Postgres（Supabase 项目 SQL Editor 直接执行）
--- 说明：当前前端为示例数据原型，本脚本用于后续接入真实后端时建表。
+-- 说明：前端通过 anonKey 只读拉取六张表；本脚本在 Supabase SQL Editor 直接执行即可建表，可重复运行。
 -- =====================================================================
 
 create extension if not exists "uuid-ossp";
 
 -- ---------------------------------------------------------------------
--- 1. 工作室成员（关联 Supabase Auth 用户）
+-- 1. 工作室成员
 -- ---------------------------------------------------------------------
 create table if not exists public.profiles (
-  id          uuid primary key references auth.users (id) on delete cascade,
+  id          uuid primary key default uuid_generate_v4(),
   name        text not null,
   email       text not null unique,
   role        text not null default 'dev',        -- admin / dev
@@ -110,12 +110,23 @@ alter table public.resources enable row level security;
 alter table public.channels enable row level security;
 alter table public.logs     enable row level security;
 
--- 示例：已登录用户可读公开内容（写策略后续按 admin/dev 角色补充）
-create policy "profiles: authenticated read" on public.profiles
-  for select to authenticated using (true);
+-- 示例：公开可读（anon / authenticated 均可读）；写策略后续按 admin/dev 角色收紧。
+-- drop policy if exists 保证本脚本可重复执行。
+drop policy if exists "profiles: public read" on public.profiles;
+create policy "profiles: public read" on public.profiles
+  for select using (true);
+drop policy if exists "games: public read" on public.games;
 create policy "games: public read" on public.games
   for select using (true);
+drop policy if exists "posts: public read" on public.posts;
 create policy "posts: public read" on public.posts
   for select using (true);
+drop policy if exists "resources: public read" on public.resources;
 create policy "resources: public read" on public.resources
+  for select using (true);
+drop policy if exists "channels: public read" on public.channels;
+create policy "channels: public read" on public.channels
+  for select using (true);
+drop policy if exists "logs: public read" on public.logs;
+create policy "logs: public read" on public.logs
   for select using (true);

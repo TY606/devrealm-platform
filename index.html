@@ -444,7 +444,7 @@ let MEMBERS=[
  *  3. 建表与 RLS 脚本见 supabase/schema.sql。
  * 注意：anonKey 是公开只读密钥；service_role key 绝不能写进前端代码。
  */
-const SUPABASE_CONFIG={url:'',anonKey:''};
+const SUPABASE_CONFIG={url:'https://qthwgfzmojeopscrkwcv.supabase.co',anonKey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF0aHdnZnptb2plb3BzY3Jrd2N2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUxODQ5OTMsImV4cCI6MjExMDc2MDk5M30.3ALgKCl6RSafyjO3RCQveP2is_awAIflkPEqmvGcVQM'};
 let sbClient=null;
 
 /* 仅当上面 url / anonKey 都填了才会连接 Supabase；留空则全程使用本地示例数据，离线可直接打开。 */
@@ -466,7 +466,7 @@ async function loadRemoteData(){
       sbClient.from('resources').select('*'),
       sbClient.from('channels').select('*'),
       sbClient.from('logs').select('*'),
-      sbClient.from('posts').select('*'),
+      sbClient.from('posts').select('*,profiles(name,role)'),
       sbClient.from('profiles').select('*')
     ]);
     if(!g.error&&g.data&&g.data.length){
@@ -476,13 +476,13 @@ async function loadRemoteData(){
       RES=r.data.map(x=>({id:x.id||'',n:x.name,t:x.type,v:x.version,d:x.description,size:x.size}));
     }
     if(!c.error&&c.data&&c.data.length){
-      CHANNELS=c.data.map(x=>({id:x.id,name:x.name,code:(x.provider||'').toUpperCase(),k:x.key_masked,on:!!x.enabled,last:x.last_sync?String(x.last_sync).replace('T',' ').slice(0,16):''}));
+      CHANNELS=c.data.map(x=>({id:x.id,n:x.name,code:(x.provider||'').toUpperCase(),k:x.key_masked,on:!!x.enabled,last:x.last_sync?String(x.last_sync).replace('T',' ').slice(0,16):''}));
     }
     if(!l.error&&l.data&&l.data.length){
       LOGS=l.data.map(x=>({t:String(x.ts||'').slice(11,19),lv:x.level||'INFO',m:x.message,u:x.actor||'system'}));
     }
     if(!p.error&&p.data&&p.data.length){
-      POSTS=p.data.map(x=>({cat:x.category,title:x.title,author:x.author||'开发者',role:'dev',time:'',likes:x.likes||0,replies:x.replies||0,views:x.views||'0',tags:x.tags||[]}));
+      POSTS=p.data.map(x=>{const pf=Array.isArray(x.profiles)?x.profiles[0]:x.profiles;return {cat:x.category,title:x.title,author:(pf&&pf.name)||'开发者',role:(pf&&pf.role)||'dev',time:x.created_at?String(x.created_at).replace('T',' ').slice(5,16):'',likes:x.likes||0,replies:x.replies||0,views:x.views||'0',tags:x.tags||[]};});
     }
     if(!m.error&&m.data&&m.data.length){
       MEMBERS=m.data.map(x=>({name:x.name,role:x.role,email:x.email,status:x.status,projects:x.projects||0}));
