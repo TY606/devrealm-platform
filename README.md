@@ -15,7 +15,8 @@ devrealm-platform/
 ├── index.html              # 单文件前端原型（内联样式 / 脚本 / 图片）
 ├── README.md
 ├── .gitignore
-└── schema.sql              # Supabase（Postgres）建表脚本与 RLS 预留
+├── schema.sql              # Supabase（Postgres）建表脚本与 RLS 预留
+└── seed.sql                # 演示示例数据导入脚本（建表后执行）
 ```
 
 ## 本地运行
@@ -48,12 +49,12 @@ npx serve .
 
 ## 接入 Supabase
 
-1. 在 Supabase 新建项目，打开 SQL Editor，执行根目录 `schema.sql` 完成建表。
-2. 在 `index.html` 的数据层预留处，填入项目 URL 与 `anonKey`：
+1. 在 Supabase 新建项目，打开 SQL Editor，先执行 `schema.sql` 完成建表；需要演示数据时再执行 `seed.sql` 灌入示例数据。
+2. 在 `index.html` 的 `SUPABASE_CONFIG` 中填入项目 URL 与 `anonKey`：
    ```js
    const SUPABASE_CONFIG = { url: 'https://<project>.supabase.co', anonKey: '<anon-key>' };
    ```
-3. 引入 `@supabase/supabase-js`，把视图中的本地示例常量替换为 `client.from('表名').select()` 异步查询。
+3. 前端已内置远程加载逻辑：填好配置后会自动从 `games / resources / channels / logs / posts / profiles` 拉取数据；任一环节失败或留空配置时，自动回退到页面内置的本地示例数据，离线双击也能打开。
 4. 权限策略见 `schema.sql` 末尾的 RLS 预留；`service_role` 密钥仅限服务端使用，不得写入前端。
 
 ## 部署到 GitHub Pages
