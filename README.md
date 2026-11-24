@@ -15,8 +15,7 @@ devrealm-platform/
 ├── index.html              # 单文件前端原型（内联样式 / 脚本 / 图片）
 ├── README.md
 ├── .gitignore
-└── supabase/
-    └── schema.sql          # Supabase（Postgres）建表脚本与 RLS 预留
+└── schema.sql              # Supabase（Postgres）建表脚本与 RLS 预留
 ```
 
 ## 本地运行
@@ -49,7 +48,7 @@ npx serve .
 
 ## 接入 Supabase
 
-1. 在 Supabase 新建项目，打开 SQL Editor，执行 `supabase/schema.sql` 完成建表。
+1. 在 Supabase 新建项目，打开 SQL Editor，执行根目录 `schema.sql` 完成建表。
 2. 在 `index.html` 的数据层预留处，填入项目 URL 与 `anonKey`：
    ```js
    const SUPABASE_CONFIG = { url: 'https://<project>.supabase.co', anonKey: '<anon-key>' };
