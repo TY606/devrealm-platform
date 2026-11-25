@@ -237,6 +237,22 @@ pre{margin:0;padding:16px;font-family:ui-monospace,monospace;font-size:11.5px;li
 .toast{position:fixed;right:26px;bottom:26px;background:#17122e;border:1px solid rgba(139,92,246,.35);color:#ddd6fe;padding:12px 16px;border-radius:12px;font-size:12px;opacity:0;transform:translateY(8px);transition:.25s;z-index:80}
 .toast.on{opacity:1;transform:none}
 
+/* 通知中心 */
+.icon-btn{position:relative}
+.notif-badge{position:absolute;top:-3px;right:-3px;min-width:16px;height:16px;border-radius:999px;background:var(--red);color:#fff;font-size:9.5px;font-weight:700;display:grid;place-items:center;padding:0 4px}
+.notif-wrap{position:relative}
+.notif-panel{position:absolute;top:48px;right:0;width:340px;max-width:82vw;background:#171c2a;border:1px solid var(--line2);border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.55);z-index:70;overflow:hidden}
+.notif-head{padding:15px 17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.notif-head b{font-size:13.5px}.notif-head span{font-size:10.5px;color:var(--sub2)}
+.notif-list{max-height:340px;overflow:auto}
+.notif-item{display:flex;gap:12px;padding:13px 17px;border-bottom:1px solid rgba(255,255,255,.05)}
+.notif-item:last-child{border-bottom:0}
+.notif-dot{width:8px;height:8px;border-radius:50%;margin-top:6px;flex:0 0 auto}
+.notif-item b{font-size:12.5px;display:block;color:#e6ecfa}
+.notif-item p{font-size:11px;color:var(--sub2);margin-top:3px;line-height:1.6}
+.notif-item .time{margin-left:auto;font-size:10px;color:var(--sub2);flex:0 0 auto}
+.notif-empty{padding:26px 17px;text-align:center;color:var(--sub2);font-size:12px}
+
 @media(max-width:1220px){
   .app{grid-template-columns:1fr}
   body.without-rail{grid-template-columns:1fr}
@@ -294,7 +310,7 @@ pre{margin:0;padding:16px;font-family:ui-monospace,monospace;font-size:11.5px;li
       </div>
     </div>
     <div class="side-idea">
-      <div class="idea-label">Random Game Idea <button onclick="toast('已重新生成一个随机创意')" style="float:right;border:0;background:transparent;color:var(--sub2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14-4L4 9"/><path d="M4 4v5h5"/><path d="M4 13a8 8 0 0 0 14 4l2-2"/><path d="M20 20v-5h-5"/></svg></button></div>
+      <div class="idea-label">Random Game Idea <button onclick="randomIdea()" style="float:right;border:0;background:transparent;color:var(--sub2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14-4L4 9"/><path d="M4 4v5h5"/><path d="M4 13a8 8 0 0 0 14 4l2-2"/><path d="M20 20v-5h-5"/></svg></button></div>
       <div class="idea-card"><p><em>Adventure game</em> where you <i>stack boomerangs</i> to <strong>save your family</strong>.</p></div>
     </div>
   </aside>
@@ -309,7 +325,7 @@ pre{margin:0;padding:16px;font-family:ui-monospace,monospace;font-size:11.5px;li
         <input id="globalSearch" placeholder="搜索游戏、资源、帖子或接口…">
       </label>
       <div class="top-actions">
-        <button class="icon-btn" onclick="toast('通知中心为演示占位')"><svg viewBox="0 0 24 24"><path d="M6 9a6 6 0 0112 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 20a2 2 0 004 0"/></svg></button>
+        <div class="notif-wrap"><button class="icon-btn" id="notifBtn" onclick="toggleNotifs(event)"><svg viewBox="0 0 24 24"><path d="M6 9a6 6 0 0112 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 20a2 2 0 004 0"/></svg><span class="notif-badge" id="notifBadge" hidden></span></button><div class="notif-panel" id="notifPanel" hidden></div></div>
         <button class="icon-btn" onclick="go('settings')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></button><div class="top-user"><div class="avatar">陶</div><div class="meta"><b>陶云</b><span>Platform Admin</span></div><button class="logout" onclick="toast('演示原型：未接入真实退出登录')">退出</button></div>
       </div>
     </header>
@@ -490,11 +506,75 @@ async function loadRemoteData(){
   }catch(e){console.warn('Supabase 数据加载失败，已回退本地示例数据：',e);}
 }
 
-const S={tab:'overview',q:'',liked:{}};
+const S={tab:'overview',q:'',liked:{},sortBy:'score',notifRead:false};
 const ROUTE={overview:'概览',games:'游戏库',users:'成员管理',ranking:'排行榜',api:'API 调试',assets:'资源库',link:'第三方接入',monitor:'监控日志',community:'开发者社区',docs:'接口文档',settings:'账号设置'};
 
 /* ================= 基础交互 ================= */
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2200)}
+
+/* ---------- 通知中心（基于远程日志与帖子生成） ---------- */
+function buildNotifs(){
+  const list=[];
+  LOGS.filter(l=>l.lv==='WARN'||l.lv==='ERROR').forEach(l=>list.push({level:l.lv,title:l.lv==='ERROR'?'接口异常':'需要关注',body:l.m,time:l.t}));
+  if(POSTS.length)list.push({level:'INFO',title:'社区有新讨论',body:`最新帖子：${POSTS[0].title}`,time:'最新'});
+  return list;
+}
+function notifColor(l){return l==='ERROR'?'var(--red)':l==='WARN'?'var(--yellow)':'var(--blue)'}
+function renderNotifPanel(){
+  const panel=document.getElementById('notifPanel');const list=buildNotifs();
+  panel.innerHTML=`<div class="notif-head"><b>通知中心</b><span>${list.length} 条</span></div><div class="notif-list">`+
+    (list.length?list.map(n=>`<div class="notif-item"><span class="notif-dot" style="background:${notifColor(n.level)}"></span><div><b>${esc(n.title)}</b><p>${esc(n.body)}</p></div><span class="time">${esc(n.time)}</span></div>`).join(''):'<div class="notif-empty">暂无通知</div>')+`</div>`;
+}
+function toggleNotifs(e){
+  e.stopPropagation();const panel=document.getElementById('notifPanel');
+  if(panel.hidden){renderNotifPanel();panel.hidden=false;S.notifRead=true;updateNotifBadge();}else{panel.hidden=true;}
+}
+function updateNotifBadge(){
+  const b=document.getElementById('notifBadge');const n=S.notifRead?0:buildNotifs().length;
+  b.hidden=n===0;b.textContent=n;
+}
+document.addEventListener('click',e=>{const p=document.getElementById('notifPanel');if(p&&!p.hidden&&!e.target.closest('.notif-wrap'))p.hidden=true;});
+
+/* ---------- 日志导出 CSV ---------- */
+function exportLogs(){
+  const head=['时间','级别','消息','操作人'];
+  const rows=LOGS.map(l=>[l.t,l.lv,l.m,l.u]);
+  const csv=[head,...rows].map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='devrealm-logs.csv';a.click();URL.revokeObjectURL(a.href);
+  toast('日志已导出 CSV');
+}
+
+/* ---------- API 调试：真实只读请求 ---------- */
+async function sendApiRequest(btn){
+  const out=document.getElementById('apiBody');const status=document.getElementById('apiStatus');
+  if(btn)btn.disabled=true;
+  try{
+    let data=[];
+    if(sbClient){const {data:d,error}=await sbClient.from('games').select('name,studio,score,downloads').limit(6);if(error)throw error;data=d||[];}
+    out.textContent=JSON.stringify({code:200,data:{total:data.length,items:data}},null,2);
+    if(status)status.textContent='200 · OK';
+    toast('已发送真实只读请求');
+  }catch(err){out.textContent=JSON.stringify({code:500,message:String(err&&err.message||err)},null,2);if(status)status.textContent='500 · ERR';toast('请求失败，使用演示响应');}
+  if(btn)btn.disabled=false;
+}
+
+/* ---------- 偏好本地持久化 ---------- */
+const PREFS_KEY='devrealm-prefs';
+function loadPrefs(){try{return JSON.parse(localStorage.getItem(PREFS_KEY))||{}}catch(e){return {}}}
+function savePrefs(p){localStorage.setItem(PREFS_KEY,JSON.stringify(p))}
+function togglePref(key,el){const p=loadPrefs();p[key]=!p[key];savePrefs(p);el.classList.toggle('on',p[key]);}
+
+/* ---------- 随机创意 ---------- */
+const IDEA_A=['Adventure game','Puzzle roguelike','Co-op survival','Turn-based tactics','Rhythm platformer'];
+const IDEA_B=['stack boomerangs','raise a baby dragon','repair a broken moon','breed ghost cats','rewind time loops'];
+const IDEA_C=['to save your family','to escape a flooded city','to reunite lost spirits','to restore a dying forest','to outsmart a sky pirate crew'];
+function randomIdea(){
+  const pick=a=>a[Math.floor(Math.random()*a.length)];
+  const el=document.querySelector('.idea-card p');
+  if(el)el.innerHTML=`<em>${pick(IDEA_A)}</em> where you <i>${pick(IDEA_B)}</i> to <strong>${pick(IDEA_C)}</strong>.`;
+  toast('已重新生成一个随机创意');
+}
 function buildNav(){
   document.getElementById('nav').innerHTML=NAV.map(g=>`<div class="group">${g.g}</div>`+g.items.map(it=>
     `<button data-t="${it[0]}" onclick="go('${it[0]}')"><span class="ico">${icon(it[2])}</span><span>${it[1]}</span></button>`).join('')).join('');
@@ -519,7 +599,7 @@ function kpiCards(){
     <div class="kpi"><div class="label">Community Posts</div><div class="value">96</div><div class="delta">+18 本周</div></div>
   </div>`;
 }
-function chartBars(){const h=[42,58,51,72,64,80,66,91,78,84,69,96,74,88];return `<div class="chart">${h.map(x=>`<i style="height:${x}%"></i>`).join('')}</div>`}
+function chartBars(){const h=GAMES.length?GAMES.map(g=>Math.max(18,Math.min(100,g.score||0))):[30,45,40,60,52];return `<div class="chart">${h.map(x=>`<i style="height:${x}%"></i>`).join('')}</div>`}
 function metrics(){
   const rows=[['在线玩家','86%',12483],['崩溃率','0.72%',92],['P95 延迟','124ms',76],['支付成功率','98.4%',88],['24H 下载','3,214',63]];
   return rows.map(r=>`<div class="metric"><div class="name">${r[0]}</div><div class="bar"><i style="width:${r[2]}%"></i></div><div class="num">${r[1]}</div></div>`).join('');
@@ -594,7 +674,7 @@ function viewRanking(){
 function viewApi(){
   return `<div class="page-head"><div><h1>API 调试</h1><p>在提交到正式环境前，先把资源、渠道和健康检查接口跑通。</p></div></div>
   <div class="api-split"><div class="api-box"><div class="api-bar"><select><option>GET</option><option>POST</option><option>PUT</option><option>DELETE</option></select><input value="/v1/assets?page=1&size=12"></div><pre id="apiBody">{\n  "page": 1,\n  "size": 12,\n  "type": "all",\n  "q": ""\n}</pre></div>
-  <div class="api-box"><div class="api-bar"><span class="tag green">RESPONSE</span><span class="tag">200 · 34ms</span></div><pre>{\n  "code": 200,\n  "data": {\n    "total": 6,\n    "items": ["r1", "r2", "r3", "r4", "r5", "r6"]\n  },\n  "requestId": "dr_8f2c41a9"\n}</pre><div class="card-b"><button class="btn btn-p" onclick="toast('请求已发送（演示数据）')">发送请求</button></div></div></div>`;
+  <div class="api-box"><div class="api-bar"><span class="tag green">RESPONSE</span><span class="tag" id="apiStatus">待发送</span></div><pre id="apiBody">{\n  "code": null,\n  "message": "点击「发送请求」向后端发起一次真实只读查询"\n}</pre><div class="card-b"><button class="btn btn-p" onclick="sendApiRequest(this)">发送请求</button></div></div></div>`;
 }
 function viewAssets(){
   return `<div class="page-head"><div><h1>资源库</h1><p>管理插件、SDK、美术素材、音效和工具链。</p></div><button class="btn btn-p" onclick="toast('上传凭证流程为演示占位')">上传资源</button></div>
@@ -608,7 +688,7 @@ function toggleChannel(i){CHANNELS[i].on=!CHANNELS[i].on;toast(CHANNELS[i].on?`$
 function viewMonitor(){
   return `<div class="page-head"><div><h1>监控日志</h1><p>查看接口耗时、警告、错误和最近操作者。</p></div></div>
   ${kpiCards()}
-  <div class="card"><div class="card-h"><div><h3>Recent Logs</h3><div class="sub">最近 7 条服务日志</div></div><button class="btn" onclick="toast('日志导出为演示占位')">导出</button></div>
+  <div class="card"><div class="card-h"><div><h3>Recent Logs</h3><div class="sub">最近 7 条服务日志</div></div><button class="btn" onclick="exportLogs()">导出 CSV</button></div>
   <div class="card-b" style="padding:0">${LOGS.map(l=>`<div class="log-row"><span>${l.t}</span><span class="lv-${l.lv}">${l.lv}</span><span>${l.m}</span><span>${l.u}</span></div>`).join('')}</div></div>`;
 }
 function viewCommunity(){
@@ -628,21 +708,26 @@ function viewDocs(){
   return `<div class="page-head"><div><h1>接口文档</h1><p>资源、渠道、日志和健康检查接口说明。</p></div></div>
   <div>${DOCS.map(d=>`<div class="doc"><div class="h"><span class="method">${d.m}</span><span class="p">${d.p}</span></div><div class="body">${esc(d.d)}</div></div>`).join('')}</div>`;
 }
+function saveProfile(k,v){const p=loadPrefs();p.profile=p.profile||{};p.profile[k]=v;savePrefs(p);toast('资料已保存到本地演示')}
 function viewSettings(){
+  const prefs=loadPrefs();const pf=prefs.profile||{};
   return `<div class="page-head"><div><h1>账号设置</h1><p>个人资料、通知偏好和平台安全选项。</p></div></div>
   <div class="layout-main" style="grid-template-columns:1fr 1fr"><div class="card"><div class="card-h"><h3>个人资料</h3></div><div class="card-b"><div class="form-grid">
-    <label class="field"><span>工作室名称</span><input value="陶云工作室"></label>
-    <label class="field"><span>显示名称</span><input value="陶云"></label>
-    <label class="field"><span>邮箱</span><input value="taoyun@devrealm.dev"></label>
+    <label class="field"><span>工作室名称</span><input value="${esc(pf.studio||'陶云工作室')}" onchange="saveProfile('studio',this.value)"></label>
+    <label class="field"><span>显示名称</span><input value="${esc(pf.name||'陶云')}" onchange="saveProfile('name',this.value)"></label>
+    <label class="field"><span>邮箱</span><input value="${esc(pf.email||'taoyun@devrealm.dev')}" onchange="saveProfile('email',this.value)"></label>
     <label class="field"><span>角色</span><select><option>admin</option><option>dev</option></select></label>
   </div></div></div>
   <div class="card"><div class="card-h"><h3>偏好与安全</h3></div><div class="card-b">
-    <div class="setting-row"><div><b>邮件通知</b><p>重要公告、渠道异常和审批结果发送到邮箱。</p></div><div class="switch on" onclick="this.classList.toggle('on')"><i></i></div></div>
-    <div class="setting-row"><div><b>每日简报</b><p>每天汇总下载、崩溃率和社区动态。</p></div><div class="switch" onclick="this.classList.toggle('on')"><i></i></div></div>
+    <div class="setting-row"><div><b>邮件通知</b><p>重要公告、渠道异常和审批结果发送到邮箱。</p></div><div class="switch ${prefs.mailNotif?'on':''}" onclick="togglePref('mailNotif',this)"><i></i></div></div>
+    <div class="setting-row"><div><b>每日简报</b><p>每天汇总下载、崩溃率和社区动态。</p></div><div class="switch ${prefs.dailyBrief?'on':''}" onclick="togglePref('dailyBrief',this)"><i></i></div></div>
     <div class="setting-row"><div><b>双因素认证</b><p>登录时需要额外验证码。</p></div><button class="btn" onclick="toast('2FA 设置为演示占位')">配置</button></div>
   </div></div></div>`;
 }
 
+function parseDl(v){const n=parseFloat(String(v));return isNaN(n)?0:n}
+function sortedGames(){const arr=[...GAMES];if(S.sortBy==='downloads'){arr.sort((a,b)=>parseDl(b.downloads)-parseDl(a.downloads));}else{arr.sort((a,b)=>b.score-a.score);}return arr}
+function cycleSort(){S.sortBy=S.sortBy==='score'?'downloads':'score';render();toast(S.sortBy==='score'?'按评分排序':'按下载量排序')}
 function top5Row(g,i){return `<div class="top-game">
   <div class="top-thumb" style="background-image:url(&quot;${g.cover}&quot;)"></div>
   <div><b>${esc(g.name)}</b><p>${esc(g.studio)}</p></div>
@@ -653,8 +738,8 @@ function renderRail(){
   rail.classList.add('empty');
   if(S.tab==='overview'){
     rail.classList.remove('empty');
-    rail.innerHTML=`<div class="card"><div class="card-h"><div class="card-title"><span class="title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 7.5h11a4.5 4.5 0 0 1 4.4 5.5c-.3 1.8-1.7 3-3.4 3-1.2 0-2-.6-2.7-1.4H8.2c-.7.8-1.5 1.4-2.7 1.4-1.7 0-3.1-1.2-3.4-3A4.5 4.5 0 0 1 6.5 7.5Z"/><path d="M9 10.5v3M7.5 12h3"/><circle cx="15.6" cy="11" r=".7" fill="currentColor" stroke="none"/><circle cx="17.3" cy="12.6" r=".7" fill="currentColor" stroke="none"/></svg></span><h3>Top 5 Games</h3></div><div class="top5-filters"><button onclick="toast('筛选为演示占位')">Filters</button><button onclick="toast('排序为演示占位')">Sort</button></div></div>
-      <div class="card-b">${GAMES.map(top5Row).join('')}
+    rail.innerHTML=`<div class="card"><div class="card-h"><div class="card-title"><span class="title-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 7.5h11a4.5 4.5 0 0 1 4.4 5.5c-.3 1.8-1.7 3-3.4 3-1.2 0-2-.6-2.7-1.4H8.2c-.7.8-1.5 1.4-2.7 1.4-1.7 0-3.1-1.2-3.4-3A4.5 4.5 0 0 1 6.5 7.5Z"/><path d="M9 10.5v3M7.5 12h3"/><circle cx="15.6" cy="11" r=".7" fill="currentColor" stroke="none"/><circle cx="17.3" cy="12.6" r=".7" fill="currentColor" stroke="none"/></svg></span><h3>Top 5 Games</h3></div><div class="top5-filters"><button onclick="toast('筛选为演示占位')">Filters</button><button onclick="cycleSort()">${S.sortBy==='score'?'按评分':'按下载'}</button></div></div>
+      <div class="card-b">${sortedGames().map(top5Row).join('')}
         <div class="monitor-cta"><button class="btn btn-p" onclick="go('games')">VIEW ALL</button></div>
       </div></div>`;
     return
@@ -672,7 +757,8 @@ function render(){
   renderRail();
 }
 document.getElementById('globalSearch').addEventListener('input',e=>{S.q=e.target.value.trim();render()});
-async function boot(){await loadRemoteData();buildNav();go('overview');}
+function updateTopUser(){const m=MEMBERS[0]||{name:'开发者',role:'dev'};const el=document.querySelector('.top-user');if(!el)return;el.querySelector('.avatar').textContent=(m.name||'开').slice(0,1);el.querySelector('.meta b').textContent=m.name;el.querySelector('.meta span').textContent=m.role==='admin'?'Platform Admin':'Developer'}
+async function boot(){await loadRemoteData();buildNav();updateNotifBadge();updateTopUser();go('overview');}
 boot();
 </script>
 </body>
