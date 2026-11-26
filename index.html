@@ -291,9 +291,35 @@ pre{margin:0;padding:16px;font-family:ui-monospace,monospace;font-size:11.5px;li
   .post-actions{gap:8px}
   .channel{flex-wrap:wrap}
 }
+
+/* 登录遮罩 */
+.login-mask{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:rgba(10,8,18,.72);backdrop-filter:blur(8px);padding:20px}
+.login-mask[hidden]{display:none}
+.login-card{width:100%;max-width:380px;background:var(--panel);border:1px solid rgba(139,92,246,.25);border-radius:24px;padding:30px 28px;box-shadow:var(--shadow)}
+.login-card .brand{padding:0;justify-content:center}
+.login-card h2{font-size:20px;margin:18px 0 6px;text-align:center}
+.login-sub{font-size:12px;color:var(--sub);margin-bottom:22px;line-height:1.7;text-align:center}
+.login-card .field{margin-bottom:15px}
+.login-card .btn-p{width:100%;padding:12px;font-size:14px;margin-top:6px}
+.login-err{background:rgba(251,113,133,.12);border:1px solid rgba(251,113,133,.3);color:#fda4af;border-radius:10px;font-size:12px;padding:10px 12px;margin:4px 0 12px;line-height:1.6}
+.login-hint{font-size:11px;color:var(--sub2);text-align:center;margin-top:16px;line-height:1.7}
 </style>
 </head>
 <body>
+<div class="login-mask" id="loginMask" hidden>
+  <div class="login-card">
+    <div class="brand"><div class="mark"><svg viewBox="0 0 24 24"><path d="M8 7l-4 5 4 5M16 7l4 5-4 5"/></svg></div><div><b>DevRealm</b><small>DEV PLATFORM</small></div></div>
+    <h2>登录工作台</h2>
+    <p class="login-sub">登录后即可发帖、点赞和管理渠道接入。</p>
+    <form onsubmit="event.preventDefault();doLogin()">
+      <label class="field"><span>账号</span><input id="loginEmail" placeholder="admin" autocomplete="username"></label>
+      <label class="field"><span>密码</span><input id="loginPassword" type="password" placeholder="••••••••" autocomplete="current-password"></label>
+      <div class="login-err" id="loginErr" hidden></div>
+      <button type="submit" class="btn btn-p" id="loginBtn">登 录</button>
+    </form>
+    <p class="login-hint">演示账号：admin / admin123<br>开发者账号：dev / Devrealm123</p>
+  </div>
+</div>
 <div class="app" id="app">
   <aside class="sidebar">
     <div class="brand">
@@ -326,7 +352,7 @@ pre{margin:0;padding:16px;font-family:ui-monospace,monospace;font-size:11.5px;li
       </label>
       <div class="top-actions">
         <div class="notif-wrap"><button class="icon-btn" id="notifBtn" onclick="toggleNotifs(event)"><svg viewBox="0 0 24 24"><path d="M6 9a6 6 0 0112 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 20a2 2 0 004 0"/></svg><span class="notif-badge" id="notifBadge" hidden></span></button><div class="notif-panel" id="notifPanel" hidden></div></div>
-        <button class="icon-btn" onclick="go('settings')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></button><div class="top-user"><div class="avatar">陶</div><div class="meta"><b>陶云</b><span>Platform Admin</span></div><button class="logout" onclick="toast('演示原型：未接入真实退出登录')">退出</button></div>
+        <button class="icon-btn" onclick="go('settings')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></button><div class="top-user"><div class="avatar">陶</div><div class="meta"><b>陶云</b><span>Platform Admin</span></div><button class="logout" onclick="doLogout()">退出</button></div>
       </div>
     </header>
     <main class="content" id="content"></main>
@@ -462,6 +488,7 @@ let MEMBERS=[
  */
 const SUPABASE_CONFIG={url:'https://qthwgfzmojeopscrkwcv.supabase.co',anonKey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF0aHdnZnptb2plb3BzY3Jrd2N2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUxODQ5OTMsImV4cCI6MjExMDc2MDk5M30.3ALgKCl6RSafyjO3RCQveP2is_awAIflkPEqmvGcVQM'};
 let sbClient=null;
+let currentUser=null; // {uid,email,role,profile:{id,name,role,email}}
 
 /* 仅当上面 url / anonKey 都填了才会连接 Supabase；留空则全程使用本地示例数据，离线可直接打开。 */
 function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});}
@@ -473,9 +500,50 @@ async function initSupabase(){
     return true;
   }catch(e){console.warn('Supabase 初始化失败，已回退本地示例数据：',e);return false;}
 }
+
+/* ================= 登录鉴权 ================= */
+function normAccount(a){a=String(a||'').trim();if(!a)return '';return a.includes('@')?a:`${a}@example.com`;}
+function showLoginMask(show){document.getElementById('loginMask').hidden=!show;}
+function loginErr(msg){const el=document.getElementById('loginErr');if(msg){el.textContent=msg;el.hidden=false;}else{el.hidden=true;}}
+async function resolveProfile(uid){
+  if(!sbClient||!uid) return null;
+  const {data}=await sbClient.from('profiles').select('*').eq('auth_id',uid).limit(1);
+  return (data&&data[0])||null;
+}
+async function applySession(session){
+  if(!session||!session.user){currentUser=null;return null;}
+  const uid=session.user.id,email=session.user.email||'';
+  const profile=await resolveProfile(uid);
+  currentUser={uid,email,role:(profile&&profile.role)||'dev',profile:profile||{name:email.split('@')[0]||'开发者',role:'dev',email}};
+  return currentUser;
+}
+async function doLogin(){
+  if(!sbClient){toast('登录服务未就绪，请稍后重试');return;}
+  const email=normAccount(document.getElementById('loginEmail').value);
+  const password=document.getElementById('loginPassword').value;
+  const btn=document.getElementById('loginBtn');loginErr('');
+  if(!email||!password){loginErr('请输入账号和密码');return;}
+  btn.disabled=true;btn.textContent='登录中…';
+  try{
+    const {data,error}=await sbClient.auth.signInWithPassword({email,password});
+    if(error)throw error;
+    await applySession(data.session);
+    showLoginMask(false);updateTopUser();render();toast(`欢迎回来，${currentUser.profile.name}`);
+  }catch(e){
+    console.warn(e);
+    loginErr(e&&e.message?('登录失败：'+e.message):'账号或密码错误，请重试');
+  }finally{btn.disabled=false;btn.textContent='登 录';}
+}
+async function doLogout(){
+  if(sbClient){await sbClient.auth.signOut().catch(()=>{});}
+  currentUser=null;showLoginMask(true);updateTopUser();toast('已退出登录');
+}
+function requireLogin(){
+  if(currentUser)return true;
+  showLoginMask(true);toast('请先登录后再操作');return false;
+}
 async function loadRemoteData(){
-  const ok=await initSupabase();
-  if(!ok||!sbClient) return;
+  if(!sbClient){const ok=await initSupabase();if(!ok||!sbClient) return;}
   try{
     const [g,r,c,l,p,m]=await Promise.all([
       sbClient.from('games').select('*'),
@@ -498,10 +566,10 @@ async function loadRemoteData(){
       LOGS=l.data.map(x=>({t:String(x.ts||'').slice(11,19),lv:x.level||'INFO',m:x.message,u:x.actor||'system'}));
     }
     if(!p.error&&p.data&&p.data.length){
-      POSTS=p.data.map(x=>{const pf=Array.isArray(x.profiles)?x.profiles[0]:x.profiles;return {cat:x.category,title:x.title,author:(pf&&pf.name)||'开发者',role:(pf&&pf.role)||'dev',time:x.created_at?String(x.created_at).replace('T',' ').slice(5,16):'',likes:x.likes||0,replies:x.replies||0,views:x.views||'0',tags:x.tags||[]};});
+      POSTS=p.data.map(x=>{const pf=Array.isArray(x.profiles)?x.profiles[0]:x.profiles;return {id:x.id,authorId:x.author_id,cat:x.category,title:x.title,author:(pf&&pf.name)||'开发者',role:(pf&&pf.role)||'dev',time:x.created_at?String(x.created_at).replace('T',' ').slice(5,16):'',likes:x.likes||0,replies:x.replies||0,views:x.views||'0',tags:x.tags||[]};});
     }
     if(!m.error&&m.data&&m.data.length){
-      MEMBERS=m.data.map(x=>({name:x.name,role:x.role,email:x.email,status:x.status,projects:x.projects||0}));
+      MEMBERS=m.data.map(x=>({id:x.id,authId:x.auth_id,name:x.name,role:x.role,email:x.email,status:x.status,projects:x.projects||0}));
     }
   }catch(e){console.warn('Supabase 数据加载失败，已回退本地示例数据：',e);}
 }
@@ -620,13 +688,36 @@ function postCard(p,i){
     <p>分享开发过程中的关键问题、复盘和可复用经验，欢迎在评论区补充你的项目场景。${p.tags.map(t=>` <span class="tag blue">#${t}</span>`).join(' ')}</p>
     <div class="post-cover" style="background-image:url(&quot;${POST_GRADS[i%POST_GRADS.length]}&quot;)"></div>
     <div class="post-actions">
-      <button onclick="toggleLike(${i})">${icon('thumbs')} ${like?Number(p.likes)+1:p.likes}</button>
+      <button onclick="toggleLike(${i})" style="${like?'color:#c4b5fd':''}">${icon('thumbs')} ${p.likes}</button>
       <button>${icon('message')} ${p.replies} 回复</button>
       <button>${icon('share')} ${p.views} 浏览</button>
     </div>
   </div>`;
 }
-function toggleLike(i){S.liked[i]=!S.liked[i];render()}
+async function toggleLike(i){
+  if(!requireLogin())return;
+  const p=POSTS[i];if(!p)return;
+  const now=!S.liked[i];S.liked[i]=now;
+  const delta=now?1:-1;p.likes=Math.max(0,(p.likes||0)+delta);render();
+  if(!p.id||!sbClient)return;
+  const {error}=await sbClient.from('posts').update({likes:p.likes}).eq('id',p.id);
+  if(error){S.liked[i]=!now;p.likes=Math.max(0,(p.likes||0)-delta);render();toast('点赞失败，请重试');console.warn(error);}
+}
+async function submitPost(){
+  if(!requireLogin())return;
+  const input=document.getElementById('composerInput');const title=(input?input.value:'').trim();
+  if(!title){toast('先写点内容再发布');return;}
+  const profile=currentUser.profile;
+  const btn=document.querySelector('.post-btn');if(btn)btn.disabled=true;
+  try{
+    const {data,error}=await sbClient.from('posts').insert({title,body:title,category:'general',tags:[],author_id:profile.id,likes:0,replies:0,views:'0'}).select('*,profiles(name,role)').single();
+    if(error)throw error;
+    const pf=Array.isArray(data.profiles)?data.profiles[0]:data.profiles;
+    POSTS.unshift({id:data.id,authorId:data.author_id,cat:data.category||'general',title:data.title,author:(pf&&pf.name)||profile.name,role:(pf&&pf.role)||profile.role,time:String(data.created_at).replace('T',' ').slice(5,16),likes:0,replies:0,views:'0',tags:data.tags||[]});
+    if(input)input.value='';render();toast('帖子已发布');
+  }catch(e){console.warn(e);toast('发布失败：'+(e.message||'请重试'));}
+  finally{if(btn)btn.disabled=false;}
+}
 
 /* ================= 主视图 ================= */
 function viewOverview(){
@@ -684,7 +775,15 @@ function viewLink(){
   return `<div class="page-head"><div><h1>第三方接入</h1><p>渠道、社区账号和 OAuth 连接状态。密钥只做脱敏展示。</p></div></div>
   <div style="display:flex;flex-direction:column;gap:14px">${CHANNELS.map((c,i)=>`<div class="channel ${c.on?"on":"off"}"><div class="logo">${c.code}</div><div class="info"><b>${esc(c.n)}</b><p>Key：${c.k} · 最近同步 ${c.last}</p></div><div class="switch ${c.on?'on':''}" onclick="toggleChannel(${i})"><i></i></div></div>`).join('')}</div>`;
 }
-function toggleChannel(i){CHANNELS[i].on=!CHANNELS[i].on;toast(CHANNELS[i].on?`${CHANNELS[i].n} 已启用`:`${CHANNELS[i].n} 已停用`);render()}
+async function toggleChannel(i){
+  if(!requireLogin())return;
+  const ch=CHANNELS[i];if(!ch)return;
+  const next=!ch.on;ch.on=next;render();
+  if(!ch.id||!sbClient){toast('本地演示：渠道状态未回写');return;}
+  const {error}=await sbClient.from('channels').update({enabled:next}).eq('id',ch.id);
+  if(error){ch.on=!next;render();toast('切换失败，请重试');console.warn(error);return;}
+  toast(ch.on?`${ch.n} 已启用`:`${ch.n} 已停用`);
+}
 function viewMonitor(){
   return `<div class="page-head"><div><h1>监控日志</h1><p>查看接口耗时、警告、错误和最近操作者。</p></div></div>
   ${kpiCards()}
@@ -694,10 +793,10 @@ function viewMonitor(){
 function viewCommunity(){
   return `<div class="feed">
     <div class="card composer">
-      <div class="avatar">陶</div>
+      <div class="avatar">${currentUser?currentUser.profile.name.slice(0,1):'?'}</div>
       <div class="composer-main">
-        <input placeholder="What is on your mind? 分享开发问题、作品或经验…" onkeydown="if(event.key==='Enter')toast('帖子已进入演示发布流程')">
-        <div class="composer-tools"><button class="mini" title="游戏"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 7.5h11a4.5 4.5 0 0 1 4.4 5.5c-.3 1.8-1.7 3-3.4 3-1.2 0-2-.6-2.7-1.4H8.2c-.7.8-1.5 1.4-2.7 1.4-1.7 0-3.1-1.2-3.4-3A4.5 4.5 0 0 1 6.5 7.5Z"/><path d="M9 10.5v3M7.5 12h3"/><circle cx="15.6" cy="11" r=".7" fill="currentColor" stroke="none"/><circle cx="17.3" cy="12.6" r=".7" fill="currentColor" stroke="none"/></svg></button><button class="mini" title="图片">${icon("image")}</button><button class="mini" title="代码">${icon("code")}</button><button class="mini">EN</button><button class="btn btn-p post-btn" onclick="toast('帖子已进入演示发布流程')">Post</button></div>
+        <input id="composerInput" placeholder="What is on your mind? 分享开发问题、作品或经验…" onkeydown="if(event.key==='Enter')submitPost()">
+        <div class="composer-tools"><button class="mini" title="游戏"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 7.5h11a4.5 4.5 0 0 1 4.4 5.5c-.3 1.8-1.7 3-3.4 3-1.2 0-2-.6-2.7-1.4H8.2c-.7.8-1.5 1.4-2.7 1.4-1.7 0-3.1-1.2-3.4-3A4.5 4.5 0 0 1 6.5 7.5Z"/><path d="M9 10.5v3M7.5 12h3"/><circle cx="15.6" cy="11" r=".7" fill="currentColor" stroke="none"/><circle cx="17.3" cy="12.6" r=".7" fill="currentColor" stroke="none"/></svg></button><button class="mini" title="图片">${icon("image")}</button><button class="mini" title="代码">${icon("code")}</button><button class="mini">EN</button><button class="btn btn-p post-btn" onclick="submitPost()">Post</button></div>
       </div>
     </div>
     <div class="feed-filter"><button class="select-chip">Followers ▾</button><button class="select-chip">Social posts ▾</button></div>
@@ -757,8 +856,28 @@ function render(){
   renderRail();
 }
 document.getElementById('globalSearch').addEventListener('input',e=>{S.q=e.target.value.trim();render()});
-function updateTopUser(){const m=MEMBERS[0]||{name:'开发者',role:'dev'};const el=document.querySelector('.top-user');if(!el)return;el.querySelector('.avatar').textContent=(m.name||'开').slice(0,1);el.querySelector('.meta b').textContent=m.name;el.querySelector('.meta span').textContent=m.role==='admin'?'Platform Admin':'Developer'}
-async function boot(){await loadRemoteData();buildNav();updateNotifBadge();updateTopUser();go('overview');}
+function updateTopUser(){
+  const el=document.querySelector('.top-user');if(!el)return;
+  const avatar=el.querySelector('.avatar'),b=el.querySelector('.meta b'),span=el.querySelector('.meta span');
+  if(currentUser&&currentUser.profile){
+    const p=currentUser.profile;
+    avatar.textContent=(p.name||'开').slice(0,1);b.textContent=p.name;span.textContent=p.role==='admin'?'Platform Admin':'Developer';
+  }else{
+    avatar.textContent='?';b.textContent='未登录';span.textContent='Guest';
+  }
+}
+async function boot(){
+  await initSupabase();
+  if(sbClient){
+    const {data:{session}}=await sbClient.auth.getSession();
+    await applySession(session);
+    sbClient.auth.onAuthStateChange((_e,ses)=>{applySession(ses);updateTopUser();});
+  }
+  await loadRemoteData();
+  buildNav();updateNotifBadge();updateTopUser();
+  showLoginMask(!currentUser);
+  go('overview');
+}
 boot();
 </script>
 </body>

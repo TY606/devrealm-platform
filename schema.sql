@@ -130,3 +130,29 @@ create policy "channels: public read" on public.channels
 drop policy if exists "logs: public read" on public.logs;
 create policy "logs: public read" on public.logs
   for select using (true);
+
+-- =====================================================================
+-- 登录鉴权（Supabase Auth）：写操作仅限已登录用户
+-- =====================================================================
+
+-- profiles 关联到 auth.users；一个成员账号对应一个登录身份。
+alter table public.profiles add column if not exists auth_id uuid references auth.users (id) on delete set null;
+create index if not exists idx_profiles_auth on public.profiles (auth_id);
+
+-- 发帖：仅登录用户可插入，且作者必须是当前登录身份对应的成员档案。
+drop policy if exists "posts: authenticated insert" on public.posts;
+create policy "posts: authenticated insert" on public.posts
+  for insert to authenticated
+  with check (author_id in (select id from public.profiles where auth_id = auth.uid()));
+
+-- 点赞 / 浏览数等：登录用户可更新帖子计数。
+drop policy if exists "posts: authenticated update" on public.posts;
+create policy "posts: authenticated update" on public.posts
+  for update to authenticated
+  using (true) with check (true);
+
+-- 渠道开关：登录用户可更新接入状态。
+drop policy if exists "channels: authenticated update" on public.channels;
+create policy "channels: authenticated update" on public.channels
+  for update to authenticated
+  using (true) with check (true);
