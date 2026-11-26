@@ -658,7 +658,7 @@ function loadScript(src){return new Promise((res,rej)=>{const s=document.createE
 async function initSupabase(){
   if(!SUPABASE_CONFIG.url||!SUPABASE_CONFIG.anonKey) return false;
   try{
-    if(!window.supabase){await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js');}
+    if(!window.supabase){await loadScript('https://fastly.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js');}
     sbClient=window.supabase.createClient(SUPABASE_CONFIG.url,SUPABASE_CONFIG.anonKey);
     return true;
   }catch(e){console.warn('Supabase 初始化失败，已回退本地示例数据：',e);return false;}
@@ -1680,9 +1680,9 @@ function stepParticles(dt){
 }
 function loadScript(src,test){
   return new Promise((res,rej)=>{
-    if(test())return res();
+    if(test&&test())return res();
     const s=document.createElement('script');
-    s.src=src;s.onload=()=>test()?res():rej(new Error('missing'));
+    s.src=src;s.onload=()=>(!test||test())?res():rej(new Error('missing'));
     s.onerror=()=>rej(new Error('load fail'));
     document.head.appendChild(s);
   });
