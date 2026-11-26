@@ -430,7 +430,8 @@ pre{margin:0;padding:16px;font-family:ui-monospace,monospace;font-size:11.5px;li
 .entity-item.on{border-color:#c4b5fd;background:rgba(139,92,246,.12)}
 .entity-item .dot{width:10px;height:10px;border-radius:3px;background:currentColor;flex:0 0 auto}
 .prop-row{display:grid;grid-template-columns:70px 1fr;gap:8px;align-items:center;margin-bottom:10px;font-size:12px}
-.prop-row input{background:var(--box2);border:1px solid var(--line);border-radius:8px;color:var(--text);padding:6px 8px}
+.prop-row input,.prop-row select{background:var(--box2);border:1px solid var(--line);border-radius:8px;color:var(--text);padding:6px 8px}
+.prop-row select{cursor:pointer}
 .prop-row input[type=color]{padding:2px;height:32px}
 .tex-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
 .tex-grid .tex{aspect-ratio:1;border:1px solid var(--line);border-radius:8px;background-size:cover;cursor:pointer}
@@ -859,6 +860,9 @@ zh:{
   open_editor:'打开编辑器',delete:'删除',deleted:'已删除',proj_name:'项目名称',proj_create:'创建并打开',proj_untitled:'未命名项目',proj_saved:'项目已保存',
   tpl_tap:'点击得分',tpl_move:'方向键移动',tpl_dodge:'躲避掉落物',tpl_scene3d:'3D 场景',code_label:'游戏代码',preview:'预览',run:'运行',stop:'停止',save:'保存',editor_idle:'点击运行开始预览',editor_running:'运行中…',editor_error:'代码报错',
   e3d_entities:'实体',e3d_add:'添加',e3d_del:'删除',e3d_props:'属性',e3d_pos:'位置',e3d_scale:'缩放',e3d_color:'颜色',e3d_tex:'贴图',e3d_upload_tex:'上传贴图',e3d_hint:'拖拽旋转 · 滚轮缩放 · 点击选中',e3d_none:'未选中实体',e3d_tex_empty:'选中实体后可上传贴图',e3d_load_err:'3D 引擎加载失败，请检查网络后重试',e3d_webgl:'当前环境不支持 WebGL，实体编辑与保存仍可用，请在桌面浏览器查看 3D 视口',
+  e3d_shape:'形状',e3d_mat:'材质',e3d_rough:'粗糙度',e3d_metal:'金属度',e3d_body:'刚体',e3d_static:'静态',e3d_dynamic:'动态',e3d_phys:'物理',e3d_phys_run:'运行物理',e3d_phys_stop:'停止物理',e3d_phys_err:'物理引擎加载失败，请检查网络',
+  mesh_box:'立方体',mesh_sphere:'球体',mesh_plane:'平面',mesh_cylinder:'圆柱',mesh_cone:'圆锥',mesh_torus:'圆环',mesh_tetra:'四面体',
+  mat_standard:'标准',mat_basic:'基础',mat_wire:'线框',
   change_avatar:'修改头像',upload_avatar:'上传图片',avatar_saved:'头像已更新',captcha_label:'图形验证',captcha_err:'验证码不正确，请重新输入'
 },
 en:{
@@ -913,6 +917,9 @@ en:{
   open_editor:'Open Editor',delete:'Delete',deleted:'Deleted',proj_name:'Project name',proj_create:'Create & Open',proj_untitled:'Untitled',proj_saved:'Project saved',
   tpl_tap:'Tap Score',tpl_move:'Arrow Move',tpl_dodge:'Dodge Drops',tpl_scene3d:'3D Scene',code_label:'Game Code',preview:'Preview',run:'Run',stop:'Stop',save:'Save',editor_idle:'Press Run to preview',editor_running:'Running…',editor_error:'Code error',
   e3d_entities:'Entities',e3d_add:'Add',e3d_del:'Delete',e3d_props:'Properties',e3d_pos:'Position',e3d_scale:'Scale',e3d_color:'Color',e3d_tex:'Texture',e3d_upload_tex:'Upload Texture',e3d_hint:'Drag rotate · Scroll zoom · Click to select',e3d_none:'No entity selected',e3d_tex_empty:'Select an entity to upload a texture',e3d_load_err:'Failed to load 3D engine, check your network',e3d_webgl:'WebGL is unavailable here; entity editing and saving still work. Open in a desktop browser to view the 3D viewport',
+  e3d_shape:'Shape',e3d_mat:'Material',e3d_rough:'Roughness',e3d_metal:'Metalness',e3d_body:'Rigid body',e3d_static:'Static',e3d_dynamic:'Dynamic',e3d_phys:'Physics',e3d_phys_run:'Run Physics',e3d_phys_stop:'Stop Physics',e3d_phys_err:'Failed to load physics engine, check your network',
+  mesh_box:'Box',mesh_sphere:'Sphere',mesh_plane:'Plane',mesh_cylinder:'Cylinder',mesh_cone:'Cone',mesh_torus:'Torus',mesh_tetra:'Tetrahedron',
+  mat_standard:'Standard',mat_basic:'Basic',mat_wire:'Wireframe',
   change_avatar:'Change Avatar',upload_avatar:'Upload Image',avatar_saved:'Avatar updated',captcha_label:'Captcha',captcha_err:'Wrong captcha, please try again'
 }};
 function t(k){return (I18N[S.lang]&&I18N[S.lang][k])||I18N.zh[k]||k;}
@@ -1433,9 +1440,9 @@ function draw(){
   ctx.fillText('drops: '+drops.length,14,26);
 }`;
 function defaultScene(){return {entities:[
-  {id:'e-ground',name:'地面',mesh:'plane',position:[0,0,0],scale:[6,6,1],color:'#3f3f46',texture:null},
-  {id:'e-box',name:'立方体',mesh:'box',position:[0,1,0],scale:[1,1,1],color:'#c4b5fd',texture:null},
-  {id:'e-sphere',name:'球体',mesh:'sphere',position:[2,1,0],scale:[1,1,1],color:'#22d3ee',texture:null}
+  {id:'e-ground',name:'地面',mesh:'plane',position:[0,0,0],scale:[6,6,1],color:'#3f3f46',texture:null,mat:'standard',roughness:0.9,metalness:0,body:'static'},
+  {id:'e-box',name:'立方体',mesh:'box',position:[0,1.2,0],scale:[1,1,1],color:'#c4b5fd',texture:null,mat:'standard',roughness:0.5,metalness:0.1,body:'dynamic'},
+  {id:'e-sphere',name:'球体',mesh:'sphere',position:[2,1.2,0],scale:[1,1,1],color:'#22d3ee',texture:null,mat:'standard',roughness:0.3,metalness:0.4,body:'dynamic'}
 ]};}
 const PROJECT_TEMPLATES={
   tap:{kind:'2d',code:TPL_TAP},
@@ -1558,6 +1565,16 @@ function loadThree(){
     document.head.appendChild(s);
   });
 }
+function loadCannon(){
+  if(window.CANNON)return Promise.resolve(window.CANNON);
+  return new Promise((res,rej)=>{
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js';
+    s.onload=()=>window.CANNON?res(window.CANNON):rej(new Error('CANNON missing'));
+    s.onerror=()=>rej(new Error('load fail'));
+    document.head.appendChild(s);
+  });
+}
 function openEditor3d(p){
   let data;
   try{data=JSON.parse(p.code);}catch(e){data=null;}
@@ -1569,7 +1586,8 @@ function openEditor3d(p){
     <div class="editor-pane">
       <div class="editor-bar">${t('e3d_entities')}
         <button class="mini-btn" onclick="e3dAdd()">${t('e3d_add')}</button>
-        <button class="mini-btn danger" onclick="e3dDel()">${t('e3d_del')}</button></div>
+        <button class="mini-btn danger" onclick="e3dDel()">${t('e3d_del')}</button>
+        <button class="mini-btn" id="e3dPhysBtn" onclick="e3dTogglePhys()">${t('e3d_phys_run')}</button></div>
       <div class="entity-list" id="e3dList"></div>
     </div>
     <div class="viewport-3d" id="e3dViewport"><div class="viewport-hint" id="e3dHint">${t('e3d_hint')}</div></div>
@@ -1605,11 +1623,12 @@ function init3d(){
   scene.add(new THREE.AmbientLight(0xffffff,0.75));
   const dir=new THREE.DirectionalLight(0xffffff,1.1);dir.position.set(4,8,6);scene.add(dir);
   g3d.three={renderer,scene,camera,entities:new Map()};
+  g3d.phys=null;
   g3d.data.entities.forEach(buildEnt);
   bind3dControls(vp,camera);
   render3dList();render3dProps();render3dTexs();
   if(renderer){
-    const loop=()=>{updateCamera(camera);renderer.render(scene,camera);g3d.raf=requestAnimationFrame(loop);};
+    const loop=()=>{stepPhys();updateCamera(camera);renderer.render(scene,camera);g3d.raf=requestAnimationFrame(loop);};
     g3d.raf=requestAnimationFrame(loop);
   }else{
     const hint=document.getElementById('e3dHint');
@@ -1617,13 +1636,31 @@ function init3d(){
   }
   window.addEventListener('resize',e3dResize);
 }
-function buildEnt(ent){
-  const THREE=window.THREE;let geo;
-  if(ent.mesh==='sphere')geo=new THREE.SphereGeometry(0.5,32,24);
-  else if(ent.mesh==='plane')geo=new THREE.PlaneGeometry(1,1);
-  else geo=new THREE.BoxGeometry(1,1,1);
-  const mat=new THREE.MeshStandardMaterial({color:ent.color||'#888888'});
+const MESH_TYPES=['box','sphere','plane','cylinder','cone','torus','tetra'];
+function makeGeo(THREE,mesh){
+  switch(mesh){
+    case 'sphere':return new THREE.SphereGeometry(0.5,32,24);
+    case 'plane':return new THREE.PlaneGeometry(1,1);
+    case 'cylinder':return new THREE.CylinderGeometry(0.5,0.5,1,24);
+    case 'cone':return new THREE.ConeGeometry(0.5,1,24);
+    case 'torus':return new THREE.TorusGeometry(0.4,0.18,12,28);
+    case 'tetra':return new THREE.TetrahedronGeometry(0.55);
+    default:return new THREE.BoxGeometry(1,1,1);
+  }
+}
+function makeMaterial(THREE,ent){
+  const base={color:ent.color||'#888888'};
+  let mat;
+  if(ent.mat==='basic')mat=new THREE.MeshBasicMaterial(base);
+  else if(ent.mat==='wire')mat=new THREE.MeshStandardMaterial(Object.assign(base,{wireframe:true}));
+  else mat=new THREE.MeshStandardMaterial(Object.assign(base,{roughness:ent.roughness==null?0.5:ent.roughness,metalness:ent.metalness==null?0:ent.metalness}));
   if(ent.texture)new THREE.TextureLoader().load(ent.texture,tex=>{mat.map=tex;mat.needsUpdate=true;});
+  return mat;
+}
+function buildEnt(ent){
+  const THREE=window.THREE;
+  const geo=makeGeo(THREE,ent.mesh);
+  const mat=makeMaterial(THREE,ent);
   const mesh=new THREE.Mesh(geo,mat);
   mesh.position.fromArray(ent.position||[0,0,0]);
   mesh.scale.fromArray(ent.scale||[1,1,1]);
@@ -1677,13 +1714,22 @@ function render3dProps(){
   if(!ent){el.innerHTML=`<div class="comment-empty">${t('e3d_none')}</div>`;return;}
   const p=ent.position||[0,0,0],s=ent.scale||[1,1,1];
   const row=(label,val,fn)=>`<div class="prop-row"><span>${label}</span><input type="number" step="0.1" value="${val}" oninput="${fn}"></div>`;
+  const sel=(label,cur,opts,fn)=>`<div class="prop-row"><span>${label}</span><select onchange="${fn}">${opts.map(o=>`<option value="${o[0]}" ${o[0]===cur?'selected':''}>${o[1]}</option>`).join('')}</select></div>`;
+  const meshOpts=MESH_TYPES.map(m=>[m,t('mesh_'+m)]);
+  const matOpts=[['standard',t('mat_standard')],['basic',t('mat_basic')],['wire',t('mat_wire')]];
+  const bodyOpts=[['static',t('e3d_static')],['dynamic',t('e3d_dynamic')]];
   el.innerHTML=`
+    ${sel(t('e3d_shape'),ent.mesh,meshOpts,`e3dSetMesh(this.value)`)}
     ${row(t('e3d_pos')+' X',p[0],`e3dProp('position',0,this.value)`)}
     ${row(t('e3d_pos')+' Y',p[1],`e3dProp('position',1,this.value)`)}
     ${row(t('e3d_pos')+' Z',p[2],`e3dProp('position',2,this.value)`)}
     ${row(t('e3d_scale')+' X',s[0],`e3dProp('scale',0,this.value)`)}
     ${row(t('e3d_scale')+' Y',s[1],`e3dProp('scale',1,this.value)`)}
     ${row(t('e3d_scale')+' Z',s[2],`e3dProp('scale',2,this.value)`)}
+    ${sel(t('e3d_mat'),ent.mat||'standard',matOpts,`e3dSetMat(this.value)`)}
+    ${row(t('e3d_rough'),ent.roughness==null?0.5:ent.roughness,`e3dScalar('roughness',this.value)`)}
+    ${row(t('e3d_metal'),ent.metalness==null?0:ent.metalness,`e3dScalar('metalness',this.value)`)}
+    ${sel(t('e3d_body'),ent.body||'dynamic',bodyOpts,`e3dSetBody(this.value)`)}
     <div class="prop-row"><span>${t('e3d_color')}</span><input type="color" value="${esc(ent.color||'#888888')}" oninput="e3dColor(this.value)"></div>`;
 }
 function e3dProp(field,idx,val){
@@ -1699,9 +1745,31 @@ function e3dColor(val){
   if(rec)rec.mesh.material.color.set(val);
   render3dList();
 }
+function e3dSetMesh(mesh){
+  const ent=selEnt();if(!ent)return;ent.mesh=mesh;
+  const rec=g3d.three.entities.get(ent.id);
+  if(rec){
+    rec.mesh.geometry.dispose();
+    rec.mesh.geometry=makeGeo(window.THREE,mesh);
+    if(mesh==='plane')rec.mesh.rotation.x=-Math.PI/2;else rec.mesh.rotation.x=0;
+  }
+  render3dList();
+}
+function e3dSetMat(mat){
+  const ent=selEnt();if(!ent)return;ent.mat=mat;
+  const rec=g3d.three.entities.get(ent.id);
+  if(rec){rec.mesh.material.dispose();rec.mesh.material=makeMaterial(window.THREE,ent);}
+}
+function e3dScalar(field,val){
+  const ent=selEnt();if(!ent)return;
+  ent[field]=parseFloat(val)||0;
+  const rec=g3d.three.entities.get(ent.id);
+  if(rec&&rec.mesh.material[field]!==undefined){rec.mesh.material[field]=ent[field];rec.mesh.material.needsUpdate=true;}
+}
+function e3dSetBody(body){const ent=selEnt();if(ent)ent.body=body;}
 function e3dAdd(){
   const n=g3d.data.entities.length+1;
-  const ent={id:'e'+Date.now(),name:'实体 '+n,mesh:'box',position:[0,1,0],scale:[1,1,1],color:'#f0abfc',texture:null};
+  const ent={id:'e'+Date.now(),name:'实体 '+n,mesh:'box',position:[0,1.5,0],scale:[1,1,1],color:'#f0abfc',texture:null,mat:'standard',roughness:0.5,metalness:0.1,body:'dynamic'};
   g3d.data.entities.push(ent);buildEnt(ent);
   g3d.selectedId=ent.id;render3dList();render3dProps();render3dTexs();
 }
@@ -1709,6 +1777,7 @@ function e3dDel(){
   if(!g3d.selectedId)return;
   const rec=g3d.three.entities.get(g3d.selectedId);
   if(rec){g3d.three.scene.remove(rec.mesh);rec.mesh.geometry.dispose();rec.mesh.material.dispose();g3d.three.entities.delete(g3d.selectedId);}
+  if(g3d.phys&&g3d.phys.running){const b=g3d.phys.bodies.get(g3d.selectedId);if(b){g3d.phys.world.removeBody(b);g3d.phys.bodies.delete(g3d.selectedId);}}
   g3d.data.entities=g3d.data.entities.filter(x=>x.id!==g3d.selectedId);
   g3d.selectedId=g3d.data.entities[0]?g3d.data.entities[0].id:null;
   render3dList();render3dProps();render3dTexs();
@@ -1737,6 +1806,53 @@ function e3dTexFile(ev){
   reader.readAsDataURL(f);
   ev.target.value='';
 }
+function makeBody(CANNON,ent){
+  const p=ent.position||[0,0,0],s=ent.scale||[1,1,1];
+  const isStatic=ent.mesh==='plane'||ent.body==='static';
+  let shape;
+  if(ent.mesh==='sphere')shape=new CANNON.Sphere(0.5*Math.max(s[0],s[1],s[2]));
+  else if(ent.mesh==='plane')shape=new CANNON.Plane();
+  else shape=new CANNON.Box(new CANNON.Vec3(0.5*s[0],0.5*s[1],0.5*s[2]));
+  const body=new CANNON.Body({mass:isStatic?0:1,shape});
+  body.position.set(p[0],p[1],p[2]);
+  if(ent.mesh==='plane')body.quaternion.setFromEuler(-Math.PI/2,0,0);
+  body.linearDamping=0.1;body.angularDamping=0.1;
+  return body;
+}
+function startPhys(){
+  const CANNON=window.CANNON;if(!CANNON)return;
+  const world=new CANNON.World();world.gravity.set(0,-9.82,0);
+  world.broadphase=new CANNON.SAPBroadphase(world);
+  const bodies=new Map();
+  g3d.data.entities.forEach(ent=>{const body=makeBody(CANNON,ent);world.addBody(body);bodies.set(ent.id,body);});
+  g3d.phys={world,bodies,running:true};
+  updatePhysBtn();
+}
+function stopPhys(){
+  if(g3d.phys)g3d.phys=null;
+  g3d.data.entities.forEach(ent=>{
+    const rec=g3d.three.entities.get(ent.id);
+    if(rec){rec.mesh.position.fromArray(ent.position);rec.mesh.quaternion.set(0,0,0,1);}
+  });
+  updatePhysBtn();
+}
+function e3dTogglePhys(){
+  if(g3d.phys&&g3d.phys.running){stopPhys();return;}
+  loadCannon().then(startPhys).catch(()=>toast(t('e3d_phys_err')));
+}
+function stepPhys(){
+  const ph=g3d.phys;if(!ph||!ph.running)return;
+  ph.world.step(1/60);
+  ph.bodies.forEach((body,id)=>{
+    const rec=g3d.three.entities.get(id);if(!rec)return;
+    rec.mesh.position.copy(body.position);
+    rec.mesh.quaternion.copy(body.quaternion);
+  });
+}
+function updatePhysBtn(){
+  const btn=document.getElementById('e3dPhysBtn');if(!btn)return;
+  btn.textContent=(g3d.phys&&g3d.phys.running)?t('e3d_phys_stop'):t('e3d_phys_run');
+}
 function e3dResize(){
   if(!g3d||!g3d.three)return;
   const vp=document.getElementById('e3dViewport');if(!vp)return;
@@ -1747,6 +1863,7 @@ function e3dResize(){
 function stopEditor3d(){
   if(!g3d)return;
   if(g3d.raf)cancelAnimationFrame(g3d.raf);
+  if(g3d.phys)g3d.phys=null;
   if(g3d.three){
     g3d.three.entities.forEach(rec=>{
       if(rec.mesh.geometry)rec.mesh.geometry.dispose();
