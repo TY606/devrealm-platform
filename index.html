@@ -386,6 +386,41 @@ pre{margin:0;padding:16px;font-family:ui-monospace,monospace;font-size:11.5px;li
 .mini-btn.danger{color:var(--red);border-color:rgba(251,113,133,.3)}
 .clickable{cursor:pointer}
 .clickable:hover{border-color:rgba(139,92,246,.35)}
+
+/* ---------- 头像图片 / 头像选择 ---------- */
+.avatar.has-img{background-size:cover;background-position:center;background-color:#2a2740}
+.avatar.big{width:64px;height:64px;font-size:24px}
+.avatar-pick{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.avatar-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:12px}
+.avatar-grid button{aspect-ratio:1;border-radius:50%;border:2px solid transparent;background:linear-gradient(135deg,#312e81,#7c3aed);color:#fff;font-size:22px;cursor:pointer;display:grid;place-items:center}
+.avatar-grid button.on{border-color:#c4b5fd;box-shadow:0 0 0 3px rgba(196,181,253,.25)}
+.avatar-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+
+/* ---------- 开发工作台 ---------- */
+.studio-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.studio-card{background:var(--box);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.studio-card .sc-top{display:flex;align-items:center;gap:12px}
+.studio-card .sc-icon{width:44px;height:44px;border-radius:12px;background:rgba(139,92,246,.14);color:#c4b5fd;display:grid;place-items:center;flex:0 0 auto}
+.studio-card h4{margin:0}
+.studio-card p{margin:0;font-size:12px;color:var(--sub2)}
+.studio-meta{display:flex;gap:8px;flex-wrap:wrap}
+.studio-card .sc-actions{display:flex;gap:8px;margin-top:auto}
+
+/* ---------- 代码编辑器 ---------- */
+.editor-split{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+@media(max-width:900px){.editor-split{grid-template-columns:1fr}}
+.editor-pane{background:var(--box2);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.editor-bar{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line);font-size:12px;color:var(--sub)}
+.editor-code{width:100%;min-height:300px;background:transparent;border:0;outline:0;color:var(--text);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.6;padding:12px;resize:vertical}
+.editor-preview{position:relative;min-height:300px;display:grid;place-items:center;background:#0f0d1d}
+.editor-preview canvas{background:#17142a;border-radius:10px;max-width:100%}
+.editor-status{padding:8px 12px;font-size:11.5px;border-top:1px solid var(--line);color:var(--sub2);min-height:34px;overflow:auto}
+.editor-status.err{color:var(--red)}
+
+/* ---------- 图形验证码 ---------- */
+.captcha-row{display:flex;gap:10px;align-items:center}
+.captcha-row input{flex:1}
+#regCaptcha{border:1px solid var(--line);border-radius:10px;cursor:pointer;background:#17142a}
 </style>
 </head>
 <body>
@@ -404,6 +439,10 @@ pre{margin:0;padding:16px;font-family:ui-monospace,monospace;font-size:11.5px;li
       <label class="field"><span id="reg_name">昵称</span><input id="regName" placeholder="你的名字" autocomplete="nickname"></label>
       <label class="field"><span id="reg_email_label">邮箱</span><input id="regEmail" type="email" placeholder="you@example.com" autocomplete="email"></label>
       <label class="field"><span id="labelPassword">密码</span><input id="regPassword" type="password" placeholder="至少 6 位" autocomplete="new-password"></label>
+      <label class="field"><span id="captcha_label">图形验证</span><div class="captcha-row">
+        <input id="regCaptchaInput" placeholder="输入右图字符" autocomplete="off">
+        <canvas id="regCaptcha" width="110" height="40" title="点击刷新" onclick="refreshCaptcha()"></canvas>
+      </div></label>
       <div class="login-err" id="regErr" hidden></div>
       <button type="submit" class="btn btn-p" id="regBtn">注 册</button>
     </form>
@@ -489,7 +528,7 @@ const icon=(n)=>ICONS[n]||'';
 const NAV=[
   {g:'nav_start',items:[['overview','nav_overview','home'],['users','nav_users','users'],['games','nav_games','gamepad'],['ranking','nav_ranking','chart']]},
   {g:'nav_multiplayer',items:[['community','nav_community','chat'],['link','nav_channels','link']]},
-  {g:'nav_tools',items:[['api','nav_api','bolt'],['assets','nav_assets','box'],['docs','nav_docs','file']]},
+  {g:'nav_tools',items:[['studio','nav_studio','code'],['api','nav_api','bolt'],['assets','nav_assets','box'],['docs','nav_docs','file']]},
   {g:'nav_stats',items:[['monitor','nav_monitoring','trend'],['settings','nav_settings','gear']]},
   {g:'nav_admin',items:[['admin','admin_panel','crown']]}
 ];
@@ -564,11 +603,11 @@ const ARTICLES=[
 ARTICLES.forEach((a,i)=>a.cover=ARTICLE_COVERS[i]);
 
 let MEMBERS=[
-  {name:'陶云',role:'admin',email:'taoyun@devrealm.dev',status:'在线',projects:3},
-  {name:'李承宇',role:'dev',email:'lichengyu@devrealm.dev',status:'在线',projects:2},
-  {name:'林晚',role:'dev',email:'linwan@devrealm.dev',status:'忙碌',projects:1},
-  {name:'周屿',role:'dev',email:'zhouyu@devrealm.dev',status:'离线',projects:2},
-  {name:'许清',role:'admin',email:'xuqing@devrealm.dev',status:'在线',projects:4}
+  {name:'陶云',role:'admin',email:'taoyun@devrealm.dev',status:'在线',projects:3,avatar:'🛡️'},
+  {name:'李承宇',role:'dev',email:'lichengyu@devrealm.dev',status:'在线',projects:2,avatar:'🎮'},
+  {name:'林晚',role:'dev',email:'linwan@devrealm.dev',status:'忙碌',projects:1,avatar:'🌙'},
+  {name:'周屿',role:'dev',email:'zhouyu@devrealm.dev',status:'离线',projects:2,avatar:'🏝️'},
+  {name:'许清',role:'admin',email:'xuqing@devrealm.dev',status:'在线',projects:4,avatar:'⚔️'}
 ];
 
 /* ================= 数据层预留（Supabase 接入点） =================
@@ -638,6 +677,26 @@ function setAuthMode(mode){
   document.getElementById('loginSub').textContent=isReg?t('register_sub'):t('login_sub');
   const sw=document.getElementById('loginSwitch');if(sw)sw.textContent=isReg?('← '+t('back_login')):(t('register')+' →');
   loginErr('');regErr('');
+  if(isReg)refreshCaptcha();
+}
+let CAPTCHA_CODE='';
+function refreshCaptcha(){
+  const cv=document.getElementById('regCaptcha');if(!cv)return;
+  const ctx=cv.getContext('2d');
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code='';for(let i=0;i<4;i++)code+=chars[Math.floor(Math.random()*chars.length)];
+  CAPTCHA_CODE=code;
+  ctx.clearRect(0,0,cv.width,cv.height);
+  ctx.fillStyle='#17142a';ctx.fillRect(0,0,cv.width,cv.height);
+  for(let i=0;i<4;i++){ctx.strokeStyle='rgba(139,92,246,.35)';ctx.beginPath();ctx.moveTo(Math.random()*cv.width,Math.random()*cv.height);ctx.lineTo(Math.random()*cv.width,Math.random()*cv.height);ctx.stroke();}
+  ctx.font='bold 22px ui-monospace,Menlo,monospace';ctx.textBaseline='middle';
+  const cols=['#c4b5fd','#22d3ee','#fbbf24','#f97316'];
+  for(let i=0;i<code.length;i++){ctx.fillStyle=cols[i];ctx.fillText(code[i],16+i*22,22);}
+  for(let i=0;i<18;i++){ctx.fillStyle='rgba(255,255,255,.15)';ctx.fillRect(Math.random()*cv.width,Math.random()*cv.height,2,2);}
+}
+function captchaOk(){
+  const v=(document.getElementById('regCaptchaInput').value||'').trim().toLowerCase();
+  return !!v && v===CAPTCHA_CODE.toLowerCase();
 }
 function toggleAuthMode(){setAuthMode(AUTH_MODE==='login'?'register':'login');}
 async function doRegister(){
@@ -647,6 +706,7 @@ async function doRegister(){
   const password=document.getElementById('regPassword').value;
   const btn=document.getElementById('regBtn');regErr('');
   if(!email||!password){regErr(t('login_empty'));return;}
+  if(!captchaOk()){regErr(t('captcha_err'));refreshCaptcha();const ci=document.getElementById('regCaptchaInput');if(ci)ci.value='';return;}
   btn.disabled=true;btn.textContent=t('login_loading');
   try{
     const {data,error}=await sbClient.auth.signUp({email,password,options:{data:{name:name||email.split('@')[0]}}});
@@ -680,7 +740,7 @@ function audit(action,target,detail){
 async function loadRemoteData(){
   if(!sbClient){const ok=await initSupabase();if(!ok||!sbClient) return;}
   try{
-    const [g,r,c,l,p,m,cm,tk,ms,sh,au]=await Promise.all([
+    const [g,r,c,l,p,m,cm,tk,ms,sh,au,pr]=await Promise.all([
       sbClient.from('games').select('*'),
       sbClient.from('resources').select('*'),
       sbClient.from('channels').select('*'),
@@ -691,7 +751,8 @@ async function loadRemoteData(){
       sbClient.from('tasks').select('*'),
       sbClient.from('messages').select('*'),
       sbClient.from('shares').select('*'),
-      sbClient.from('audit_logs').select('*')
+      sbClient.from('audit_logs').select('*'),
+      sbClient.from('projects').select('*')
     ]);
     if(!g.error&&g.data&&g.data.length){
       GAMES=g.data.map((x,i)=>({name:x.name,studio:x.studio,genre:x.genre||[],score:x.score||0,downloads:x.downloads||'0',color:COVERS[i%COVERS.length],cover:x.cover_url||COVERS[i%COVERS.length],emoji:'',desc:x.description||'',url:x.download_url||''}));
@@ -709,7 +770,7 @@ async function loadRemoteData(){
       POSTS=p.data.map(x=>{const pf=Array.isArray(x.profiles)?x.profiles[0]:x.profiles;return {id:x.id,authorId:x.author_id,cat:x.category,title:x.title,author:(pf&&pf.name)||'开发者',role:(pf&&pf.role)||'dev',time:x.created_at?String(x.created_at).replace('T',' ').slice(5,16):'',likes:x.likes||0,replies:x.replies||0,views:x.views||'0',tags:x.tags||[]};});
     }
     if(!m.error&&m.data&&m.data.length){
-      MEMBERS=m.data.map(x=>({id:x.id,authId:x.auth_id,name:x.name,role:x.role,email:x.email,status:x.status,projects:x.projects||0}));
+      MEMBERS=m.data.map(x=>({id:x.id,authId:x.auth_id,name:x.name,role:x.role,email:x.email,status:x.status,projects:x.projects||0,avatar:x.avatar}));
     }
     const ft=v=>v?String(v).slice(5,16).replace('T',' '):'';
     if(!cm.error&&cm.data){COMMENTS=cm.data.map(x=>({target_type:x.target_type,target_id:x.target_id,author_id:x.author_id,author_name:x.author_name,role:x.role,body:x.body,time:ft(x.created_at)}));}
@@ -717,6 +778,11 @@ async function loadRemoteData(){
     if(!ms.error&&ms.data){MESSAGES=ms.data.map(x=>({id:x.id,channel:x.channel,sender_name:x.sender_name,body:x.body,time:ft(x.created_at)}));}
     if(!sh.error&&sh.data){SHARES=sh.data.map(x=>({id:x.id,resource_name:x.resource_name,from_name:x.from_name,to_name:x.to_name,note:x.note,time:ft(x.created_at)}));}
     if(!au.error&&au.data){AUDIT=au.data.map(x=>({actor:x.actor,action:x.action,target:x.target,detail:x.detail,time:ft(x.created_at)}));}
+    if(!pr.error&&pr.data&&pr.data.length){
+      const remote=pr.data.map(x=>({id:x.id,name:x.name,template:x.template,code:x.code,status:x.status||'开发中',updated:ft(x.updated_at),owner:x.owner_name||''}));
+      const local=PROJECTS.filter(lp=>!remote.some(rp=>rp.id===lp.id));
+      PROJECTS=remote.concat(local);saveProjectsLocal();
+    }
   }catch(e){console.warn('Supabase 数据加载失败，已回退本地示例数据：',e);}
 }
 
@@ -771,7 +837,11 @@ zh:{
   admin_panel:'管理后台',admin_sub:'对全站内容、成员、渠道与风险进行统一管理。',admin_overview:'数据总览',admin_content:'内容管理',admin_risk:'风险预警',admin_security:'安全与漏洞',admin_audit:'审计日志',add_new:'新增',edit:'编辑',del:'删除',save:'保存',cancel:'取消',confirm_del:'确认删除这条内容？',risk_level:'级别',risk_handle:'处理',risk_resolved:'已处理',sec_check:'安全检查',audit_action:'操作',audit_actor:'操作人',coop_tasks:'任务',coop_msgs:'消息',coop_shares:'分享',
   sec_tls:'全站 HTTPS 传输加密，anonKey 仅用于公开只读。',sec_mask:'密钥脱敏',sec_mask_d:'渠道 Key 仅展示掩码，不明文回显。',sec_rls:'业务表已开启行级安全，写操作按角色校验。',sec_login:'异常登录',sec_login_d:'最近 7 天无异地登录记录（演示）。',
   register:'注册',register_title:'创建开发者账号',register_sub:'注册后自动成为普通开发者，可发帖与协作。',reg_name:'昵称',reg_submit:'注 册',back_login:'返回登录',reg_hint:'若开启了邮箱验证，请先到邮箱点击确认链接后再登录。',
-  pr_low:'低',pr_normal:'中',pr_high:'高',st_todo:'待办',st_doing:'进行中',st_done:'已完成'
+  pr_low:'低',pr_normal:'中',pr_high:'高',st_todo:'待办',st_doing:'进行中',st_done:'已完成',
+  nav_studio:'开发平台',studio_title:'开发工作台',studio_desc:'从模板起步，在浏览器里写代码、跑预览、保存你的小游戏项目。',studio_new:'新建项目',studio_empty:'还没有项目，先从一个模板开始。',
+  open_editor:'打开编辑器',delete:'删除',deleted:'已删除',proj_name:'项目名称',proj_create:'创建并打开',proj_untitled:'未命名项目',proj_saved:'项目已保存',
+  tpl_tap:'点击得分',tpl_move:'方向键移动',tpl_dodge:'躲避掉落物',code_label:'游戏代码',preview:'预览',run:'运行',stop:'停止',save:'保存',editor_idle:'点击运行开始预览',editor_running:'运行中…',editor_error:'代码报错',
+  change_avatar:'修改头像',upload_avatar:'上传图片',avatar_saved:'头像已更新',captcha_label:'图形验证',captcha_err:'验证码不正确，请重新输入'
 },
 en:{
   nav_start:'Start',nav_multiplayer:'Multiplayer',nav_tools:'Tools',nav_stats:'Stats',nav_admin:'Admin',
@@ -820,7 +890,11 @@ en:{
   admin_panel:'Admin Console',admin_sub:'Manage content, members, channels and risks across the platform.',admin_overview:'Analytics',admin_content:'Content',admin_risk:'Risk Alerts',admin_security:'Security',admin_audit:'Audit Log',add_new:'Add',edit:'Edit',del:'Delete',save:'Save',cancel:'Cancel',confirm_del:'Delete this item?',risk_level:'Level',risk_handle:'Handle',risk_resolved:'Resolved',sec_check:'Security Checks',audit_action:'Action',audit_actor:'Actor',coop_tasks:'Tasks',coop_msgs:'Messages',coop_shares:'Shares',
   sec_tls:'HTTPS encryption everywhere; the anon key is read-only.',sec_mask:'Key Masking',sec_mask_d:'Channel keys are masked and never shown in plain text.',sec_rls:'Row Level Security is enabled; writes are role-checked.',sec_login:'Suspicious Login',sec_login_d:'No remote logins in the last 7 days (demo).',
   register:'Sign up',register_title:'Create developer account',register_sub:'You will become a regular developer and can post and collaborate.',reg_name:'Display name',reg_submit:'Sign up',back_login:'Back to sign in',reg_hint:'If email confirmation is enabled, verify your inbox before signing in.',
-  pr_low:'Low',pr_normal:'Normal',pr_high:'High',st_todo:'To do',st_doing:'In progress',st_done:'Done'
+  pr_low:'Low',pr_normal:'Normal',pr_high:'High',st_todo:'To do',st_doing:'In progress',st_done:'Done',
+  nav_studio:'Studio',studio_title:'Dev Studio',studio_desc:'Start from a template, write code, preview and save your mini-game in the browser.',studio_new:'New Project',studio_empty:'No projects yet. Start from a template.',
+  open_editor:'Open Editor',delete:'Delete',deleted:'Deleted',proj_name:'Project name',proj_create:'Create & Open',proj_untitled:'Untitled',proj_saved:'Project saved',
+  tpl_tap:'Tap Score',tpl_move:'Arrow Move',tpl_dodge:'Dodge Drops',code_label:'Game Code',preview:'Preview',run:'Run',stop:'Stop',save:'Save',editor_idle:'Press Run to preview',editor_running:'Running…',editor_error:'Code error',
+  change_avatar:'Change Avatar',upload_avatar:'Upload Image',avatar_saved:'Avatar updated',captcha_label:'Captcha',captcha_err:'Wrong captcha, please try again'
 }};
 function t(k){return (I18N[S.lang]&&I18N[S.lang][k])||I18N.zh[k]||k;}
 function routeName(tab){return t('nav_'+tab);}
@@ -899,7 +973,7 @@ function openModal(html){
   document.getElementById('modalBox').innerHTML=`<button class="modal-close" onclick="closeModal()" title="${t('modal_close')}">${CLOSE_SVG}</button>`+html;
   document.getElementById('modalMask').hidden=false;
 }
-function closeModal(){document.getElementById('modalMask').hidden=true;}
+function closeModal(){stopEditor();document.getElementById('modalMask').hidden=true;}
 function docList(docs){
   return `<div class="sec-title">${t('docs_title2')}</div><div class="doc-list">${docs.map(d=>`<a class="doc-row" onclick="closeModal();go('docs')"><span class="method ${d.m.toLowerCase()}">${d.m}</span><span class="dp">${esc(d.p)}</span></a>`).join('')}</div>`;
 }
@@ -1009,7 +1083,7 @@ function openMember(name){
   if(p==='msg')body=msgPanel(m);
   else if(p==='task')body=taskPanel(m);
   else if(p==='share')body=sharePanel(m);
-  else body=`<div class="meta"><div class="avatar">${m.name.slice(0,1)}</div><b>${esc(m.name)}</b><span class="tag purple">${m.role}</span><span class="status ${m.status==='在线'?'s-online':m.status==='忙碌'?'s-busy':'s-off'}">${statusLabel(m.status)}</span></div>
+  else body=`<div class="meta">${avatarHTML(m.name,m.avatar)}<b>${esc(m.name)}</b><span class="tag purple">${m.role}</span><span class="status ${m.status==='在线'?'s-online':m.status==='忙碌'?'s-busy':'s-off'}">${statusLabel(m.status)}</span></div>
     <h2>${esc(m.name)}</h2>
     <div class="stat-row">
       <div class="m"><b>${m.email}</b><span>${t('col_email')}</span></div>
@@ -1129,6 +1203,14 @@ function go(t){
   render();
 }
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function avatarHTML(name,avatar,cls){
+  const c='avatar '+(cls||'');
+  if(avatar&&String(avatar).startsWith('data:image')){
+    return `<div class="${c} has-img" style="background-image:url(&quot;${avatar}&quot;)"></div>`;
+  }
+  const shown=avatar&&String(avatar).length<=4?avatar:String(name||'?').slice(0,1);
+  return `<div class="${c}">${esc(shown)}</div>`;
+}
 function qFilter(arr){if(!S.q)return arr;const q=S.q.toLowerCase();return arr.filter(x=>Object.values(x).join(' ').toLowerCase().includes(q))}
 
 /* ================= 视图片段 ================= */
@@ -1222,7 +1304,7 @@ function viewGames(){
 function viewUsers(){
   return `<div class="page-head"><div><h1>${t('users_title')}</h1><p>${t('users_desc')}</p></div><button class="btn btn-p" onclick="toast('邀请成员为演示占位')">${t('users_invite')}</button></div>
   <div class="card"><div class="table-wrap"><table><thead><tr><th>${t('col_member')}</th><th>${t('col_role')}</th><th>${t('col_email')}</th><th>${t('col_projects')}</th><th>${t('col_status')}</th></tr></thead><tbody>
-  ${MEMBERS.map(m=>`<tr class="clickable" data-t="${esc(m.name)}" onclick="openMember(this.dataset.t)"><td><div style="display:flex;align-items:center;gap:10px"><div class="avatar">${m.name.slice(0,1)}</div><b>${esc(m.name)}</b></div></td><td><span class="tag purple">${m.role}</span></td><td>${m.email}</td><td>${m.projects}</td><td><span class="status ${m.status==='在线'?'s-online':m.status==='忙碌'?'s-busy':'s-off'}"><i class="dot"></i>${statusLabel(m.status)}</span></td></tr>`).join('')}
+  ${MEMBERS.map(m=>`<tr class="clickable" data-t="${esc(m.name)}" onclick="openMember(this.dataset.t)"><td><div style="display:flex;align-items:center;gap:10px">${avatarHTML(m.name,m.avatar)}<b>${esc(m.name)}</b></div></td><td><span class="tag purple">${m.role}</span></td><td>${m.email}</td><td>${m.projects}</td><td><span class="status ${m.status==='在线'?'s-online':m.status==='忙碌'?'s-busy':'s-off'}"><i class="dot"></i>${statusLabel(m.status)}</span></td></tr>`).join('')}
   </tbody></table></div></div>`;
 }
 function viewRanking(){
@@ -1263,7 +1345,7 @@ function viewMonitor(){
 function viewCommunity(){
   return `<div class="feed">
     <div class="card composer">
-      <div class="avatar">${currentUser?currentUser.profile.name.slice(0,1):'?'}</div>
+      ${currentUser?avatarHTML(currentUser.profile.name,currentUser.profile.avatar):'<div class="avatar">?</div>'}
       <div class="composer-main">
         <input id="composerInput" placeholder="${t('community_placeholder')}" onkeydown="if(event.key==='Enter')submitPost()">
         <div class="composer-tools"><button class="mini" title="游戏"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 7.5h11a4.5 4.5 0 0 1 4.4 5.5c-.3 1.8-1.7 3-3.4 3-1.2 0-2-.6-2.7-1.4H8.2c-.7.8-1.5 1.4-2.7 1.4-1.7 0-3.1-1.2-3.4-3A4.5 4.5 0 0 1 6.5 7.5Z"/><path d="M9 10.5v3M7.5 12h3"/><circle cx="15.6" cy="11" r=".7" fill="currentColor" stroke="none"/><circle cx="17.3" cy="12.6" r=".7" fill="currentColor" stroke="none"/></svg></button><button class="mini" title="图片">${icon("image")}</button><button class="mini" title="代码">${icon("code")}</button><button class="mini" onclick="toggleLang()">${S.lang==='zh'?'EN':'中'}</button><button class="btn btn-p post-btn" onclick="submitPost()">${t('community_post')}</button></div>
@@ -1273,15 +1355,226 @@ function viewCommunity(){
     ${qFilter(POSTS).map(postCard).join('')}
   </div>`;
 }
+
+/* ================= 开发工作台 + 轻量编辑器 ================= */
+const PROJ_KEY='devrealm-projects';
+const TPL_TAP=`let score=0;
+const box={x:180,y:110,w:64,h:64};
+function draw(){
+  ctx.fillStyle='#17142a';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#c4b5fd';
+  ctx.fillRect(box.x,box.y,box.w,box.h);
+  ctx.fillStyle='#ffffff';
+  ctx.font='16px sans-serif';
+  ctx.fillText('score: '+score,14,26);
+}
+bindTap(function(x,y){
+  if(x>box.x&&x<box.x+box.w&&y>box.y&&y<box.y+box.h){
+    score++;
+    box.x=40+Math.random()*(canvas.width-box.w-80);
+    box.y=40+Math.random()*(canvas.height-box.h-80);
+  }
+});`;
+const TPL_MOVE=`let px=210,py=130;
+const spd=3.2;
+function update(){
+  if(keys.ArrowLeft)px-=spd;
+  if(keys.ArrowRight)px+=spd;
+  if(keys.ArrowUp)py-=spd;
+  if(keys.ArrowDown)py+=spd;
+  px=Math.max(0,Math.min(canvas.width-40,px));
+  py=Math.max(0,Math.min(canvas.height-40,py));
+}
+function draw(){
+  ctx.fillStyle='#17142a';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#22d3ee';
+  ctx.fillRect(px,py,40,40);
+}`;
+const TPL_DODGE=`let px=210,py=250;
+let drops=[];
+function update(dt){
+  if(keys.ArrowLeft)px-=3.2;
+  if(keys.ArrowRight)px+=3.2;
+  px=Math.max(0,Math.min(canvas.width-36,px));
+  if(Math.random()<0.04)drops.push({x:Math.random()*(canvas.width-20),y:-20,w:20,h:20});
+  drops.forEach(d=>d.y+=2.4);
+  drops=drops.filter(d=>d.y<canvas.height);
+}
+function draw(){
+  ctx.fillStyle='#17142a';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#f97316';
+  drops.forEach(d=>ctx.fillRect(d.x,d.y,d.w,d.h));
+  ctx.fillStyle='#22d3ee';
+  ctx.fillRect(px,py,36,26);
+  ctx.fillStyle='#fff';
+  ctx.font='15px sans-serif';
+  ctx.fillText('drops: '+drops.length,14,26);
+}`;
+const PROJECT_TEMPLATES={tap:TPL_TAP,move:TPL_MOVE,dodge:TPL_DODGE};
+let PROJECTS=loadProjectsLocal()||[
+  {id:'p-demo-1',name:'点击得分 Demo',template:'tap',code:TPL_TAP,status:'开发中',updated:'刚刚',owner:'李承宇'},
+  {id:'p-demo-2',name:'方向键移动方块',template:'move',code:TPL_MOVE,status:'预览中',updated:'2 小时前',owner:'李承宇'}
+];
+function loadProjectsLocal(){try{return JSON.parse(localStorage.getItem(PROJ_KEY))}catch(e){return null}}
+function saveProjectsLocal(){try{localStorage.setItem(PROJ_KEY,JSON.stringify(PROJECTS))}catch(e){}}
+function projectCard(p,i){
+  const tplName=t('tpl_'+p.template)||p.template;
+  return `<div class="studio-card">
+    <div class="sc-top"><div class="sc-icon">${icon('code')}</div><div><h4>${esc(p.name)}</h4><p>${esc(p.owner||'')} · ${tplName}</p></div></div>
+    <div class="studio-meta"><span class="tag purple">${esc(p.status||'开发中')}</span><span class="sub2">${esc(p.updated||'')}</span></div>
+    <div class="sc-actions">
+      <button class="btn btn-p" onclick="openEditor('${p.id}')">${t('open_editor')}</button>
+      <button class="mini-btn danger" onclick="deleteProject('${p.id}')">${t('delete')}</button>
+    </div></div>`;
+}
+function viewStudio(){
+  return `<div class="page-head"><div><h1>${t('studio_title')}</h1><p>${t('studio_desc')}</p></div>
+  <button class="btn btn-p" onclick="openNewProject()">${t('studio_new')}</button></div>
+  <div class="studio-grid">${PROJECTS.map(projectCard).join('')||`<div class="comment-empty">${t('studio_empty')}</div>`}</div>`;
+}
+function openNewProject(){
+  const opts=Object.keys(PROJECT_TEMPLATES).map(k=>`<option value="${k}">${t('tpl_'+k)}</option>`).join('');
+  openModal(`<div class="sec-title">${t('studio_new')}</div>
+  <div class="coop-form">
+    <input id="projName" placeholder="${t('proj_name')}">
+    <select id="projTpl">${opts}</select>
+    <button class="btn btn-p" onclick="createProject()">${t('proj_create')}</button>
+  </div>`);
+}
+function createProject(){
+  const name=(document.getElementById('projName').value||'').trim()||t('proj_untitled');
+  const tpl=document.getElementById('projTpl').value;
+  const proj={id:'p'+Date.now(),name,template:tpl,code:PROJECT_TEMPLATES[tpl],status:'开发中',updated:'刚刚',owner:currentUser?currentUser.profile.name:''};
+  PROJECTS.unshift(proj);saveProjectsLocal();closeModal();openEditor(proj.id);
+  audit('create','project',name);
+}
+function deleteProject(pid){
+  PROJECTS=PROJECTS.filter(x=>x.id!==pid);saveProjectsLocal();render();
+  if(sbClient){sbClient.from('projects').delete().eq('id',pid).then(({error})=>{if(error)console.warn('项目删除写库失败：',error);});}
+  toast(t('deleted'));
+}
+let editorRAF=null,editorKeys={},editorTap=null;
+function openEditor(pid){
+  const p=PROJECTS.find(x=>x.id===pid);if(!p)return;
+  S._modal={fn:'openEditor',arg:pid};
+  openModal(`<div class="sec-title">${esc(p.name)}</div>
+  <div class="editor-split">
+    <div class="editor-pane"><div class="editor-bar">${icon('code')} ${t('code_label')}</div>
+      <textarea id="editorCode" class="editor-code" spellcheck="false">${esc(p.code)}</textarea></div>
+    <div class="editor-pane"><div class="editor-bar"><span>${t('preview')}</span>
+      <button class="mini-btn" onclick="runEditor()">${t('run')}</button>
+      <button class="mini-btn" onclick="stopEditor()">${t('stop')}</button>
+      <button class="mini-btn" onclick="saveProject()">${t('save')}</button></div>
+      <div class="editor-preview"><canvas id="editorCanvas" width="480" height="300"></canvas></div>
+      <div class="editor-status" id="editorStatus">${t('editor_idle')}</div></div>
+  </div>`);
+  const cv=document.getElementById('editorCanvas');
+  cv.addEventListener('pointerdown',e=>{
+    const r=cv.getBoundingClientRect();
+    const x=(e.clientX-r.left)*cv.width/r.width;
+    const y=(e.clientY-r.top)*cv.height/r.height;
+    if(editorTap)editorTap(x,y);
+  });
+}
+function bindEditorKeys(){
+  window.addEventListener('keydown',e=>{editorKeys[e.key]=true;});
+  window.addEventListener('keyup',e=>{editorKeys[e.key]=false;});
+}
+function runEditor(){
+  const cv=document.getElementById('editorCanvas');if(!cv)return;
+  const ctx=cv.getContext('2d');
+  stopEditor();
+  const code=(document.getElementById('editorCode').value||'');
+  const keys=editorKeys,mouse={x:0,y:0,down:false};
+  const status=document.getElementById('editorStatus');
+  try{
+    const factory=new Function('canvas','ctx','keys','mouse','bindTap',
+      code+'\n;return {setup:typeof setup!=="undefined"?setup:null,update:typeof update!=="undefined"?update:null,draw:typeof draw!=="undefined"?draw:null};');
+    const hooks=factory(cv,ctx,keys,mouse,fn=>{editorTap=fn;});
+    if(hooks.setup)hooks.setup();
+    let last=performance.now();
+    const loop=(now)=>{
+      const dt=Math.min(0.05,(now-last)/1000);last=now;
+      if(hooks.update)hooks.update(dt);
+      ctx.fillStyle='#17142a';ctx.fillRect(0,0,cv.width,cv.height);
+      if(hooks.draw)hooks.draw();
+      editorRAF=requestAnimationFrame(loop);
+    };
+    editorRAF=requestAnimationFrame(loop);
+    status.className='editor-status';status.textContent=t('editor_running');
+  }catch(err){
+    stopEditor();
+    status.className='editor-status err';status.textContent=t('editor_error')+': '+err.message;
+  }
+}
+function stopEditor(){if(editorRAF)cancelAnimationFrame(editorRAF);editorRAF=null;editorTap=null;}
+function saveProject(){
+  const p=PROJECTS.find(x=>x.id===S._modal.arg);if(!p)return;
+  p.code=document.getElementById('editorCode').value;p.updated='刚刚';
+  saveProjectsLocal();
+  if(sbClient&&p.id){
+    sbClient.from('projects').upsert({id:p.id,owner_id:currentUser?currentUser.profile.id||null:null,owner_name:currentUser?currentUser.profile.name:'',name:p.name,template:p.template,code:p.code,status:p.status,updated_at:new Date().toISOString()})
+      .then(({error})=>{if(error)console.warn('项目写库失败，已保留本地：',error);});
+  }
+  audit('update','project',p.name);
+  toast(t('proj_saved'));
+}
 function viewDocs(){
   return `<div class="page-head"><div><h1>${t('docs_title')}</h1><p>${t('docs_desc')}</p></div></div>
   <div>${DOCS.map((d,i)=>`<div class="doc"><div class="h"><span class="method">${d.m}</span><span class="p">${d.p}</span></div><div class="body">${t('doc_d'+(i+1))}</div></div>`).join('')}</div>`;
 }
 function saveProfile(k,v){const p=loadPrefs();p.profile=p.profile||{};p.profile[k]=v;savePrefs(p);toast('资料已保存到本地演示')}
+
+const AVATAR_EMOJIS=['🎮','🛡️','⚔️','🌟','🐉','🚀','🎯','🔥','🌙','🏝️','🎲','👾'];
+function openAvatarPicker(){
+  const cur=currentUser?currentUser.profile.avatar:'';
+  const grid=AVATAR_EMOJIS.map(e=>`<button class="${e===cur?'on':''}" onclick="pickEmojiAvatar('${e}')">${e}</button>`).join('');
+  openModal(`<div class="avatar-pick">
+    ${currentUser?avatarHTML(currentUser.profile.name,currentUser.profile.avatar,'big'):'<div class="avatar big">?</div>'}
+    <div style="flex:1;min-width:220px">
+      <div class="avatar-actions">
+        <button class="btn" onclick="document.getElementById('avatarFile').click()">${t('upload_avatar')}</button>
+        <input type="file" id="avatarFile" accept="image/*" hidden onchange="onAvatarFile(event)">
+      </div>
+      <div class="avatar-grid">${grid}</div>
+    </div></div>`);
+}
+function pickEmojiAvatar(e){saveAvatar(e);closeModal();}
+function onAvatarFile(ev){
+  const f=ev.target.files&&ev.target.files[0];if(!f)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    const img=new Image();
+    img.onload=()=>{
+      const size=96;const c=document.createElement('canvas');c.width=c.height=size;
+      const ctx=c.getContext('2d');
+      const r=Math.min(img.width,img.height);const sx=(img.width-r)/2,sy=(img.height-r)/2;
+      ctx.drawImage(img,sx,sy,r,r,0,0,size,size);
+      saveAvatar(c.toDataURL('image/png'));closeModal();
+    };
+    img.src=reader.result;
+  };
+  reader.readAsDataURL(f);
+}
+async function saveAvatar(avatar){
+  if(!currentUser){toast('请先登录');return;}
+  currentUser.profile.avatar=avatar;
+  const prefs=loadPrefs();prefs.profile=prefs.profile||{};prefs.profile.avatar=avatar;savePrefs(prefs);
+  updateTopUser();render();
+  if(sbClient&&currentUser.profile.id){
+    const {error}=await sbClient.from('profiles').update({avatar}).eq('id',currentUser.profile.id);
+    if(error){console.warn('头像写库失败，已保留本地：',error);}
+  }
+  audit('update','profile','修改头像');
+  toast(t('avatar_saved'));
+}
 function viewSettings(){
   const prefs=loadPrefs();const pf=prefs.profile||{};
   return `<div class="page-head"><div><h1>${t('settings_title')}</h1><p>${t('settings_desc')}</p></div></div>
-  <div class="layout-main" style="grid-template-columns:1fr 1fr"><div class="card"><div class="card-h"><h3>${t('settings_profile')}</h3></div><div class="card-b"><div class="form-grid">
+  <div class="layout-main" style="grid-template-columns:1fr 1fr"><div class="card"><div class="card-h"><h3>${t('settings_profile')}</h3></div><div class="card-b"><div class="avatar-pick" style="margin-bottom:16px">${currentUser?avatarHTML(currentUser.profile.name,currentUser.profile.avatar,'big'):'<div class="avatar big">?</div>'}<div><b>${currentUser?esc(currentUser.profile.name):t('guest')}</b><div class="avatar-actions"><button class="btn" onclick="openAvatarPicker()">${t('change_avatar')}</button></div></div></div><div class="form-grid">
     <label class="field"><span>${t('field_studio')}</span><input value="${esc(pf.studio||'陶云工作室')}" onchange="saveProfile('studio',this.value)"></label>
     <label class="field"><span>${t('field_name')}</span><input value="${esc(pf.name||'陶云')}" onchange="saveProfile('name',this.value)"></label>
     <label class="field"><span>${t('field_email')}</span><input value="${esc(pf.email||'taoyun@devrealm.dev')}" onchange="saveProfile('email',this.value)"></label>
@@ -1462,19 +1755,22 @@ function renderRail(){
 }
 function render(){
   if(S.tab==='admin'&&!isAdmin()){S.tab='overview';}
-  const map={overview:viewOverview,games:viewGames,users:viewUsers,ranking:viewRanking,api:viewApi,assets:viewAssets,link:viewLink,monitor:viewMonitor,community:viewCommunity,docs:viewDocs,settings:viewSettings,admin:viewAdmin};
+  const map={overview:viewOverview,games:viewGames,users:viewUsers,ranking:viewRanking,api:viewApi,assets:viewAssets,link:viewLink,monitor:viewMonitor,community:viewCommunity,docs:viewDocs,settings:viewSettings,studio:viewStudio,admin:viewAdmin};
   document.getElementById('content').innerHTML=(map[S.tab]||viewOverview)();
   renderRail();
 }
 document.getElementById('globalSearch').addEventListener('input',e=>{S.q=e.target.value.trim();render()});
 function updateTopUser(){
   const el=document.querySelector('.top-user');if(!el)return;
-  const avatar=el.querySelector('.avatar'),b=el.querySelector('.meta b'),span=el.querySelector('.meta span');
+  const b=el.querySelector('.meta b'),span=el.querySelector('.meta span');
   if(currentUser&&currentUser.profile){
     const p=currentUser.profile;
-    avatar.textContent=(p.name||'开').slice(0,1);b.textContent=p.name;span.textContent=p.role==='admin'?t('role_admin'):t('role_dev');
+    const old=el.querySelector('.avatar');
+    old.insertAdjacentHTML('beforebegin',avatarHTML(p.name,p.avatar));old.remove();
+    b.textContent=p.name;span.textContent=p.role==='admin'?t('role_admin'):t('role_dev');
   }else{
-    avatar.textContent='?';b.textContent=t('guest');span.textContent=t('guest');
+    const av=el.querySelector('.avatar');if(av){av.classList.remove('has-img');av.style.backgroundImage='';av.textContent='?';}
+    b.textContent=t('guest');span.textContent=t('guest');
   }
 }
 async function boot(){
@@ -1487,6 +1783,7 @@ async function boot(){
     await applySession(session);
     sbClient.auth.onAuthStateChange((_e,ses)=>{applySession(ses);updateTopUser();});
   }
+  bindEditorKeys();
   await loadRemoteData();
   buildNav();updateNotifBadge();updateTopUser();
   showLoginMask(!currentUser);

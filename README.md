@@ -18,7 +18,8 @@ devrealm-platform/
 ├── .gitignore
 ├── schema.sql              # Supabase（Postgres）基础建表脚本与 RLS 预留
 ├── seed.sql                # 演示示例数据导入脚本（建表后执行）
-└── migration_v2.sql         # 二期迁移：评论/任务/消息/分享/审计表、RLS、管理员函数与注册自动建档触发器
+├── migration_v2.sql         # 二期迁移：评论/任务/消息/分享/审计表、RLS、管理员函数与注册自动建档触发器
+└── migration_v3.sql         # 三期迁移：工作台项目表 projects、profiles 头像字段与对应 RLS
 ```
 
 ## 本地运行
@@ -52,7 +53,7 @@ npx serve .
 
 ## 接入 Supabase
 
-1. 在 Supabase 新建项目，打开 SQL Editor，先执行 `schema.sql` 完成基础建表；再执行 `migration_v2.sql` 补齐二期表与策略；需要演示数据时最后执行 `seed.sql` 灌入示例数据。
+1. 在 Supabase 新建项目，打开 SQL Editor，先执行 `schema.sql` 完成基础建表；再依次执行 `migration_v2.sql`、`migration_v3.sql` 补齐各期表与策略；需要演示数据时最后执行 `seed.sql` 灌入示例数据。
 2. 在 `index.html` 的 `SUPABASE_CONFIG` 中填入项目 URL 与 `anonKey`：
    ```js
    const SUPABASE_CONFIG = { url: 'https://<project>.supabase.co', anonKey: '<anon-key>' };
@@ -83,9 +84,11 @@ npx serve .
 - 邮箱密码登录 / 登出与会话恢复；顶部身份按当前登录用户回填；发帖写入 `posts`、点赞更新 `posts.likes`、渠道开关更新 `channels.enabled`，均经 RLS 校验后回写数据库。
 - 详情弹窗含项目说明、开发文档、下载链接与评论区；评论写入 `comments`，成员协作的消息、任务、资源分享分别写入 `messages / tasks / shares`，管理员操作记入 `audit_logs`。
 - 管理员独立后台：数据总览、游戏 / 帖子 / 资源 / 成员 / 渠道五类内容的新增、编辑、删除，风险预警由 WARN / ERROR 日志生成；登录后按 `role` 分流，管理员进后台、开发者进概览。
-- 自助注册开放：注册成功经触发器自动建档为普通开发者（`role = dev`）。
+- 自助注册开放：注册成功经触发器自动建档为普通开发者（`role = dev`）；注册表单带前端图形验证码（canvas 字符 + 干扰线），校验通过才可提交。
+- 开发工作台：从模板（点击得分 / 方向键移动 / 躲避掉落物）新建项目，内置代码编辑区与 Canvas 实时预览，可运行、停止、保存，项目写入 `projects` 表。
+- 头像可修改：支持上传本地图片（压缩为小尺寸 dataURL）或从内置头像库挑选，写入 `profiles.avatar`，顶部、成员列表与评论等处统一展示。
 
 仍为演示占位：
 
-- 头像 / 封面图上传、2FA、找回密码、列表高级筛选等为演示占位；后台新增记录时图片字段沿用内置占位封面。
+- 作品封面图上传、2FA、找回密码、列表高级筛选等为演示占位；后台新增记录时图片字段沿用内置占位封面。
 - 点赞未做跨设备防重复，仅按浏览器本地状态记录是否已赞。
