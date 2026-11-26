@@ -444,6 +444,8 @@ pre{margin:0;padding:16px;font-family:ui-monospace,monospace;font-size:11.5px;li
 .viewport-3d{position:relative;min-height:380px;background:#0f0d1d;border-radius:14px;overflow:hidden}
 .viewport-3d canvas{display:block}
 .viewport-hint{position:absolute;left:10px;bottom:8px;font-size:10.5px;color:var(--sub2);pointer-events:none}
+#e3dFade{position:absolute;inset:0;background:#0f0d1d;opacity:0;pointer-events:none;transition:opacity .18s;z-index:5}
+#e3dFade.on{opacity:1}
 </style>
 </head>
 <body>
@@ -868,7 +870,7 @@ zh:{
   e3d_shape:'形状',e3d_mat:'材质',e3d_rough:'粗糙度',e3d_metal:'金属度',e3d_body:'刚体',e3d_static:'静态',e3d_dynamic:'动态',e3d_phys:'物理',e3d_phys_run:'运行物理',e3d_phys_stop:'停止物理',e3d_phys_err:'物理引擎加载失败，请检查网络',
   mesh_box:'立方体',mesh_sphere:'球体',mesh_plane:'平面',mesh_cylinder:'圆柱',mesh_cone:'圆锥',mesh_torus:'圆环',mesh_tetra:'四面体',
   mat_standard:'标准',mat_basic:'基础',mat_wire:'线框',
-  e3d_anim:'动画',anim_none:'无',anim_spin:'自转',anim_float:'浮动',anim_track:'关键帧轨道',anim_model:'模型动画',e3d_track:'关键帧',e3d_track_len:'时长(秒)',e3d_track_add:'记录当前姿态',e3d_track_empty:'还没有关键帧，点按钮记录',e3d_state_idle:'待机',e3d_state_move:'移动',e3d_state_jump:'跳跃',e3d_state_run:'冲刺',e3d_state_climb:'攀爬',e3d_state_none:'不使用',e3d_ease:'缓动',e3d_ease_smooth:'平滑',e3d_ease_linear:'线性',e3d_ease_in:'缓入',e3d_ease_out:'缓出',e3d_overlay:'上层动画',e3d_overlay_w:'混合权重',e3d_root_motion:'根运动跟随',e3d_import_model:'导入模型(.glb/.fbx)',e3d_move_hint:'WASD / 方向键移动，Shift 冲刺，空格跳跃，E 攀爬',e3d_export_local:'导出本地工程',e3d_desktop_only:'仅桌面应用可用此功能',e3d_exported:'已导出到本地文件',e3d_browse_res:'浏览本地资源',e3d_export_web:'导出 Web 版本',e3d_web_ok:'已生成可独立打开的网页版本',
+  e3d_anim:'动画',anim_none:'无',anim_spin:'自转',anim_float:'浮动',anim_track:'关键帧轨道',anim_model:'模型动画',e3d_track:'关键帧',e3d_track_len:'时长(秒)',e3d_track_add:'记录当前姿态',e3d_track_empty:'还没有关键帧，点按钮记录',e3d_state_idle:'待机',e3d_state_move:'移动',e3d_state_jump:'跳跃',e3d_state_run:'冲刺',e3d_state_climb:'攀爬',e3d_state_none:'不使用',e3d_ease:'缓动',e3d_ease_smooth:'平滑',e3d_ease_linear:'线性',e3d_ease_in:'缓入',e3d_ease_out:'缓出',e3d_ease_bezier:'贝塞尔',e3d_handle_in:'入手柄',e3d_handle_out:'出手柄',e3d_overlay:'上层动画',e3d_overlay_w:'混合权重',e3d_root_motion:'根运动跟随',e3d_layer:'分层',e3d_layer_full:'全身',e3d_layer_upper:'上身',e3d_layer_lower:'下身',e3d_copy_to:'复制到',e3d_copy:'复制',e3d_copied:'已复制到目标场景',e3d_import_model:'导入模型(.glb/.fbx)',e3d_move_hint:'WASD / 方向键移动，Shift 冲刺，空格跳跃，E 攀爬',e3d_export_local:'导出本地工程',e3d_desktop_only:'仅桌面应用可用此功能',e3d_exported:'已导出到本地文件',e3d_browse_res:'浏览本地资源',e3d_export_web:'导出 Web 版本',e3d_web_ok:'已生成可独立打开的网页版本',
   change_avatar:'修改头像',upload_avatar:'上传图片',avatar_saved:'头像已更新',captcha_label:'图形验证',captcha_err:'验证码不正确，请重新输入'
 },
 en:{
@@ -926,7 +928,7 @@ en:{
   e3d_shape:'Shape',e3d_mat:'Material',e3d_rough:'Roughness',e3d_metal:'Metalness',e3d_body:'Rigid body',e3d_static:'Static',e3d_dynamic:'Dynamic',e3d_phys:'Physics',e3d_phys_run:'Run Physics',e3d_phys_stop:'Stop Physics',e3d_phys_err:'Failed to load physics engine, check your network',
   mesh_box:'Box',mesh_sphere:'Sphere',mesh_plane:'Plane',mesh_cylinder:'Cylinder',mesh_cone:'Cone',mesh_torus:'Torus',mesh_tetra:'Tetrahedron',
   mat_standard:'Standard',mat_basic:'Basic',mat_wire:'Wireframe',
-  e3d_anim:'Animation',anim_none:'None',anim_spin:'Spin',anim_float:'Float',anim_track:'Keyframe Track',anim_model:'Model Clip',e3d_track:'Keyframes',e3d_track_len:'Duration (s)',e3d_track_add:'Record Current Pose',e3d_track_empty:'No keyframes yet — click to record',e3d_state_idle:'Idle',e3d_state_move:'Move',e3d_state_jump:'Jump',e3d_state_run:'Run',e3d_state_climb:'Climb',e3d_state_none:'None',e3d_ease:'Easing',e3d_ease_smooth:'Smooth',e3d_ease_linear:'Linear',e3d_ease_in:'Ease-in',e3d_ease_out:'Ease-out',e3d_overlay:'Overlay Clip',e3d_overlay_w:'Blend Weight',e3d_root_motion:'Root Motion',e3d_import_model:'Import Model (.glb/.fbx)',e3d_move_hint:'WASD / arrows move, Shift sprint, Space jump, E climb',e3d_export_local:'Export Local Project',e3d_desktop_only:'Only available in the desktop app',e3d_exported:'Exported to a local file',e3d_browse_res:'Browse Local Assets',e3d_export_web:'Export Web Build',e3d_web_ok:'Standalone web build generated',
+  e3d_anim:'Animation',anim_none:'None',anim_spin:'Spin',anim_float:'Float',anim_track:'Keyframe Track',anim_model:'Model Clip',e3d_track:'Keyframes',e3d_track_len:'Duration (s)',e3d_track_add:'Record Current Pose',e3d_track_empty:'No keyframes yet — click to record',e3d_state_idle:'Idle',e3d_state_move:'Move',e3d_state_jump:'Jump',e3d_state_run:'Run',e3d_state_climb:'Climb',e3d_state_none:'None',e3d_ease:'Easing',e3d_ease_smooth:'Smooth',e3d_ease_linear:'Linear',e3d_ease_in:'Ease-in',e3d_ease_out:'Ease-out',e3d_ease_bezier:'Bezier',e3d_handle_in:'In',e3d_handle_out:'Out',e3d_overlay:'Overlay Clip',e3d_overlay_w:'Blend Weight',e3d_root_motion:'Root Motion',e3d_layer:'Layer',e3d_layer_full:'Full',e3d_layer_upper:'Upper',e3d_layer_lower:'Lower',e3d_copy_to:'Copy to',e3d_copy:'Copy',e3d_copied:'Copied to target scene',e3d_import_model:'Import Model (.glb/.fbx)',e3d_move_hint:'WASD / arrows move, Shift sprint, Space jump, E climb',e3d_export_local:'Export Local Project',e3d_desktop_only:'Only available in the desktop app',e3d_exported:'Exported to a local file',e3d_browse_res:'Browse Local Assets',e3d_export_web:'Export Web Build',e3d_web_ok:'Standalone web build generated',
   change_avatar:'Change Avatar',upload_avatar:'Upload Image',avatar_saved:'Avatar updated',captcha_label:'Captcha',captcha_err:'Wrong captcha, please try again'
 }};
 function t(k){return (I18N[S.lang]&&I18N[S.lang][k])||I18N.zh[k]||k;}
@@ -1629,7 +1631,7 @@ function openEditor3d(p){
         <button class="mini-btn" id="e3dPhysBtn" onclick="e3dTogglePhys()">${t('e3d_phys_run')}</button></div>
       <div class="entity-list" id="e3dList"></div>
     </div>
-    <div class="viewport-3d" id="e3dViewport"><div class="viewport-hint" id="e3dHint">${t('e3d_hint')}</div></div>
+    <div class="viewport-3d" id="e3dViewport"><div class="viewport-hint" id="e3dHint">${t('e3d_hint')}</div><div id="e3dFade"></div></div>
     <div class="editor-pane">
       <div class="editor-bar">${t('e3d_props')}</div>
       <div style="padding:12px" id="e3dProps"></div>
@@ -1812,15 +1814,29 @@ function render3dSceneSel(){
   el.innerHTML=g3d.data.scenes.map((s,i)=>`<option value="${i}" ${i===g3d.sceneIdx?'selected':''}>${esc(s.name||('场景 '+(i+1)))}</option>`).join('');
 }
 function e3dSwitchScene(idx){
-  g3d.sceneIdx=parseInt(idx,10)||0;
-  if(g3d.three){
-    g3d.three.entities.forEach(rec=>{g3d.three.scene.remove(rec.mesh);if(rec.mesh.geometry)rec.mesh.geometry.dispose();if(rec.mesh.material)rec.mesh.material.dispose();});
-    g3d.three.entities.clear();
-  }
-  if(g3d.phys)stopPhys();
-  curEntities().forEach(buildEnt);
-  g3d.selectedId=curEntities()[0]?curEntities()[0].id:null;
-  render3dSceneSel();render3dList();render3dProps();render3dTexs();
+  idx=parseInt(idx,10)||0;
+  const fade=document.getElementById('e3dFade');
+  const apply=()=>{
+    g3d.sceneIdx=idx;
+    if(g3d.three){
+      g3d.three.entities.forEach(rec=>{g3d.three.scene.remove(rec.mesh);if(rec.mesh.geometry)rec.mesh.geometry.dispose();if(rec.mesh.material)rec.mesh.material.dispose();});
+      g3d.three.entities.clear();
+    }
+    if(g3d.phys)stopPhys();
+    curEntities().forEach(buildEnt);
+    g3d.selectedId=curEntities()[0]?curEntities()[0].id:null;
+    render3dSceneSel();render3dList();render3dProps();render3dTexs();
+    if(fade)fade.classList.remove('on');
+  };
+  if(fade){fade.classList.add('on');setTimeout(apply,180);}else apply();
+}
+function e3dCopyToScene(idx){
+  const ent=selEnt();if(!ent)return;
+  const target=g3d.data.scenes[idx];if(!target)return;
+  const copy=JSON.parse(JSON.stringify(ent));
+  copy.id='e'+Date.now();copy.name=ent.name+' 副本';
+  target.entities.push(copy);
+  toast(t('e3d_copied'));
 }
 function e3dAddScene(){
   const n=g3d.data.scenes.length+1;
@@ -1849,8 +1865,11 @@ function render3dProps(){
   const ovOpts=[['-1',t('e3d_state_none')]].concat(clips.map((c,i)=>[''+i,c.name||('Clip '+(i+1))]));
   const overlayBlock=clips.length&&ent.anim==='model'?`
     <div class="prop-row"><span>${t('e3d_overlay')}</span><select onchange="e3dSetOverlayClip(this.value)">${ovOpts.map(o=>`<option value="${o[0]}" ${ovCur===+o[0]?'selected':''}>${o[1]}</option>`).join('')}</select></div>
+    <div class="prop-row"><span>${t('e3d_layer')}</span><select onchange="e3dSetOverlayLayer(this.value)">${[['full',t('e3d_layer_full')],['upper',t('e3d_layer_upper')],['lower',t('e3d_layer_lower')]].map(o=>`<option value="${o[0]}" ${(ent.overlayLayer||'full')===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select></div>
     <div class="prop-row"><span>${t('e3d_overlay_w')}</span><input type="range" min="0" max="1" step="0.05" value="${ent.overlayWeight==null?0.5:ent.overlayWeight}" oninput="e3dSetOverlayWeight(this.value)"></div>
     <div class="prop-row"><span>${t('e3d_root_motion')}</span><input type="checkbox" ${ent.rootMotion?'checked':''} onchange="e3dSetRootMotion(this.checked)"></div>`:'';
+  const copyOpts=g3d.data.scenes.map((s,i)=>[i,s.name||('场景 '+(i+1))]).filter(o=>o[0]!==g3d.sceneIdx);
+  const copyBlock=copyOpts.length?`<div class="prop-row"><span>${t('e3d_copy_to')}</span><select id="e3dCopySel">${copyOpts.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join('')}</select><button class="mini-btn" onclick="e3dCopyToScene(document.getElementById('e3dCopySel').value)">${t('e3d_copy')}</button></div>`:'';
   el.innerHTML=`
     ${sel(t('e3d_shape'),ent.mesh,meshOpts,`e3dSetMesh(this.value)`)}
     ${row(t('e3d_pos')+' X',p[0],`e3dProp('position',0,this.value)`)}
@@ -1866,6 +1885,7 @@ function render3dProps(){
     ${sel(t('e3d_anim'),animVal,animOpts,`e3dSetAnim(this.value)`)}
     ${stateBlock}
     ${overlayBlock}
+    ${copyBlock}
     <div class="prop-row"><span>${t('e3d_color')}</span><input type="color" value="${esc(ent.color||'#888888')}" oninput="e3dColor(this.value)"></div>
     ${ent.anim==='track'||(ent.tracks&&ent.tracks.length)?`
     <div class="sec-title" style="margin-top:10px">${t('e3d_track')}</div>
@@ -1873,7 +1893,7 @@ function render3dProps(){
     <div class="prop-row"><span>${t('e3d_ease')}</span><select onchange="e3dSetEase(this.value)"><option value="smooth" ${ent.ease!=='linear'?'selected':''}>${t('e3d_ease_smooth')}</option><option value="linear" ${ent.ease==='linear'?'selected':''}>${t('e3d_ease_linear')}</option></select></div>
     <button class="mini-btn" onclick="e3dTrackAdd()">${t('e3d_track_add')}</button>
     <div class="track-bar" id="e3dTrackBar">${(ent.tracks||[]).map((k,i)=>`<div class="track-dot" data-i="${i}" style="left:${(Math.min(1,k.t/(ent.trackLen||3))*100).toFixed(1)}%" onpointerdown="e3dTrackDragStart(event,${i})"></div>`).join('')}</div>
-    <div class="track-list">${(ent.tracks||[]).map((k,i)=>{const ez=k.ease||ent.ease||'smooth';const eo=[['smooth',t('e3d_ease_smooth')],['linear',t('e3d_ease_linear')],['in',t('e3d_ease_in')],['out',t('e3d_ease_out')]].map(o=>`<option value="${o[0]}" ${ez===o[0]?'selected':''}>${o[1]}</option>`).join('');return `<div class="track-item"><span>#${i+1} · ${k.t.toFixed(1)}s</span><select onchange="e3dTrackEase(${i},this.value)">${eo}</select><button class="mini-btn danger" onclick="e3dTrackDel(${i})">${t('delete')}</button></div>`;}).join('')||`<div class="comment-empty">${t('e3d_track_empty')}</div>`}</div>
+    <div class="track-list">${(ent.tracks||[]).map((k,i)=>{const ez=k.ease||ent.ease||'smooth';const eo=[['smooth',t('e3d_ease_smooth')],['linear',t('e3d_ease_linear')],['in',t('e3d_ease_in')],['out',t('e3d_ease_out')],['bezier',t('e3d_ease_bezier')]].map(o=>`<option value="${o[0]}" ${ez===o[0]?'selected':''}>${o[1]}</option>`).join('');const h1=k.bx1==null?0.42:k.bx1,h2=k.bx2==null?0.58:k.bx2;const sub=ez==='bezier'?`<div class="track-item"><span>${t('e3d_handle_in')}</span><input type="range" min="0" max="1" step="0.05" value="${h1}" oninput="e3dTrackHandle(${i},'bx1',this.value)"><span>${t('e3d_handle_out')}</span><input type="range" min="0" max="1" step="0.05" value="${h2}" oninput="e3dTrackHandle(${i},'bx2',this.value)"></div>`:'';return `<div><div class="track-item"><span>#${i+1} · ${k.t.toFixed(1)}s</span><select onchange="e3dTrackEase(${i},this.value)">${eo}</select><button class="mini-btn danger" onclick="e3dTrackDel(${i})">${t('delete')}</button></div>${sub}</div>`;}).join('')||`<div class="comment-empty">${t('e3d_track_empty')}</div>`}</div>
     `:''}`;
 }
 function e3dProp(field,idx,val){
@@ -1914,6 +1934,7 @@ function e3dSetBody(body){const ent=selEnt();if(ent)ent.body=body;}
 function e3dTrackLen(val){const ent=selEnt();if(!ent)return;ent.trackLen=parseFloat(val)||3;}
 function e3dSetStateClip(key,val){const ent=selEnt();if(!ent)return;ent.stateClips=ent.stateClips||{};ent.stateClips[key]=parseInt(val,10);}
 function e3dSetOverlayClip(v){const ent=selEnt();if(!ent)return;ent.overlayClip=parseInt(v,10);}
+function e3dSetOverlayLayer(v){const ent=selEnt();if(!ent)return;ent.overlayLayer=v;}
 function e3dSetOverlayWeight(v){const ent=selEnt();if(!ent)return;ent.overlayWeight=parseFloat(v);}
 function e3dSetRootMotion(c){const ent=selEnt();if(!ent)return;ent.rootMotion=!!c;}
 function e3dTrackAdd(){
@@ -1931,13 +1952,30 @@ function e3dTrackAdd(){
 }
 function e3dTrackDel(i){const ent=selEnt();if(!ent||!ent.tracks)return;ent.tracks.splice(i,1);render3dProps();}
 function e3dTrackEase(i,val){const ent=selEnt();if(!ent||!ent.tracks[i])return;ent.tracks[i].ease=val;render3dProps();}
-function easeFn(type,k){
+function e3dTrackHandle(i,key,val){const ent=selEnt();if(!ent||!ent.tracks[i])return;ent.tracks[i][key]=parseFloat(val);}
+function cubicBezier(x1,y1,x2,y2){
+  const cx=3*x1,bx=3*(x2-x1)-cx,ax=1-cx-bx;
+  const cy=3*y1,by=3*(y2-y1)-cy,ay=1-cy-by;
+  const sx=t=>((ax*t+bx)*t+cx)*t, sy=t=>((ay*t+by)*t+cy)*t, dx=t=>(3*ax*t+2*bx)*t+cx;
+  return x=>{let t=x;for(let i=0;i<6;i++){const d=dx(t);if(Math.abs(d)<1e-4)break;t-=(sx(t)-x)/d;}return sy(Math.max(0,Math.min(1,t)));};
+}
+function easeFn(type,k,frame){
   switch(type){
     case 'linear':return k;
     case 'in':return k*k;
     case 'out':return 1-(1-k)*(1-k);
+    case 'bezier':{const f=cubicBezier(frame&&frame.bx1!=null?frame.bx1:0.42,frame&&frame.bx1!=null?frame.bx1:0.42,frame&&frame.bx2!=null?frame.bx2:0.58,frame&&frame.bx2!=null?frame.bx2:0.58);return f(k);}
     default:return k*k*(3-2*k);
   }
+}
+function filterClip(clip,mode){
+  if(!clip||mode==='full')return clip;
+  const up=/spine|chest|neck|head|shoulder|arm|hand|finger|collar|upperarm|forearm/i;
+  const lo=/hip|leg|thigh|calf|foot|toe|knee|shin|pelvis/i;
+  const re=mode==='upper'?up:lo;
+  const tracks=(clip.tracks||[]).filter(tr=>re.test(tr.name));
+  if(typeof clip.clone==='function'){const c=clip.clone();c.tracks=tracks;return c;}
+  return {name:clip.name,duration:clip.duration,tracks};
 }
 function e3dSetEase(val){const ent=selEnt();if(!ent)return;ent.ease=val;}
 function e3dTrackDragStart(ev,i){
@@ -2124,7 +2162,9 @@ function buildExportHtml(sceneJson,name){
 #overlay.hide{opacity:0}
 #sceneSel,#helpBtn{position:fixed;top:12px;z-index:10;background:#1c1830;color:#fff;border:1px solid #3a3355;border-radius:8px;padding:6px 10px;font-size:13px}
 #help{position:fixed;left:12px;bottom:12px;z-index:10;max-width:280px;background:rgba(20,17,38,.92);border:1px solid #3a3355;border-radius:12px;padding:14px;color:#ddd;font-size:12px;line-height:1.7}
-#help h3{margin:0 0 6px;color:#c4b5fd}#help.hide{display:none}</style>
+#help h3{margin:0 0 6px;color:#c4b5fd}#help.hide{display:none}
+#stick{position:fixed;left:18px;bottom:18px;width:96px;height:96px;border-radius:50%;background:rgba(28,24,48,.6);border:1px solid #3a3355;z-index:10;touch-action:none}
+#stickNub{position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:#c4b5fd}</style>
 <script src="https://fastly.jsdelivr.net/npm/three@0.147.0/build/three.min.js"><\/script>
 <script src="https://fastly.jsdelivr.net/npm/three@0.147.0/examples/js/loaders/GLTFLoader.js"><\/script>
 <script src="https://fastly.jsdelivr.net/npm/fflate@0.7.4/umd/index.js"><\/script>
@@ -2133,6 +2173,7 @@ function buildExportHtml(sceneJson,name){
 <div id="overlay"><h1>${title}</h1><p>DEVREALM SCENE</p></div>
 <select id="sceneSel"></select>
 <button id="helpBtn">?</button>
+<div id="stick"><div id="stickNub"></div></div>
 <div id="help" class="hide"><h3>操作说明</h3><p>本预览为自动环绕播放。<br>编辑器内：WASD / 方向键移动，Shift 冲刺，空格跳跃，贴近墙面按 E 攀爬。<br>本页面不含物理与编辑功能。</p></div>
 <script id="scene" type="application/json">${safe}<\/script>
 <script>
@@ -2162,7 +2203,8 @@ function buf(url){const b64=String(url).split(',')[1];const bin=atob(b64),ab=new
 const scenes=Array.isArray(data.scenes)?data.scenes:[{name:'Scene',entities:data.entities||[]}];
 let recs=[];
 function clearRecs(){recs.forEach(r=>{scene.remove(r.mesh);});recs=[];}
-function easeFn(type,k){switch(type){case 'linear':return k;case 'in':return k*k;case 'out':return 1-(1-k)*(1-k);default:return k*k*(3-2*k);}}
+function cubicBezier(x1,y1,x2,y2){const cx=3*x1,bx=3*(x2-x1)-cx,ax=1-cx-bx;const cy=3*y1,by=3*(y2-y1)-cy,ay=1-cy-by;const sx=t=>((ax*t+bx)*t+cx)*t,sy=t=>((ay*t+by)*t+cy)*t,dx=t=>(3*ax*t+2*bx)*t+cx;return x=>{let t=x;for(let i=0;i<6;i++){const d=dx(t);if(Math.abs(d)<1e-4)break;t-=(sx(t)-x)/d;}return sy(Math.max(0,Math.min(1,t)));};}
+function easeFn(type,k,frame){switch(type){case 'linear':return k;case 'in':return k*k;case 'out':return 1-(1-k)*(1-k);case 'bezier':{const f=cubicBezier(frame&&frame.bx1!=null?frame.bx1:0.42,frame&&frame.bx1!=null?frame.bx1:0.42,frame&&frame.bx2!=null?frame.bx2:0.58,frame&&frame.bx2!=null?frame.bx2:0.58);return f(k);}default:return k*k*(3-2*k);}}
 function buildEntity(e){
   const mesh=new THREE.Mesh(geo(e.mesh),mat(e));
   mesh.position.fromArray(e.position||[0,0,0]);mesh.scale.fromArray(e.scale||[1,1,1]);
@@ -2188,19 +2230,35 @@ function loadScene(idx){clearRecs();(scenes[idx].entities||[]).forEach(buildEnti
 const sel=document.getElementById('sceneSel');
 if(sel){scenes.forEach((s,i)=>{const o=document.createElement('option');o.value=i;o.textContent=s.name||('Scene '+(i+1));sel.appendChild(o);});sel.onchange=()=>loadScene(+sel.value);}
 loadScene(0);
+const cam={theta:0.6,phi:1.1,radius:8};
+const stick={x:0,y:0,active:false};
+const stickEl=document.getElementById('stick'),nub=document.getElementById('stickNub');
+if(stickEl){
+  const R=40;
+  const setStick=e=>{const r=stickEl.getBoundingClientRect();let dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2);const m=Math.hypot(dx,dy)||1;if(m>R){dx=dx/m*R;dy=dy/m*R;}stick.x=dx/R;stick.y=dy/R;if(nub)nub.style.transform='translate('+dx+'px,'+dy+'px)';};
+  stickEl.addEventListener('pointerdown',e=>{stick.active=true;stickEl.setPointerCapture(e.pointerId);setStick(e);});
+  stickEl.addEventListener('pointermove',e=>{if(stick.active)setStick(e);});
+  const release=()=>{stick.active=false;stick.x=0;stick.y=0;if(nub)nub.style.transform='translate(0,0)';};
+  stickEl.addEventListener('pointerup',release);stickEl.addEventListener('pointercancel',release);
+}
 const helpBtn=document.getElementById('helpBtn'),help=document.getElementById('help');
 if(helpBtn&&help)helpBtn.onclick=()=>help.classList.toggle('hide');
 let last=performance.now(),trackTime=0;
 function loop(){
   requestAnimationFrame(loop);
   const now=performance.now();const dt=Math.min(0.05,(now-last)/1000);last=now;trackTime+=dt;
-  camera.position.set(Math.sin(now/4000)*8,4,Math.cos(now/4000)*8);camera.lookAt(0,1,0);
+  if(stick.active){cam.theta+=stick.x*dt*2.2;cam.phi=Math.max(0.25,Math.min(1.45,cam.phi+stick.y*dt*2.2));}
+  else cam.theta+=dt*0.15;
+  const cx=cam.radius*Math.sin(cam.phi)*Math.sin(cam.theta);
+  const cy=cam.radius*Math.cos(cam.phi);
+  const cz=cam.radius*Math.sin(cam.phi)*Math.cos(cam.theta);
+  camera.position.set(cx,cy+1,cz);camera.lookAt(0,1,0);
   recs.forEach(rec=>{const e=rec.data;
     if(e.anim==='track'&&e.tracks&&e.tracks.length>=2){
       const len=e.trackLen||3,tt=trackTime%len,tr=e.tracks.slice().sort((a,b)=>a.t-b.t);
       let a=tr[0],b=tr[tr.length-1];
       for(let i=0;i<tr.length-1;i++){if(tt>=tr[i].t&&tt<=tr[i+1].t){a=tr[i];b=tr[i+1];break;}}
-      const span=(b.t-a.t)||1;let k=Math.max(0,Math.min(1,(tt-a.t)/span));k=easeFn(b.ease||e.ease||'smooth',k);
+      const span=(b.t-a.t)||1;let k=Math.max(0,Math.min(1,(tt-a.t)/span));k=easeFn(b.ease||e.ease||'smooth',k,b);
       const L=(x,y)=>x+(y-x)*k;
       rec.mesh.position.set(L(a.position[0],b.position[0]),L(a.position[1],b.position[1]),L(a.position[2],b.position[2]));
       rec.mesh.scale.set(L(a.scale[0],b.scale[0]),L(a.scale[1],b.scale[1]),L(a.scale[2],b.scale[2]));
@@ -2239,7 +2297,7 @@ function stepAnimations(dt){
       let a=tr[0],b=tr[tr.length-1];
       for(let i=0;i<tr.length-1;i++){if(tt>=tr[i].t&&tt<=tr[i+1].t){a=tr[i];b=tr[i+1];break;}}
       const span=(b.t-a.t)||1;let k=Math.max(0,Math.min(1,(tt-a.t)/span));
-      k=easeFn(b.ease||ent.ease||'smooth',k);
+      k=easeFn(b.ease||ent.ease||'smooth',k,b);
       const L=(x,y)=>x+(y-x)*k;
       rec.mesh.position.set(L(a.position[0],b.position[0]),L(a.position[1],b.position[1]),L(a.position[2],b.position[2]));
       rec.mesh.scale.set(L(a.scale[0],b.scale[0]),L(a.scale[1],b.scale[1]),L(a.scale[2],b.scale[2]));
@@ -2263,12 +2321,17 @@ function stepAnimations(dt){
         rec._curAction=next;rec._curClip=idx;
       }
       if(rec._curAction)rec._curAction.setEffectiveWeight(1-ow);
-      const ov=ent.overlayClip;
+      const ov=ent.overlayClip,layer=ent.overlayLayer||'full';
       if(ov!=null&&ov>=0&&rec.clips[ov]){
-        const ovA=rec.mixer.clipAction(rec.clips[ov]);
-        if(rec._ovAction!==ovA){if(rec._ovAction)rec._ovAction.stop();ovA.reset();ovA.play();rec._ovAction=ovA;}
-        ovA.setEffectiveWeight(ow);
-      }else if(rec._ovAction){rec._ovAction.stop();rec._ovAction=null;}
+        const key=ov+':'+layer;
+        if(rec._ovKey!==key){
+          if(rec._ovAction)rec._ovAction.stop();
+          const fc=filterClip(rec.clips[ov],layer);
+          const ovA=rec.mixer.clipAction(fc);ovA.reset();ovA.play();
+          rec._ovAction=ovA;rec._ovKey=key;
+        }
+        rec._ovAction.setEffectiveWeight(ow);
+      }else if(rec._ovAction){rec._ovAction.stop();rec._ovAction=null;rec._ovKey=null;}
       if(ent.rootMotion)ent.position=rec.mesh.position.toArray();
     }
     if(rec.mixer)rec.mixer.update(dt);
