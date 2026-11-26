@@ -438,6 +438,10 @@ pre{margin:0;padding:16px;font-family:ui-monospace,monospace;font-size:11.5px;li
 .tex-grid .tex.on{border-color:#c4b5fd}
 .track-list{margin-top:8px;display:flex;flex-direction:column;gap:6px}
 .track-item{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11px;background:var(--box2);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+.fsm-nodes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.fsm-node{display:flex;flex-direction:column;gap:4px;background:var(--box2);border:1px solid var(--line);border-radius:10px;padding:8px}
+.fsm-node.on{border-color:#c4b5fd;box-shadow:0 0 0 1px #c4b5fd inset}
+.fsm-state{font-size:11px;color:#c4b5fd;font-weight:600}
 .track-bar{position:relative;height:22px;margin:10px 0 6px;background:var(--box2);border:1px solid var(--line);border-radius:10px;cursor:pointer}
 .track-dot{position:absolute;top:50%;width:12px;height:12px;border-radius:50%;background:#c4b5fd;border:2px solid #fff;transform:translate(-50%,-50%);cursor:grab;touch-action:none}
 .track-dot:active{cursor:grabbing}
@@ -870,7 +874,7 @@ zh:{
   e3d_shape:'形状',e3d_mat:'材质',e3d_rough:'粗糙度',e3d_metal:'金属度',e3d_body:'刚体',e3d_static:'静态',e3d_dynamic:'动态',e3d_phys:'物理',e3d_phys_run:'运行物理',e3d_phys_stop:'停止物理',e3d_phys_err:'物理引擎加载失败，请检查网络',
   mesh_box:'立方体',mesh_sphere:'球体',mesh_plane:'平面',mesh_cylinder:'圆柱',mesh_cone:'圆锥',mesh_torus:'圆环',mesh_tetra:'四面体',
   mat_standard:'标准',mat_basic:'基础',mat_wire:'线框',
-  e3d_anim:'动画',anim_none:'无',anim_spin:'自转',anim_float:'浮动',anim_track:'关键帧轨道',anim_model:'模型动画',e3d_track:'关键帧',e3d_track_len:'时长(秒)',e3d_track_add:'记录当前姿态',e3d_track_empty:'还没有关键帧，点按钮记录',e3d_state_idle:'待机',e3d_state_move:'移动',e3d_state_jump:'跳跃',e3d_state_run:'冲刺',e3d_state_climb:'攀爬',e3d_state_none:'不使用',e3d_ease:'缓动',e3d_ease_smooth:'平滑',e3d_ease_linear:'线性',e3d_ease_in:'缓入',e3d_ease_out:'缓出',e3d_ease_bezier:'贝塞尔',e3d_handle_in:'入手柄',e3d_handle_out:'出手柄',e3d_overlay:'上层动画',e3d_overlay_w:'混合权重',e3d_root_motion:'根运动跟随',e3d_layer:'分层',e3d_layer_full:'全身',e3d_layer_upper:'上身',e3d_layer_lower:'下身',e3d_copy_to:'复制到',e3d_copy:'复制',e3d_copied:'已复制到目标场景',e3d_import_model:'导入模型(.glb/.fbx)',e3d_move_hint:'WASD / 方向键移动，Shift 冲刺，空格跳跃，E 攀爬',e3d_export_local:'导出本地工程',e3d_desktop_only:'仅桌面应用可用此功能',e3d_exported:'已导出到本地文件',e3d_browse_res:'浏览本地资源',e3d_export_web:'导出 Web 版本',e3d_web_ok:'已生成可独立打开的网页版本',e3d_lights:'灯光',e3d_light_ambient:'环境光',e3d_light_dir:'平行光',e3d_light_point:'点光源',e3d_light_intensity:'强度',e3d_light_color:'颜色',e3d_light_pos:'位置',e3d_point_on:'开启点光',e3d_emissive:'自发光',e3d_emissive_i:'发光强度',e3d_opacity:'透明度',e3d_double_side:'双面渲染',e3d_overlay_layers:'动画融合层',e3d_overlay_add:'添加覆盖层',
+  e3d_anim:'动画',anim_none:'无',anim_spin:'自转',anim_float:'浮动',anim_track:'关键帧轨道',anim_model:'模型动画',e3d_track:'关键帧',e3d_track_len:'时长(秒)',e3d_track_add:'记录当前姿态',e3d_track_empty:'还没有关键帧，点按钮记录',e3d_state_idle:'待机',e3d_state_move:'移动',e3d_state_jump:'跳跃',e3d_state_run:'冲刺',e3d_state_climb:'攀爬',e3d_state_none:'不使用',e3d_ease:'缓动',e3d_ease_smooth:'平滑',e3d_ease_linear:'线性',e3d_ease_in:'缓入',e3d_ease_out:'缓出',e3d_ease_bezier:'贝塞尔',e3d_handle_in:'入手柄',e3d_handle_out:'出手柄',e3d_overlay:'上层动画',e3d_overlay_w:'混合权重',e3d_root_motion:'根运动跟随',e3d_layer:'分层',e3d_layer_full:'全身',e3d_layer_upper:'上身',e3d_layer_lower:'下身',e3d_copy_to:'复制到',e3d_copy:'复制',e3d_copied:'已复制到目标场景',e3d_import_model:'导入模型(.glb/.fbx)',e3d_move_hint:'WASD / 方向键移动，Shift 冲刺，空格跳跃，E 攀爬',e3d_export_local:'导出本地工程',e3d_desktop_only:'仅桌面应用可用此功能',e3d_exported:'已导出到本地文件',e3d_browse_res:'浏览本地资源',e3d_export_web:'导出 Web 版本',e3d_web_ok:'已生成可独立打开的网页版本',e3d_lights:'灯光',e3d_light_ambient:'环境光',e3d_light_dir:'平行光',e3d_light_point:'点光源',e3d_light_intensity:'强度',e3d_light_color:'颜色',e3d_light_pos:'位置',e3d_point_on:'开启点光',e3d_emissive:'自发光',e3d_emissive_i:'发光强度',e3d_opacity:'透明度',e3d_double_side:'双面渲染',e3d_overlay_layers:'动画融合层',e3d_overlay_add:'添加覆盖层',e3d_collider:'碰撞形状',e3d_col_auto:'自动',e3d_col_box:'立方体',e3d_col_sphere:'球体',e3d_col_capsule:'胶囊体',e3d_state_machine:'状态机',e3d_env:'环境',e3d_bg:'背景色',e3d_fog_on:'开启雾效',e3d_fog_color:'雾颜色',e3d_fog_near:'雾近距',e3d_fog_far:'雾远距',e3d_upload_normal:'法线贴图',e3d_upload_rough:'粗糙度贴图',
   change_avatar:'修改头像',upload_avatar:'上传图片',avatar_saved:'头像已更新',captcha_label:'图形验证',captcha_err:'验证码不正确，请重新输入'
 },
 en:{
@@ -928,7 +932,7 @@ en:{
   e3d_shape:'Shape',e3d_mat:'Material',e3d_rough:'Roughness',e3d_metal:'Metalness',e3d_body:'Rigid body',e3d_static:'Static',e3d_dynamic:'Dynamic',e3d_phys:'Physics',e3d_phys_run:'Run Physics',e3d_phys_stop:'Stop Physics',e3d_phys_err:'Failed to load physics engine, check your network',
   mesh_box:'Box',mesh_sphere:'Sphere',mesh_plane:'Plane',mesh_cylinder:'Cylinder',mesh_cone:'Cone',mesh_torus:'Torus',mesh_tetra:'Tetrahedron',
   mat_standard:'Standard',mat_basic:'Basic',mat_wire:'Wireframe',
-  e3d_anim:'Animation',anim_none:'None',anim_spin:'Spin',anim_float:'Float',anim_track:'Keyframe Track',anim_model:'Model Clip',e3d_track:'Keyframes',e3d_track_len:'Duration (s)',e3d_track_add:'Record Current Pose',e3d_track_empty:'No keyframes yet — click to record',e3d_state_idle:'Idle',e3d_state_move:'Move',e3d_state_jump:'Jump',e3d_state_run:'Run',e3d_state_climb:'Climb',e3d_state_none:'None',e3d_ease:'Easing',e3d_ease_smooth:'Smooth',e3d_ease_linear:'Linear',e3d_ease_in:'Ease-in',e3d_ease_out:'Ease-out',e3d_ease_bezier:'Bezier',e3d_handle_in:'In',e3d_handle_out:'Out',e3d_overlay:'Overlay Clip',e3d_overlay_w:'Blend Weight',e3d_root_motion:'Root Motion',e3d_layer:'Layer',e3d_layer_full:'Full',e3d_layer_upper:'Upper',e3d_layer_lower:'Lower',e3d_copy_to:'Copy to',e3d_copy:'Copy',e3d_copied:'Copied to target scene',e3d_import_model:'Import Model (.glb/.fbx)',e3d_move_hint:'WASD / arrows move, Shift sprint, Space jump, E climb',e3d_export_local:'Export Local Project',e3d_desktop_only:'Only available in the desktop app',e3d_exported:'Exported to a local file',e3d_browse_res:'Browse Local Assets',e3d_export_web:'Export Web Build',e3d_web_ok:'Standalone web build generated',e3d_lights:'Lights',e3d_light_ambient:'Ambient',e3d_light_dir:'Directional',e3d_light_point:'Point Light',e3d_light_intensity:'Intensity',e3d_light_color:'Color',e3d_light_pos:'Position',e3d_point_on:'Enable Point Light',e3d_emissive:'Emissive',e3d_emissive_i:'Emissive Intensity',e3d_opacity:'Opacity',e3d_double_side:'Double Side',e3d_overlay_layers:'Blend Layers',e3d_overlay_add:'Add Overlay',
+  e3d_anim:'Animation',anim_none:'None',anim_spin:'Spin',anim_float:'Float',anim_track:'Keyframe Track',anim_model:'Model Clip',e3d_track:'Keyframes',e3d_track_len:'Duration (s)',e3d_track_add:'Record Current Pose',e3d_track_empty:'No keyframes yet — click to record',e3d_state_idle:'Idle',e3d_state_move:'Move',e3d_state_jump:'Jump',e3d_state_run:'Run',e3d_state_climb:'Climb',e3d_state_none:'None',e3d_ease:'Easing',e3d_ease_smooth:'Smooth',e3d_ease_linear:'Linear',e3d_ease_in:'Ease-in',e3d_ease_out:'Ease-out',e3d_ease_bezier:'Bezier',e3d_handle_in:'In',e3d_handle_out:'Out',e3d_overlay:'Overlay Clip',e3d_overlay_w:'Blend Weight',e3d_root_motion:'Root Motion',e3d_layer:'Layer',e3d_layer_full:'Full',e3d_layer_upper:'Upper',e3d_layer_lower:'Lower',e3d_copy_to:'Copy to',e3d_copy:'Copy',e3d_copied:'Copied to target scene',e3d_import_model:'Import Model (.glb/.fbx)',e3d_move_hint:'WASD / arrows move, Shift sprint, Space jump, E climb',e3d_export_local:'Export Local Project',e3d_desktop_only:'Only available in the desktop app',e3d_exported:'Exported to a local file',e3d_browse_res:'Browse Local Assets',e3d_export_web:'Export Web Build',e3d_web_ok:'Standalone web build generated',e3d_lights:'Lights',e3d_light_ambient:'Ambient',e3d_light_dir:'Directional',e3d_light_point:'Point Light',e3d_light_intensity:'Intensity',e3d_light_color:'Color',e3d_light_pos:'Position',e3d_point_on:'Enable Point Light',e3d_emissive:'Emissive',e3d_emissive_i:'Emissive Intensity',e3d_opacity:'Opacity',e3d_double_side:'Double Side',e3d_overlay_layers:'Blend Layers',e3d_overlay_add:'Add Overlay',e3d_collider:'Collider',e3d_col_auto:'Auto',e3d_col_box:'Box',e3d_col_sphere:'Sphere',e3d_col_capsule:'Capsule',e3d_state_machine:'State Machine',e3d_env:'Environment',e3d_bg:'Background',e3d_fog_on:'Enable Fog',e3d_fog_color:'Fog Color',e3d_fog_near:'Fog Near',e3d_fog_far:'Fog Far',e3d_upload_normal:'Normal Map',e3d_upload_rough:'Roughness Map',
   change_avatar:'Change Avatar',upload_avatar:'Upload Image',avatar_saved:'Avatar updated',captcha_label:'Captcha',captcha_err:'Wrong captcha, please try again'
 }};
 function t(k){return (I18N[S.lang]&&I18N[S.lang][k])||I18N.zh[k]||k;}
@@ -1453,6 +1457,7 @@ function defaultLights(){return {
   dir:{color:'#ffffff',intensity:1.1,position:[4,8,6]},
   point:{enabled:false,color:'#fbbf24',intensity:0.8,position:[-3,4,-3]}
 };}
+function defaultEnv(){return {bg:'#0f0d1d',fog:{enabled:false,color:'#0f0d1d',near:6,far:22}};}
 function defaultScene(){return {entities:[
   {id:'e-ground',name:'地面',mesh:'plane',position:[0,0,0],scale:[6,6,1],color:'#3f3f46',texture:null,mat:'standard',roughness:0.9,metalness:0,body:'static',anim:'none'},
   {id:'e-box',name:'立方体',mesh:'box',position:[0,1.2,0],scale:[1,1,1],color:'#c4b5fd',texture:null,mat:'standard',roughness:0.5,metalness:0.1,body:'dynamic',anim:'none'},
@@ -1625,6 +1630,8 @@ function openEditor3d(p){
   }
   if(!data.lights)data.lights=defaultLights();
   data.lights=Object.assign(defaultLights(),data.lights);
+  if(!data.env)data.env=defaultEnv();
+  data.env=Object.assign(defaultEnv(),data.env);data.env.fog=Object.assign(defaultEnv().fog,data.env.fog||{});
   data.scenes.forEach(s=>s.entities.forEach(ent=>{
     if(!Array.isArray(ent.overlays)){ent.overlays=[];if(ent.overlayClip!=null&&ent.overlayClip>=0)ent.overlays.push({clip:ent.overlayClip,weight:ent.overlayWeight==null?0.5:ent.overlayWeight,layer:ent.overlayLayer||'full'});}
   }));
@@ -1645,6 +1652,8 @@ function openEditor3d(p){
     <div class="editor-pane">
       <div class="editor-bar">${t('e3d_lights')}</div>
       <div style="padding:12px" id="e3dLights"></div>
+      <div class="editor-bar">${t('e3d_env')}</div>
+      <div style="padding:12px" id="e3dEnv"></div>
       <div class="editor-bar">${t('e3d_props')}</div>
       <div style="padding:12px" id="e3dProps"></div>
       <div class="editor-bar">${t('e3d_tex')}</div>
@@ -1652,6 +1661,10 @@ function openEditor3d(p){
         <div class="tex-grid" id="e3dTexs"></div>
         <button class="mini-btn" style="margin-top:10px" onclick="document.getElementById('e3dTexFile').click()">${t('e3d_upload_tex')}</button>
         <input type="file" id="e3dTexFile" accept="image/*" hidden onchange="e3dTexFile(event)">
+        <button class="mini-btn" style="margin-top:10px" onclick="document.getElementById('e3dNormalFile').click()">${t('e3d_upload_normal')}</button>
+        <input type="file" id="e3dNormalFile" accept="image/*" hidden onchange="e3dNormalFile(event)">
+        <button class="mini-btn" style="margin-top:10px" onclick="document.getElementById('e3dRoughFile').click()">${t('e3d_upload_rough')}</button>
+        <input type="file" id="e3dRoughFile" accept="image/*" hidden onchange="e3dRoughFile(event)">
         <button class="mini-btn" style="margin-top:10px" onclick="document.getElementById('e3dModelFile').click()">${t('e3d_import_model')}</button>
         <input type="file" id="e3dModelFile" accept=".glb,.gltf,.fbx" hidden onchange="e3dModelFile(event)">
         <button class="mini-btn" id="e3dResBtn" hidden style="margin-top:10px" onclick="loadDesktopResources()">${t('e3d_browse_res')}</button>
@@ -1677,17 +1690,18 @@ function init3d(){
   try{
     renderer=new THREE.WebGLRenderer({antialias:true});
     renderer.setSize(w,h);renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+    renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
     vp.appendChild(renderer.domElement);
   }catch(e){renderer=null;}
   const scene=new THREE.Scene();scene.background=new THREE.Color(0x0f0d1d);
   const camera=new THREE.PerspectiveCamera(50,w/h,0.1,100);
   g3d.three={renderer,scene,camera,entities:new Map(),lights:[]};
-  applyLights();
+  applyLights();applyEnv();
   g3d.phys=null;g3d.keys={};
   bind3dKeys();
   curEntities().forEach(buildEnt);
   bind3dControls(vp,camera);
-  render3dSceneSel();render3dList();render3dProps();render3dTexs();render3dLights();
+  render3dSceneSel();render3dList();render3dProps();render3dTexs();render3dLights();render3dEnv();
   if(renderer){
     let last=performance.now();
     const loop=()=>{
@@ -1713,7 +1727,13 @@ function applyLights(){
   const amb=new THREE.AmbientLight(new THREE.Color(L.ambient.color),L.ambient.intensity);
   g.scene.add(amb);g.lights.push(amb);
   const dir=new THREE.DirectionalLight(new THREE.Color(L.dir.color),L.dir.intensity);
-  dir.position.fromArray(L.dir.position);g.scene.add(dir);g.lights.push(dir);
+  dir.position.fromArray(L.dir.position);
+  dir.castShadow=true;
+  dir.shadow.mapSize.set(1024,1024);
+  dir.shadow.camera.near=1;dir.shadow.camera.far=30;
+  dir.shadow.camera.left=-10;dir.shadow.camera.right=10;
+  dir.shadow.camera.top=10;dir.shadow.camera.bottom=-10;
+  g.scene.add(dir);g.lights.push(dir);
   if(L.point.enabled){
     const pt=new THREE.PointLight(new THREE.Color(L.point.color),L.point.intensity,20);
     pt.position.fromArray(L.point.position);g.scene.add(pt);g.lights.push(pt);
@@ -1746,6 +1766,29 @@ function e3dLightColor(kind,val){const L=getLights();L[kind].color=val;applyLigh
 function e3dLightNum(kind,field,val){const L=getLights();L[kind][field]=parseFloat(val)||0;applyLights();}
 function e3dLightPos(kind,idx,val){const L=getLights();L[kind].position[idx]=parseFloat(val)||0;applyLights();}
 function e3dLightToggle(c){const L=getLights();L.point.enabled=!!c;applyLights();render3dLights();}
+function getEnv(){return g3d.data.env||defaultEnv();}
+function applyEnv(){
+  const THREE=window.THREE,g=g3d.three;if(!THREE||!g)return;
+  const E=getEnv();
+  g.scene.background=new THREE.Color(E.bg);
+  g.scene.fog=E.fog.enabled?new THREE.Fog(new THREE.Color(E.fog.color),E.fog.near,E.fog.far):null;
+}
+function render3dEnv(){
+  const el=document.getElementById('e3dEnv');if(!el||!g3d)return;
+  const E=getEnv(),F=E.fog;
+  const num=(label,val,fn)=>`<div class="prop-row"><span>${label}</span><input type="number" step="0.5" value="${val}" oninput="${fn}"></div>`;
+  el.innerHTML=`
+    <div class="sec-title" style="margin:0 0 8px">${t('e3d_env')}</div>
+    <div class="prop-row"><span>${t('e3d_bg')}</span><input type="color" value="${esc(E.bg)}" oninput="e3dEnvBg(this.value)"></div>
+    <div class="prop-row"><span>${t('e3d_fog_on')}</span><input type="checkbox" ${F.enabled?'checked':''} onchange="e3dFogToggle(this.checked)"></div>
+    ${F.enabled?`<div class="prop-row"><span>${t('e3d_fog_color')}</span><input type="color" value="${esc(F.color)}" oninput="e3dFogColor(this.value)"></div>
+    ${num(t('e3d_fog_near'),F.near,'e3dFogNum("near",this.value)')}
+    ${num(t('e3d_fog_far'),F.far,'e3dFogNum("far",this.value)')}`:''}`;
+}
+function e3dEnvBg(v){getEnv().bg=v;applyEnv();}
+function e3dFogToggle(c){const E=getEnv();E.fog.enabled=!!c;applyEnv();render3dEnv();}
+function e3dFogColor(v){getEnv().fog.color=v;applyEnv();}
+function e3dFogNum(f,v){const E=getEnv();E.fog[f]=parseFloat(v)||0;applyEnv();}
 const MESH_TYPES=['box','sphere','plane','cylinder','cone','torus','tetra'];
 function makeGeo(THREE,mesh){
   switch(mesh){
@@ -1770,6 +1813,8 @@ function makeMaterial(THREE,ent){
   else if(ent.mat==='wire')mat=new THREE.MeshStandardMaterial(Object.assign(base,extra,{wireframe:true}));
   else mat=new THREE.MeshStandardMaterial(Object.assign(base,extra,{roughness:ent.roughness==null?0.5:ent.roughness,metalness:ent.metalness==null?0:ent.metalness}));
   if(ent.texture)new THREE.TextureLoader().load(ent.texture,tex=>{mat.map=tex;mat.needsUpdate=true;});
+  if(ent.normalMap&&mat.normalMap!==undefined)new THREE.TextureLoader().load(ent.normalMap,tex=>{mat.normalMap=tex;mat.needsUpdate=true;});
+  if(ent.roughnessMap&&mat.roughnessMap!==undefined)new THREE.TextureLoader().load(ent.roughnessMap,tex=>{mat.roughnessMap=tex;mat.needsUpdate=true;});
   return mat;
 }
 function buildEnt(ent){
@@ -1780,6 +1825,8 @@ function buildEnt(ent){
   mesh.position.fromArray(ent.position||[0,0,0]);
   mesh.scale.fromArray(ent.scale||[1,1,1]);
   if(ent.mesh==='plane')mesh.rotation.x=-Math.PI/2;
+  mesh.castShadow=ent.mesh!=='plane';
+  mesh.receiveShadow=true;
   mesh.userData.id=ent.id;
   g3d.three.scene.add(mesh);
   const rec={mesh,data:ent,mixer:null,clips:[],baseY:(ent.position||[0,0,0])[1]};
@@ -1800,7 +1847,7 @@ function loadModelInto(rec){
     const loader=isFbx?new THREE.FBXLoader():new THREE.GLTFLoader();
     loader.parse(dataUrlToBuffer(ent.model.dataUrl),'',res=>{
     const model=res.scene||res;
-    model.traverse(o=>{o.userData.id=ent.id;});
+    model.traverse(o=>{o.userData.id=ent.id;if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
     // 包围盒校准：缩放到统一尺寸，水平居中、底部落地
     const box=new THREE.Box3().setFromObject(model);
     const size=box.getSize(new THREE.Vector3());
@@ -1883,7 +1930,7 @@ function e3dSwitchScene(idx){
     if(g3d.phys)stopPhys();
     curEntities().forEach(buildEnt);
     g3d.selectedId=curEntities()[0]?curEntities()[0].id:null;
-    render3dSceneSel();render3dList();render3dProps();render3dTexs();render3dLights();
+    render3dSceneSel();render3dList();render3dProps();render3dTexs();render3dLights();render3dEnv();
     if(fade)fade.classList.remove('on');
   };
   if(fade){fade.classList.add('on');setTimeout(apply,180);}else apply();
@@ -1911,14 +1958,22 @@ function render3dProps(){
   const meshOpts=MESH_TYPES.map(m=>[m,t('mesh_'+m)]);
   const matOpts=[['standard',t('mat_standard')],['basic',t('mat_basic')],['wire',t('mat_wire')]];
   const bodyOpts=[['static',t('e3d_static')],['dynamic',t('e3d_dynamic')]];
+  const colliderOpts=[['auto',t('e3d_col_auto')],['box',t('e3d_col_box')],['sphere',t('e3d_col_sphere')],['capsule',t('e3d_col_capsule')]];
   const recCur=g3d.three.entities.get(ent.id);
   const clips=(recCur&&recCur.clips)||[];
   const clipOpts=clips.map((c,i)=>['model:'+i,c.name||('Clip '+(i+1))]);
   const animOpts=[['none',t('anim_none')],['spin',t('anim_spin')],['float',t('anim_float')],['track',t('anim_track')]].concat(clipOpts);
   const animVal=ent.anim==='model'?'model:'+(ent.animClip||0):(ent.anim||'none');
   const sc=ent.stateClips||{};
-  const stateRow=key=>`<div class="prop-row"><span>${t('e3d_state_'+key)}</span><select onchange="e3dSetStateClip('${key}',this.value)"><option value="-1">${t('e3d_state_none')}</option>${clips.map((c,i)=>`<option value="${i}" ${sc[key]===i?'selected':''}>${c.name||('Clip '+(i+1))}</option>`).join('')}</select></div>`;
-  const stateBlock=clips.length&&ent.anim==='model'?[stateRow('idle'),stateRow('move'),stateRow('run'),stateRow('jump'),stateRow('climb')].join(''):'';
+  const stateKeys=['idle','move','run','jump','climb'];
+  const stateBlock=clips.length&&ent.anim==='model'?`<div class="sec-title" style="margin-top:10px">${t('e3d_state_machine')}</div>
+  <div class="fsm-nodes">${stateKeys.map(k=>{
+    const m=sc[k],active=ent._state===k;
+    return `<div class="fsm-node ${active?'on':''}">
+      <span class="fsm-state">${t('e3d_state_'+k)}</span>
+      <select onchange="e3dSetStateClip('${k}',this.value)"><option value="-1">${t('e3d_state_none')}</option>${clips.map((c,i)=>`<option value="${i}" ${m===i?'selected':''}>${c.name||('Clip '+(i+1))}</option>`).join('')}</select>
+    </div>`;
+  }).join('')}</div>`:'';
   const ovList=getOverlays(ent);
   const layerOpts=[['full',t('e3d_layer_full')],['upper',t('e3d_layer_upper')],['lower',t('e3d_layer_lower')]];
   const overlayBlock=clips.length&&ent.anim==='model'?`
@@ -1952,6 +2007,7 @@ function render3dProps(){
     <div class="prop-row"><span>${t('e3d_opacity')}</span><input type="range" min="0.1" max="1" step="0.05" value="${ent.opacity==null?1:ent.opacity}" oninput="e3dOpacity(this.value)"></div>
     <div class="prop-row"><span>${t('e3d_double_side')}</span><input type="checkbox" ${ent.doubleSide?'checked':''} onchange="e3dDoubleSide(this.checked)"></div>
     ${sel(t('e3d_body'),ent.body||'dynamic',bodyOpts,`e3dSetBody(this.value)`)}
+    ${sel(t('e3d_collider'),ent.collider||'auto',colliderOpts,`e3dSetCollider(this.value)`)}
     ${sel(t('e3d_anim'),animVal,animOpts,`e3dSetAnim(this.value)`)}
     ${stateBlock}
     ${overlayBlock}
@@ -2005,6 +2061,7 @@ function e3dEmissiveI(v){const ent=selEnt();if(!ent)return;ent.emissiveIntensity
 function e3dOpacity(v){const ent=selEnt();if(!ent)return;ent.opacity=parseFloat(v);const rec=g3d.three.entities.get(ent.id);if(rec){rec.mesh.material.opacity=ent.opacity;rec.mesh.material.transparent=ent.opacity<1;rec.mesh.material.needsUpdate=true;}}
 function e3dDoubleSide(c){const ent=selEnt();if(!ent)return;ent.doubleSide=!!c;const rec=g3d.three.entities.get(ent.id);if(rec){rec.mesh.material.dispose();rec.mesh.material=makeMaterial(window.THREE,ent);}}
 function e3dSetBody(body){const ent=selEnt();if(ent)ent.body=body;}
+function e3dSetCollider(c){const ent=selEnt();if(ent)ent.collider=c;}
 function e3dTrackLen(val){const ent=selEnt();if(!ent)return;ent.trackLen=parseFloat(val)||3;}
 function e3dSetStateClip(key,val){const ent=selEnt();if(!ent)return;ent.stateClips=ent.stateClips||{};ent.stateClips[key]=parseInt(val,10);}
 function getOverlays(ent){
@@ -2139,6 +2196,26 @@ function e3dTexFile(ev){
   reader.readAsDataURL(f);
   ev.target.value='';
 }
+function e3dUploadTex(ev,field,matKey){
+  const f=ev.target.files&&ev.target.files[0];const ent=selEnt();if(!f||!ent)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    const img=new Image();
+    img.onload=()=>{
+      const size=256,c=document.createElement('canvas');c.width=c.height=size;
+      const ctx=c.getContext('2d');ctx.drawImage(img,0,0,size,size);
+      ent[field]=c.toDataURL('image/png');
+      const rec=g3d.three.entities.get(ent.id);
+      if(rec){const tex=new window.THREE.TextureLoader().load(ent[field]);rec.mesh.material[matKey]=tex;rec.mesh.material.needsUpdate=true;}
+      render3dTexs();
+    };
+    img.src=reader.result;
+  };
+  reader.readAsDataURL(f);
+  ev.target.value='';
+}
+function e3dNormalFile(ev){e3dUploadTex(ev,'normalMap','normalMap');}
+function e3dRoughFile(ev){e3dUploadTex(ev,'roughnessMap','roughnessMap');}
 async function loadDesktopResources(){
   if(!window.devRealmAPI||!window.devRealmAPI.listResources)return;
   const res=await window.devRealmAPI.listResources();
@@ -2167,13 +2244,23 @@ function applyDesktopResource(i){
 function makeBody(CANNON,ent){
   const p=ent.position||[0,0,0],s=ent.scale||[1,1,1];
   const isStatic=ent.mesh==='plane'||ent.body==='static';
-  let shape;
-  if(ent.mesh==='sphere')shape=new CANNON.Sphere(0.5*Math.max(s[0],s[1],s[2]));
-  else if(ent.mesh==='plane')shape=new CANNON.Plane();
-  else shape=new CANNON.Box(new CANNON.Vec3(0.5*s[0],0.5*s[1],0.5*s[2]));
-  const body=new CANNON.Body({mass:isStatic?0:1,shape});
+  const body=new CANNON.Body({mass:isStatic?0:1});
+  if(ent.mesh==='plane'){
+    body.addShape(new CANNON.Plane());
+    body.quaternion.setFromEuler(-Math.PI/2,0,0);
+  }else if(ent.mesh==='sphere'){
+    body.addShape(new CANNON.Sphere(0.5*Math.max(s[0],s[1],s[2])));
+  }else if(ent.collider==='capsule'){
+    const r=0.35*Math.max(s[0],s[2]),h=0.6*s[1];
+    const cyl=new CANNON.Cylinder(r,r,h,12);
+    const q=new CANNON.Quaternion();q.setFromEuler(Math.PI/2,0,0);
+    body.addShape(cyl,new CANNON.Vec3(0,0,0),q);
+    body.addShape(new CANNON.Sphere(r),new CANNON.Vec3(0,h/2,0));
+    body.addShape(new CANNON.Sphere(r),new CANNON.Vec3(0,-h/2,0));
+  }else{
+    body.addShape(new CANNON.Box(new CANNON.Vec3(0.5*s[0],0.5*s[1],0.5*s[2])));
+  }
   body.position.set(p[0],p[1],p[2]);
-  if(ent.mesh==='plane')body.quaternion.setFromEuler(-Math.PI/2,0,0);
   body.linearDamping=0.1;body.angularDamping=0.1;
   return body;
 }
@@ -2262,15 +2349,19 @@ function buildExportHtml(sceneJson,name){
 <script>
 (function(){
 const data=JSON.parse(document.getElementById('scene').textContent);
-const scene=new THREE.Scene();scene.background=new THREE.Color(0x0f0d1d);
+const scene=new THREE.Scene();
+const E=data.env||{bg:'#0f0d1d',fog:{enabled:false,color:'#0f0d1d',near:6,far:22}};
+scene.background=new THREE.Color(E.bg);
+if(E.fog&&E.fog.enabled)scene.fog=new THREE.Fog(new THREE.Color(E.fog.color),E.fog.near,E.fog.far);
 const camera=new THREE.PerspectiveCamera(50,innerWidth/innerHeight,0.1,100);
 let renderer;
 try{renderer=new THREE.WebGLRenderer({antialias:true});}catch(e){document.body.innerHTML='<p style="color:#fff;padding:20px">WebGL 不可用</p>';return;}
 renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
 const L=data.lights||{ambient:{color:'#ffffff',intensity:0.75},dir:{color:'#ffffff',intensity:1.1,position:[4,8,6]},point:{enabled:false,color:'#fbbf24',intensity:0.8,position:[-3,4,-3]}};
 scene.add(new THREE.AmbientLight(new THREE.Color(L.ambient.color),L.ambient.intensity));
-const dir=new THREE.DirectionalLight(new THREE.Color(L.dir.color),L.dir.intensity);dir.position.fromArray(L.dir.position);scene.add(dir);
+const dir=new THREE.DirectionalLight(new THREE.Color(L.dir.color),L.dir.intensity);dir.position.fromArray(L.dir.position);dir.castShadow=true;dir.shadow.mapSize.set(1024,1024);dir.shadow.camera.near=1;dir.shadow.camera.far=30;dir.shadow.camera.left=-10;dir.shadow.camera.right=10;dir.shadow.camera.top=10;dir.shadow.camera.bottom=-10;scene.add(dir);
 if(L.point&&L.point.enabled){const pt=new THREE.PointLight(new THREE.Color(L.point.color),L.point.intensity,20);pt.position.fromArray(L.point.position);scene.add(pt);}
 function geo(m){switch(m){
   case 'sphere':return new THREE.SphereGeometry(0.5,32,24);
@@ -2285,9 +2376,14 @@ function mat(e){const base={color:e.color||'#888'};const ex={};
   ex.emissiveIntensity=e.emissiveIntensity==null?1:e.emissiveIntensity;
   if(e.opacity!=null&&e.opacity<1){ex.opacity=e.opacity;ex.transparent=true;}
   if(e.doubleSide)ex.side=THREE.DoubleSide;
-  if(e.mat==='basic')return new THREE.MeshBasicMaterial(Object.assign(base,ex));
-  if(e.mat==='wire')return new THREE.MeshStandardMaterial(Object.assign(base,ex,{wireframe:true}));
-  return new THREE.MeshStandardMaterial(Object.assign(base,ex,{roughness:e.roughness==null?0.5:e.roughness,metalness:e.metalness==null?0:e.metalness}));}
+  if(e.mat==='basic'){const m=new THREE.MeshBasicMaterial(Object.assign(base,ex));if(e.texture)new THREE.TextureLoader().load(e.texture,t=>{m.map=t;m.needsUpdate=true;});return m;}
+  if(e.mat==='wire'){const m=new THREE.MeshStandardMaterial(Object.assign(base,ex,{wireframe:true}));applyMaps(m,e);return m;}
+  const m=new THREE.MeshStandardMaterial(Object.assign(base,ex,{roughness:e.roughness==null?0.5:e.roughness,metalness:e.metalness==null?0:e.metalness}));applyMaps(m,e);return m;}
+function applyMaps(m,e){
+  if(e.texture)new THREE.TextureLoader().load(e.texture,t=>{m.map=t;m.needsUpdate=true;});
+  if(e.normalMap&&m.normalMap!==undefined)new THREE.TextureLoader().load(e.normalMap,t=>{m.normalMap=t;m.needsUpdate=true;});
+  if(e.roughnessMap&&m.roughnessMap!==undefined)new THREE.TextureLoader().load(e.roughnessMap,t=>{m.roughnessMap=t;m.needsUpdate=true;});
+}
 function buf(url){const b64=String(url).split(',')[1];const bin=atob(b64),ab=new ArrayBuffer(bin.length),u8=new Uint8Array(ab);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);return ab;}
 const scenes=Array.isArray(data.scenes)?data.scenes:[{name:'Scene',entities:data.entities||[]}];
 let recs=[];
@@ -2299,6 +2395,7 @@ function buildEntity(e){
   const mesh=new THREE.Mesh(geo(e.mesh),mat(e));
   mesh.position.fromArray(e.position||[0,0,0]);mesh.scale.fromArray(e.scale||[1,1,1]);
   if(e.mesh==='plane')mesh.rotation.x=-Math.PI/2;
+  mesh.castShadow=e.mesh!=='plane';mesh.receiveShadow=true;
   scene.add(mesh);
   const rec={mesh,data:e,mixer:null,clips:[],baseY:(e.position||[0,0,0])[1]};recs.push(rec);
   if(e.mesh==='model'&&e.model&&e.model.dataUrl){
@@ -2306,6 +2403,7 @@ function buildEntity(e){
     const loader=isFbx?new THREE.FBXLoader():new THREE.GLTFLoader();
     loader.parse(buf(e.model.dataUrl),'',res=>{
       const model=res.scene||res;
+      model.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
       const box=new THREE.Box3().setFromObject(model);const size=box.getSize(new THREE.Vector3());
       const maxDim=Math.max(size.x,size.y,size.z)||1;model.scale.setScalar(1/maxDim);
       const b2=new THREE.Box3().setFromObject(model);const c=b2.getCenter(new THREE.Vector3());
@@ -2523,6 +2621,7 @@ function stepMove(dt){
     state=run?'run':((dx||dz)?'move':'idle');
   }
   ent._state=state;
+  if(ent._lastState!==state){ent._lastState=state;if(g3d.selectedId===ent.id)render3dProps();}
 }
 function e3dResize(){
   if(!g3d||!g3d.three)return;
