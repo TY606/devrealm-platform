@@ -62,6 +62,29 @@ ipcMain.handle('project:open', async () => {
   }
 });
 
+// 选择本地文件夹，列出其中图片 / 模型资源（小文件读成 dataURL）
+ipcMain.handle('resources:listDir', async () => {
+  try {
+    const { canceled, filePaths } = await dialog.showOpenDialog(win, { properties: ['openDirectory'] });
+    if (canceled || !filePaths || !filePaths.length) return { ok: false };
+    const dir = filePaths[0];
+    const exts = ['png', 'jpg', 'jpeg', 'glb', 'gltf'];
+    const files = fs.readdirSync(dir).filter(f => exts.includes(path.extname(f).slice(1).toLowerCase())).slice(0, 30).map(f => {
+      const p = path.join(dir, f);
+      const ext = path.extname(f).slice(1).toLowerCase();
+      const mime = ext === 'png' ? 'image/png'
+        : ext === 'glb' ? 'model/gltf-binary'
+        : ext === 'gltf' ? 'model/gltf+json' : 'image/jpeg';
+      let dataUrl = '';
+      try { const buf = fs.readFileSync(p); if (buf.length < 2 * 1024 * 1024) dataUrl = 'data:' + mime + ';base64,' + buf.toString('base64'); } catch (_) {}
+      return { name: f, path: p, type: (ext === 'glb' || ext === 'gltf') ? 'model' : 'image', dataUrl };
+    });
+    return { ok: true, dir, files };
+  } catch (err) {
+    return { ok: false, error: String(err && err.message || err) };
+  }
+});
+
 // 选择本地资源文件（图片 / 模型），读成 dataURL 交回前端
 ipcMain.handle('resources:pick', async () => {
   try {

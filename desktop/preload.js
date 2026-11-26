@@ -6,5 +6,6 @@ contextBridge.exposeInMainWorld('devRealmAPI', {
   saveProject: (payload) => ipcRenderer.invoke('project:save', payload),
   openProject: () => ipcRenderer.invoke('project:open'),
   pickResource: () => ipcRenderer.invoke('resources:pick'),
+  listResources: () => ipcRenderer.invoke('resources:listDir'),
   isDesktop: true
 });
