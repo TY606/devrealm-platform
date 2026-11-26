@@ -1,19 +1,24 @@
 // DevRealm 桌面套壳主进程（Electron）
-// 仅把现有单文件 index.html 装进桌面窗口，业务逻辑仍在前端页面内。
-const { app, BrowserWindow, shell } = require('electron');
+// 仅把现有单文件 index.html 装进桌面窗口，并通过 IPC 提供本地文件读写能力；
+// 业务逻辑仍在前端页面内，网页版打开时这些接口不存在，前端自动降级。
+const { app, BrowserWindow, shell, ipcMain, dialog } = require('electron');
 const path = require('path');
+const fs = require('fs');
+
+let win = null;
 
 function createWindow() {
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 1280,
     height: 860,
     minWidth: 960,
     minHeight: 640,
     backgroundColor: '#0f0d1d',
     webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
-      sandbox: true
+      sandbox: false
     }
   });
 
@@ -26,6 +31,56 @@ function createWindow() {
     return { action: 'deny' };
   });
 }
+
+// 导出工程到本地 JSON 文件
+ipcMain.handle('project:save', async (_e, payload) => {
+  try {
+    const { canceled, filePath } = await dialog.showSaveDialog(win, {
+      defaultFileName: (payload && payload.name || 'project') + '.json',
+      filters: [{ name: 'JSON', extensions: ['json'] }]
+    });
+    if (canceled || !filePath) return { ok: false };
+    fs.writeFileSync(filePath, String(payload.content || ''), 'utf-8');
+    return { ok: true, path: filePath };
+  } catch (err) {
+    return { ok: false, error: String(err && err.message || err) };
+  }
+});
+
+// 从本地 JSON 文件打开工程
+ipcMain.handle('project:open', async () => {
+  try {
+    const { canceled, filePaths } = await dialog.showOpenDialog(win, {
+      filters: [{ name: 'JSON', extensions: ['json'] }],
+      properties: ['openFile']
+    });
+    if (canceled || !filePaths || !filePaths.length) return { ok: false };
+    const content = fs.readFileSync(filePaths[0], 'utf-8');
+    return { ok: true, path: filePaths[0], content };
+  } catch (err) {
+    return { ok: false, error: String(err && err.message || err) };
+  }
+});
+
+// 选择本地资源文件（图片 / 模型），读成 dataURL 交回前端
+ipcMain.handle('resources:pick', async () => {
+  try {
+    const { canceled, filePaths } = await dialog.showOpenDialog(win, {
+      properties: ['openFile'],
+      filters: [{ name: 'Media', extensions: ['png', 'jpg', 'jpeg', 'glb', 'gltf'] }]
+    });
+    if (canceled || !filePaths || !filePaths.length) return { ok: false };
+    const p = filePaths[0];
+    const ext = path.extname(p).slice(1).toLowerCase();
+    const mime = ext === 'png' ? 'image/png'
+      : ext === 'glb' ? 'model/gltf-binary'
+      : ext === 'gltf' ? 'model/gltf+json' : 'image/jpeg';
+    const buf = fs.readFileSync(p);
+    return { ok: true, name: path.basename(p), path: p, dataUrl: 'data:' + mime + ';base64,' + buf.toString('base64') };
+  } catch (err) {
+    return { ok: false, error: String(err && err.message || err) };
+  }
+});
 
 app.whenReady().then(() => {
   createWindow();

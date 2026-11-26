@@ -18,6 +18,7 @@
     "productName": "DevRealm",
     "files": [
       "main.js",
+      "preload.js",
       "../index.html"
     ],
     "win": { "target": "nsis" },
