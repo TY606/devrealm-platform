@@ -68,16 +68,17 @@ ipcMain.handle('resources:listDir', async () => {
     const { canceled, filePaths } = await dialog.showOpenDialog(win, { properties: ['openDirectory'] });
     if (canceled || !filePaths || !filePaths.length) return { ok: false };
     const dir = filePaths[0];
-    const exts = ['png', 'jpg', 'jpeg', 'glb', 'gltf'];
+    const exts = ['png', 'jpg', 'jpeg', 'glb', 'gltf', 'fbx'];
     const files = fs.readdirSync(dir).filter(f => exts.includes(path.extname(f).slice(1).toLowerCase())).slice(0, 30).map(f => {
       const p = path.join(dir, f);
       const ext = path.extname(f).slice(1).toLowerCase();
       const mime = ext === 'png' ? 'image/png'
         : ext === 'glb' ? 'model/gltf-binary'
-        : ext === 'gltf' ? 'model/gltf+json' : 'image/jpeg';
+        : ext === 'gltf' ? 'model/gltf+json'
+        : ext === 'fbx' ? 'model/fbx' : 'image/jpeg';
       let dataUrl = '';
       try { const buf = fs.readFileSync(p); if (buf.length < 2 * 1024 * 1024) dataUrl = 'data:' + mime + ';base64,' + buf.toString('base64'); } catch (_) {}
-      return { name: f, path: p, type: (ext === 'glb' || ext === 'gltf') ? 'model' : 'image', dataUrl };
+      return { name: f, path: p, type: (ext === 'glb' || ext === 'gltf' || ext === 'fbx') ? 'model' : 'image', dataUrl };
     });
     return { ok: true, dir, files };
   } catch (err) {
@@ -90,14 +91,15 @@ ipcMain.handle('resources:pick', async () => {
   try {
     const { canceled, filePaths } = await dialog.showOpenDialog(win, {
       properties: ['openFile'],
-      filters: [{ name: 'Media', extensions: ['png', 'jpg', 'jpeg', 'glb', 'gltf'] }]
+      filters: [{ name: 'Media', extensions: ['png', 'jpg', 'jpeg', 'glb', 'gltf', 'fbx'] }]
     });
     if (canceled || !filePaths || !filePaths.length) return { ok: false };
     const p = filePaths[0];
     const ext = path.extname(p).slice(1).toLowerCase();
     const mime = ext === 'png' ? 'image/png'
       : ext === 'glb' ? 'model/gltf-binary'
-      : ext === 'gltf' ? 'model/gltf+json' : 'image/jpeg';
+      : ext === 'gltf' ? 'model/gltf+json'
+      : ext === 'fbx' ? 'model/fbx' : 'image/jpeg';
     const buf = fs.readFileSync(p);
     return { ok: true, name: path.basename(p), path: p, dataUrl: 'data:' + mime + ';base64,' + buf.toString('base64') };
   } catch (err) {
