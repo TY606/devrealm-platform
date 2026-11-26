@@ -421,6 +421,23 @@ pre{margin:0;padding:16px;font-family:ui-monospace,monospace;font-size:11.5px;li
 .captcha-row{display:flex;gap:10px;align-items:center}
 .captcha-row input{flex:1}
 #regCaptcha{border:1px solid var(--line);border-radius:10px;cursor:pointer;background:#17142a}
+
+/* ---------- 3D 编辑器 ---------- */
+.editor-3d{display:grid;grid-template-columns:200px 1fr 240px;gap:14px;margin-top:14px}
+@media(max-width:1000px){.editor-3d{grid-template-columns:1fr}}
+.entity-list{display:flex;flex-direction:column;gap:8px}
+.entity-item{display:flex;align-items:center;gap:8px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--box2);cursor:pointer;font-size:12.5px}
+.entity-item.on{border-color:#c4b5fd;background:rgba(139,92,246,.12)}
+.entity-item .dot{width:10px;height:10px;border-radius:3px;background:currentColor;flex:0 0 auto}
+.prop-row{display:grid;grid-template-columns:70px 1fr;gap:8px;align-items:center;margin-bottom:10px;font-size:12px}
+.prop-row input{background:var(--box2);border:1px solid var(--line);border-radius:8px;color:var(--text);padding:6px 8px}
+.prop-row input[type=color]{padding:2px;height:32px}
+.tex-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.tex-grid .tex{aspect-ratio:1;border:1px solid var(--line);border-radius:8px;background-size:cover;cursor:pointer}
+.tex-grid .tex.on{border-color:#c4b5fd}
+.viewport-3d{position:relative;min-height:380px;background:#0f0d1d;border-radius:14px;overflow:hidden}
+.viewport-3d canvas{display:block}
+.viewport-hint{position:absolute;left:10px;bottom:8px;font-size:10.5px;color:var(--sub2);pointer-events:none}
 </style>
 </head>
 <body>
@@ -779,7 +796,7 @@ async function loadRemoteData(){
     if(!sh.error&&sh.data){SHARES=sh.data.map(x=>({id:x.id,resource_name:x.resource_name,from_name:x.from_name,to_name:x.to_name,note:x.note,time:ft(x.created_at)}));}
     if(!au.error&&au.data){AUDIT=au.data.map(x=>({actor:x.actor,action:x.action,target:x.target,detail:x.detail,time:ft(x.created_at)}));}
     if(!pr.error&&pr.data&&pr.data.length){
-      const remote=pr.data.map(x=>({id:x.id,name:x.name,template:x.template,code:x.code,status:x.status||'开发中',updated:ft(x.updated_at),owner:x.owner_name||''}));
+      const remote=pr.data.map(x=>({id:x.id,name:x.name,template:x.template,kind:x.template==='scene3d'?'3d':'2d',code:x.code,status:x.status||'开发中',updated:ft(x.updated_at),owner:x.owner_name||''}));
       const local=PROJECTS.filter(lp=>!remote.some(rp=>rp.id===lp.id));
       PROJECTS=remote.concat(local);saveProjectsLocal();
     }
@@ -840,7 +857,8 @@ zh:{
   pr_low:'低',pr_normal:'中',pr_high:'高',st_todo:'待办',st_doing:'进行中',st_done:'已完成',
   nav_studio:'开发平台',studio_title:'开发工作台',studio_desc:'从模板起步，在浏览器里写代码、跑预览、保存你的小游戏项目。',studio_new:'新建项目',studio_empty:'还没有项目，先从一个模板开始。',
   open_editor:'打开编辑器',delete:'删除',deleted:'已删除',proj_name:'项目名称',proj_create:'创建并打开',proj_untitled:'未命名项目',proj_saved:'项目已保存',
-  tpl_tap:'点击得分',tpl_move:'方向键移动',tpl_dodge:'躲避掉落物',code_label:'游戏代码',preview:'预览',run:'运行',stop:'停止',save:'保存',editor_idle:'点击运行开始预览',editor_running:'运行中…',editor_error:'代码报错',
+  tpl_tap:'点击得分',tpl_move:'方向键移动',tpl_dodge:'躲避掉落物',tpl_scene3d:'3D 场景',code_label:'游戏代码',preview:'预览',run:'运行',stop:'停止',save:'保存',editor_idle:'点击运行开始预览',editor_running:'运行中…',editor_error:'代码报错',
+  e3d_entities:'实体',e3d_add:'添加',e3d_del:'删除',e3d_props:'属性',e3d_pos:'位置',e3d_scale:'缩放',e3d_color:'颜色',e3d_tex:'贴图',e3d_upload_tex:'上传贴图',e3d_hint:'拖拽旋转 · 滚轮缩放 · 点击选中',e3d_none:'未选中实体',e3d_tex_empty:'选中实体后可上传贴图',e3d_load_err:'3D 引擎加载失败，请检查网络后重试',e3d_webgl:'当前环境不支持 WebGL，实体编辑与保存仍可用，请在桌面浏览器查看 3D 视口',
   change_avatar:'修改头像',upload_avatar:'上传图片',avatar_saved:'头像已更新',captcha_label:'图形验证',captcha_err:'验证码不正确，请重新输入'
 },
 en:{
@@ -893,7 +911,8 @@ en:{
   pr_low:'Low',pr_normal:'Normal',pr_high:'High',st_todo:'To do',st_doing:'In progress',st_done:'Done',
   nav_studio:'Studio',studio_title:'Dev Studio',studio_desc:'Start from a template, write code, preview and save your mini-game in the browser.',studio_new:'New Project',studio_empty:'No projects yet. Start from a template.',
   open_editor:'Open Editor',delete:'Delete',deleted:'Deleted',proj_name:'Project name',proj_create:'Create & Open',proj_untitled:'Untitled',proj_saved:'Project saved',
-  tpl_tap:'Tap Score',tpl_move:'Arrow Move',tpl_dodge:'Dodge Drops',code_label:'Game Code',preview:'Preview',run:'Run',stop:'Stop',save:'Save',editor_idle:'Press Run to preview',editor_running:'Running…',editor_error:'Code error',
+  tpl_tap:'Tap Score',tpl_move:'Arrow Move',tpl_dodge:'Dodge Drops',tpl_scene3d:'3D Scene',code_label:'Game Code',preview:'Preview',run:'Run',stop:'Stop',save:'Save',editor_idle:'Press Run to preview',editor_running:'Running…',editor_error:'Code error',
+  e3d_entities:'Entities',e3d_add:'Add',e3d_del:'Delete',e3d_props:'Properties',e3d_pos:'Position',e3d_scale:'Scale',e3d_color:'Color',e3d_tex:'Texture',e3d_upload_tex:'Upload Texture',e3d_hint:'Drag rotate · Scroll zoom · Click to select',e3d_none:'No entity selected',e3d_tex_empty:'Select an entity to upload a texture',e3d_load_err:'Failed to load 3D engine, check your network',e3d_webgl:'WebGL is unavailable here; entity editing and saving still work. Open in a desktop browser to view the 3D viewport',
   change_avatar:'Change Avatar',upload_avatar:'Upload Image',avatar_saved:'Avatar updated',captcha_label:'Captcha',captcha_err:'Wrong captcha, please try again'
 }};
 function t(k){return (I18N[S.lang]&&I18N[S.lang][k])||I18N.zh[k]||k;}
@@ -973,7 +992,7 @@ function openModal(html){
   document.getElementById('modalBox').innerHTML=`<button class="modal-close" onclick="closeModal()" title="${t('modal_close')}">${CLOSE_SVG}</button>`+html;
   document.getElementById('modalMask').hidden=false;
 }
-function closeModal(){stopEditor();document.getElementById('modalMask').hidden=true;}
+function closeModal(){stopEditor();stopEditor3d();document.getElementById('modalMask').hidden=true;}
 function docList(docs){
   return `<div class="sec-title">${t('docs_title2')}</div><div class="doc-list">${docs.map(d=>`<a class="doc-row" onclick="closeModal();go('docs')"><span class="method ${d.m.toLowerCase()}">${d.m}</span><span class="dp">${esc(d.p)}</span></a>`).join('')}</div>`;
 }
@@ -1413,11 +1432,22 @@ function draw(){
   ctx.font='15px sans-serif';
   ctx.fillText('drops: '+drops.length,14,26);
 }`;
-const PROJECT_TEMPLATES={tap:TPL_TAP,move:TPL_MOVE,dodge:TPL_DODGE};
+function defaultScene(){return {entities:[
+  {id:'e-ground',name:'地面',mesh:'plane',position:[0,0,0],scale:[6,6,1],color:'#3f3f46',texture:null},
+  {id:'e-box',name:'立方体',mesh:'box',position:[0,1,0],scale:[1,1,1],color:'#c4b5fd',texture:null},
+  {id:'e-sphere',name:'球体',mesh:'sphere',position:[2,1,0],scale:[1,1,1],color:'#22d3ee',texture:null}
+]};}
+const PROJECT_TEMPLATES={
+  tap:{kind:'2d',code:TPL_TAP},
+  move:{kind:'2d',code:TPL_MOVE},
+  dodge:{kind:'2d',code:TPL_DODGE},
+  scene3d:{kind:'3d',code:JSON.stringify(defaultScene())}
+};
 let PROJECTS=loadProjectsLocal()||[
-  {id:'p-demo-1',name:'点击得分 Demo',template:'tap',code:TPL_TAP,status:'开发中',updated:'刚刚',owner:'李承宇'},
-  {id:'p-demo-2',name:'方向键移动方块',template:'move',code:TPL_MOVE,status:'预览中',updated:'2 小时前',owner:'李承宇'}
+  {id:'p-demo-1',name:'点击得分 Demo',template:'tap',kind:'2d',code:TPL_TAP,status:'开发中',updated:'刚刚',owner:'李承宇'},
+  {id:'p-demo-2',name:'方向键移动方块',template:'move',kind:'2d',code:TPL_MOVE,status:'预览中',updated:'2 小时前',owner:'李承宇'}
 ];
+PROJECTS.forEach(x=>{if(!x.kind)x.kind='2d';});
 function loadProjectsLocal(){try{return JSON.parse(localStorage.getItem(PROJ_KEY))}catch(e){return null}}
 function saveProjectsLocal(){try{localStorage.setItem(PROJ_KEY,JSON.stringify(PROJECTS))}catch(e){}}
 function projectCard(p,i){
@@ -1436,18 +1466,21 @@ function viewStudio(){
   <div class="studio-grid">${PROJECTS.map(projectCard).join('')||`<div class="comment-empty">${t('studio_empty')}</div>`}</div>`;
 }
 function openNewProject(){
-  const opts=Object.keys(PROJECT_TEMPLATES).map(k=>`<option value="${k}">${t('tpl_'+k)}</option>`).join('');
+  const keys=Object.keys(PROJECT_TEMPLATES);
+  const k2d=keys.filter(k=>PROJECT_TEMPLATES[k].kind==='2d').map(k=>`<option value="${k}">${t('tpl_'+k)}</option>`).join('');
+  const k3d=keys.filter(k=>PROJECT_TEMPLATES[k].kind==='3d').map(k=>`<option value="${k}">${t('tpl_'+k)}</option>`).join('');
   openModal(`<div class="sec-title">${t('studio_new')}</div>
   <div class="coop-form">
     <input id="projName" placeholder="${t('proj_name')}">
-    <select id="projTpl">${opts}</select>
+    <select id="projTpl"><optgroup label="2D">${k2d}</optgroup><optgroup label="3D">${k3d}</optgroup></select>
     <button class="btn btn-p" onclick="createProject()">${t('proj_create')}</button>
   </div>`);
 }
 function createProject(){
   const name=(document.getElementById('projName').value||'').trim()||t('proj_untitled');
   const tpl=document.getElementById('projTpl').value;
-  const proj={id:'p'+Date.now(),name,template:tpl,code:PROJECT_TEMPLATES[tpl],status:'开发中',updated:'刚刚',owner:currentUser?currentUser.profile.name:''};
+  const def=PROJECT_TEMPLATES[tpl]||PROJECT_TEMPLATES.tap;
+  const proj={id:'p'+Date.now(),name,template:tpl,kind:def.kind,code:def.code,status:'开发中',updated:'刚刚',owner:currentUser?currentUser.profile.name:''};
   PROJECTS.unshift(proj);saveProjectsLocal();closeModal();openEditor(proj.id);
   audit('create','project',name);
 }
@@ -1460,6 +1493,7 @@ let editorRAF=null,editorKeys={},editorTap=null;
 function openEditor(pid){
   const p=PROJECTS.find(x=>x.id===pid);if(!p)return;
   S._modal={fn:'openEditor',arg:pid};
+  if(p.kind==='3d'){openEditor3d(p);return;}
   openModal(`<div class="sec-title">${esc(p.name)}</div>
   <div class="editor-split">
     <div class="editor-pane"><div class="editor-bar">${icon('code')} ${t('code_label')}</div>
@@ -1511,9 +1545,222 @@ function runEditor(){
   }
 }
 function stopEditor(){if(editorRAF)cancelAnimationFrame(editorRAF);editorRAF=null;editorTap=null;}
+
+/* ---------- 3D 编辑器 ---------- */
+let g3d=null;
+function loadThree(){
+  if(window.THREE)return Promise.resolve(window.THREE);
+  return new Promise((res,rej)=>{
+    const s=document.createElement('script');
+    s.src='https://fastly.jsdelivr.net/npm/three@0.152.2/build/three.min.js';
+    s.onload=()=>window.THREE?res(window.THREE):rej(new Error('THREE missing'));
+    s.onerror=()=>rej(new Error('load fail'));
+    document.head.appendChild(s);
+  });
+}
+function openEditor3d(p){
+  let data;
+  try{data=JSON.parse(p.code);}catch(e){data=null;}
+  if(!data||!Array.isArray(data.entities))data=defaultScene();
+  g3d={pid:p.id,data,selectedId:data.entities[0]?data.entities[0].id:null,three:null,raf:null,
+    cam:{theta:0.6,phi:1.1,radius:8,target:[0,0.8,0]}};
+  openModal(`<div class="sec-title">${esc(p.name)}</div>
+  <div class="editor-3d">
+    <div class="editor-pane">
+      <div class="editor-bar">${t('e3d_entities')}
+        <button class="mini-btn" onclick="e3dAdd()">${t('e3d_add')}</button>
+        <button class="mini-btn danger" onclick="e3dDel()">${t('e3d_del')}</button></div>
+      <div class="entity-list" id="e3dList"></div>
+    </div>
+    <div class="viewport-3d" id="e3dViewport"><div class="viewport-hint" id="e3dHint">${t('e3d_hint')}</div></div>
+    <div class="editor-pane">
+      <div class="editor-bar">${t('e3d_props')}</div>
+      <div style="padding:12px" id="e3dProps"></div>
+      <div class="editor-bar">${t('e3d_tex')}</div>
+      <div style="padding:12px">
+        <div class="tex-grid" id="e3dTexs"></div>
+        <button class="mini-btn" style="margin-top:10px" onclick="document.getElementById('e3dTexFile').click()">${t('e3d_upload_tex')}</button>
+        <input type="file" id="e3dTexFile" accept="image/*" hidden onchange="e3dTexFile(event)">
+      </div>
+      <div style="padding:0 12px 12px"><button class="btn btn-p" onclick="saveProject()">${t('save')}</button></div>
+    </div>
+  </div>`);
+  loadThree().then(init3d).catch(()=>{
+    const vp=document.getElementById('e3dViewport');
+    if(vp)vp.innerHTML=`<div class="comment-empty" style="margin:auto">${t('e3d_load_err')}</div>`;
+  });
+}
+function init3d(){
+  const THREE=window.THREE;if(!THREE)return;
+  const vp=document.getElementById('e3dViewport');if(!vp)return;
+  const w=vp.clientWidth||600,h=vp.clientHeight||380;
+  let renderer=null;
+  try{
+    renderer=new THREE.WebGLRenderer({antialias:true});
+    renderer.setSize(w,h);renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+    vp.appendChild(renderer.domElement);
+  }catch(e){renderer=null;}
+  const scene=new THREE.Scene();scene.background=new THREE.Color(0x0f0d1d);
+  const camera=new THREE.PerspectiveCamera(50,w/h,0.1,100);
+  scene.add(new THREE.AmbientLight(0xffffff,0.75));
+  const dir=new THREE.DirectionalLight(0xffffff,1.1);dir.position.set(4,8,6);scene.add(dir);
+  g3d.three={renderer,scene,camera,entities:new Map()};
+  g3d.data.entities.forEach(buildEnt);
+  bind3dControls(vp,camera);
+  render3dList();render3dProps();render3dTexs();
+  if(renderer){
+    const loop=()=>{updateCamera(camera);renderer.render(scene,camera);g3d.raf=requestAnimationFrame(loop);};
+    g3d.raf=requestAnimationFrame(loop);
+  }else{
+    const hint=document.getElementById('e3dHint');
+    if(hint)hint.textContent=t('e3d_webgl');
+  }
+  window.addEventListener('resize',e3dResize);
+}
+function buildEnt(ent){
+  const THREE=window.THREE;let geo;
+  if(ent.mesh==='sphere')geo=new THREE.SphereGeometry(0.5,32,24);
+  else if(ent.mesh==='plane')geo=new THREE.PlaneGeometry(1,1);
+  else geo=new THREE.BoxGeometry(1,1,1);
+  const mat=new THREE.MeshStandardMaterial({color:ent.color||'#888888'});
+  if(ent.texture)new THREE.TextureLoader().load(ent.texture,tex=>{mat.map=tex;mat.needsUpdate=true;});
+  const mesh=new THREE.Mesh(geo,mat);
+  mesh.position.fromArray(ent.position||[0,0,0]);
+  mesh.scale.fromArray(ent.scale||[1,1,1]);
+  if(ent.mesh==='plane')mesh.rotation.x=-Math.PI/2;
+  mesh.userData.id=ent.id;
+  g3d.three.scene.add(mesh);
+  g3d.three.entities.set(ent.id,{mesh,data:ent});
+}
+function updateCamera(camera){
+  const THREE=window.THREE,c=g3d.cam,t=new THREE.Vector3(...c.target);
+  const x=c.radius*Math.sin(c.phi)*Math.sin(c.theta);
+  const y=c.radius*Math.cos(c.phi);
+  const z=c.radius*Math.sin(c.phi)*Math.cos(c.theta);
+  camera.position.set(t.x+x,t.y+y,t.z+z);
+  camera.lookAt(t);
+}
+function bind3dControls(vp,camera){
+  let dragging=false,px=0,py=0,moved=0;const c=g3d.cam;
+  vp.addEventListener('pointerdown',e=>{dragging=true;px=e.clientX;py=e.clientY;moved=0;try{vp.setPointerCapture(e.pointerId);}catch(_){}});
+  vp.addEventListener('pointermove',e=>{
+    if(!dragging)return;
+    const dx=e.clientX-px,dy=e.clientY-py;px=e.clientX;py=e.clientY;moved+=Math.abs(dx)+Math.abs(dy);
+    c.theta-=dx*0.008;c.phi-=dy*0.008;
+    c.phi=Math.max(0.15,Math.min(Math.PI-0.15,c.phi));
+  });
+  vp.addEventListener('pointerup',e=>{dragging=false;if(moved<5)e3dPick(e);});
+  vp.addEventListener('wheel',e=>{e.preventDefault();c.radius=Math.max(2,Math.min(30,c.radius+e.deltaY*0.01));},{passive:false});
+}
+function e3dPick(e){
+  const THREE=window.THREE,g=g3d.three;if(!g||!g.renderer)return;
+  const rect=g.renderer.domElement.getBoundingClientRect();
+  const nx=((e.clientX-rect.left)/rect.width)*2-1;
+  const ny=-((e.clientY-rect.top)/rect.height)*2+1;
+  const ray=new THREE.Raycaster();ray.setFromCamera(new THREE.Vector2(nx,ny),g.camera);
+  const meshes=[...g.entities.values()].map(v=>v.mesh);
+  const hits=ray.intersectObjects(meshes,false);
+  if(hits.length){g3d.selectedId=hits[0].object.userData.id;render3dList();render3dProps();render3dTexs();}
+}
+function selEnt(){return g3d?g3d.data.entities.find(x=>x.id===g3d.selectedId):null;}
+function render3dList(){
+  const el=document.getElementById('e3dList');if(!el)return;
+  el.innerHTML=g3d.data.entities.map(ent=>`
+    <div class="entity-item ${ent.id===g3d.selectedId?'on':''}" onclick="e3dSelect('${ent.id}')">
+      <span class="dot" style="color:${esc(ent.color||'#888888')}"></span><span>${esc(ent.name)}</span>
+    </div>`).join('')||'<div class="comment-empty">—</div>';
+}
+function e3dSelect(id){g3d.selectedId=id;render3dList();render3dProps();render3dTexs();}
+function render3dProps(){
+  const el=document.getElementById('e3dProps');if(!el)return;
+  const ent=selEnt();
+  if(!ent){el.innerHTML=`<div class="comment-empty">${t('e3d_none')}</div>`;return;}
+  const p=ent.position||[0,0,0],s=ent.scale||[1,1,1];
+  const row=(label,val,fn)=>`<div class="prop-row"><span>${label}</span><input type="number" step="0.1" value="${val}" oninput="${fn}"></div>`;
+  el.innerHTML=`
+    ${row(t('e3d_pos')+' X',p[0],`e3dProp('position',0,this.value)`)}
+    ${row(t('e3d_pos')+' Y',p[1],`e3dProp('position',1,this.value)`)}
+    ${row(t('e3d_pos')+' Z',p[2],`e3dProp('position',2,this.value)`)}
+    ${row(t('e3d_scale')+' X',s[0],`e3dProp('scale',0,this.value)`)}
+    ${row(t('e3d_scale')+' Y',s[1],`e3dProp('scale',1,this.value)`)}
+    ${row(t('e3d_scale')+' Z',s[2],`e3dProp('scale',2,this.value)`)}
+    <div class="prop-row"><span>${t('e3d_color')}</span><input type="color" value="${esc(ent.color||'#888888')}" oninput="e3dColor(this.value)"></div>`;
+}
+function e3dProp(field,idx,val){
+  const ent=selEnt();if(!ent)return;
+  ent[field][idx]=parseFloat(val)||0;
+  const rec=g3d.three.entities.get(ent.id);
+  if(rec){if(field==='position')rec.mesh.position.fromArray(ent.position);else rec.mesh.scale.fromArray(ent.scale);}
+}
+function e3dColor(val){
+  const ent=selEnt();if(!ent)return;
+  ent.color=val;
+  const rec=g3d.three.entities.get(ent.id);
+  if(rec)rec.mesh.material.color.set(val);
+  render3dList();
+}
+function e3dAdd(){
+  const n=g3d.data.entities.length+1;
+  const ent={id:'e'+Date.now(),name:'实体 '+n,mesh:'box',position:[0,1,0],scale:[1,1,1],color:'#f0abfc',texture:null};
+  g3d.data.entities.push(ent);buildEnt(ent);
+  g3d.selectedId=ent.id;render3dList();render3dProps();render3dTexs();
+}
+function e3dDel(){
+  if(!g3d.selectedId)return;
+  const rec=g3d.three.entities.get(g3d.selectedId);
+  if(rec){g3d.three.scene.remove(rec.mesh);rec.mesh.geometry.dispose();rec.mesh.material.dispose();g3d.three.entities.delete(g3d.selectedId);}
+  g3d.data.entities=g3d.data.entities.filter(x=>x.id!==g3d.selectedId);
+  g3d.selectedId=g3d.data.entities[0]?g3d.data.entities[0].id:null;
+  render3dList();render3dProps();render3dTexs();
+}
+function render3dTexs(){
+  const el=document.getElementById('e3dTexs');if(!el)return;
+  const ent=selEnt();
+  if(!ent||!ent.texture){el.innerHTML=`<div class="comment-empty">${t('e3d_tex_empty')}</div>`;return;}
+  el.innerHTML=`<div class="tex on" style="background-image:url('${ent.texture}')"></div>`;
+}
+function e3dTexFile(ev){
+  const f=ev.target.files&&ev.target.files[0];const ent=selEnt();if(!f||!ent)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    const img=new Image();
+    img.onload=()=>{
+      const size=256,c=document.createElement('canvas');c.width=c.height=size;
+      const ctx=c.getContext('2d');ctx.drawImage(img,0,0,size,size);
+      ent.texture=c.toDataURL('image/png');
+      const rec=g3d.three.entities.get(ent.id);
+      if(rec){const tex=new window.THREE.TextureLoader().load(ent.texture);rec.mesh.material.map=tex;rec.mesh.material.needsUpdate=true;}
+      render3dTexs();
+    };
+    img.src=reader.result;
+  };
+  reader.readAsDataURL(f);
+  ev.target.value='';
+}
+function e3dResize(){
+  if(!g3d||!g3d.three)return;
+  const vp=document.getElementById('e3dViewport');if(!vp)return;
+  const w=vp.clientWidth,h=vp.clientHeight;
+  g3d.three.camera.aspect=w/h;g3d.three.camera.updateProjectionMatrix();
+  if(g3d.three.renderer)g3d.three.renderer.setSize(w,h);
+}
+function stopEditor3d(){
+  if(!g3d)return;
+  if(g3d.raf)cancelAnimationFrame(g3d.raf);
+  if(g3d.three){
+    g3d.three.entities.forEach(rec=>{
+      if(rec.mesh.geometry)rec.mesh.geometry.dispose();
+      if(rec.mesh.material)rec.mesh.material.dispose();
+    });
+    if(g3d.three.renderer)g3d.three.renderer.dispose();
+  }
+  g3d=null;
+}
 function saveProject(){
   const p=PROJECTS.find(x=>x.id===S._modal.arg);if(!p)return;
-  p.code=document.getElementById('editorCode').value;p.updated='刚刚';
+  if(p.kind==='3d'&&g3d){p.code=JSON.stringify(g3d.data);}
+  else{p.code=document.getElementById('editorCode').value;}
+  p.updated='刚刚';
   saveProjectsLocal();
   if(sbClient&&p.id){
     sbClient.from('projects').upsert({id:p.id,owner_id:currentUser?currentUser.profile.id||null:null,owner_name:currentUser?currentUser.profile.name:'',name:p.name,template:p.template,code:p.code,status:p.status,updated_at:new Date().toISOString()})
