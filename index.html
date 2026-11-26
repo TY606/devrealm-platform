@@ -438,6 +438,9 @@ pre{margin:0;padding:16px;font-family:ui-monospace,monospace;font-size:11.5px;li
 .tex-grid .tex.on{border-color:#c4b5fd}
 .track-list{margin-top:8px;display:flex;flex-direction:column;gap:6px}
 .track-item{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11px;background:var(--box2);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+.track-bar{position:relative;height:22px;margin:10px 0 6px;background:var(--box2);border:1px solid var(--line);border-radius:10px;cursor:pointer}
+.track-dot{position:absolute;top:50%;width:12px;height:12px;border-radius:50%;background:#c4b5fd;border:2px solid #fff;transform:translate(-50%,-50%);cursor:grab;touch-action:none}
+.track-dot:active{cursor:grabbing}
 .viewport-3d{position:relative;min-height:380px;background:#0f0d1d;border-radius:14px;overflow:hidden}
 .viewport-3d canvas{display:block}
 .viewport-hint{position:absolute;left:10px;bottom:8px;font-size:10.5px;color:var(--sub2);pointer-events:none}
@@ -865,7 +868,7 @@ zh:{
   e3d_shape:'形状',e3d_mat:'材质',e3d_rough:'粗糙度',e3d_metal:'金属度',e3d_body:'刚体',e3d_static:'静态',e3d_dynamic:'动态',e3d_phys:'物理',e3d_phys_run:'运行物理',e3d_phys_stop:'停止物理',e3d_phys_err:'物理引擎加载失败，请检查网络',
   mesh_box:'立方体',mesh_sphere:'球体',mesh_plane:'平面',mesh_cylinder:'圆柱',mesh_cone:'圆锥',mesh_torus:'圆环',mesh_tetra:'四面体',
   mat_standard:'标准',mat_basic:'基础',mat_wire:'线框',
-  e3d_anim:'动画',anim_none:'无',anim_spin:'自转',anim_float:'浮动',anim_track:'关键帧轨道',anim_model:'模型动画',e3d_track:'关键帧',e3d_track_len:'时长(秒)',e3d_track_add:'记录当前姿态',e3d_track_empty:'还没有关键帧，点按钮记录',e3d_state_idle:'待机',e3d_state_move:'移动',e3d_state_jump:'跳跃',e3d_state_none:'不使用',e3d_import_model:'导入模型(.glb/.fbx)',e3d_move_hint:'WASD / 方向键移动选中实体',e3d_export_local:'导出本地工程',e3d_desktop_only:'仅桌面应用可用此功能',e3d_exported:'已导出到本地文件',e3d_browse_res:'浏览本地资源',e3d_export_web:'导出 Web 版本',e3d_web_ok:'已生成可独立打开的网页版本',
+  e3d_anim:'动画',anim_none:'无',anim_spin:'自转',anim_float:'浮动',anim_track:'关键帧轨道',anim_model:'模型动画',e3d_track:'关键帧',e3d_track_len:'时长(秒)',e3d_track_add:'记录当前姿态',e3d_track_empty:'还没有关键帧，点按钮记录',e3d_state_idle:'待机',e3d_state_move:'移动',e3d_state_jump:'跳跃',e3d_state_run:'冲刺',e3d_state_climb:'攀爬',e3d_state_none:'不使用',e3d_ease:'缓动',e3d_ease_smooth:'平滑',e3d_ease_linear:'线性',e3d_import_model:'导入模型(.glb/.fbx)',e3d_move_hint:'WASD / 方向键移动，Shift 冲刺，空格跳跃，E 攀爬',e3d_export_local:'导出本地工程',e3d_desktop_only:'仅桌面应用可用此功能',e3d_exported:'已导出到本地文件',e3d_browse_res:'浏览本地资源',e3d_export_web:'导出 Web 版本',e3d_web_ok:'已生成可独立打开的网页版本',
   change_avatar:'修改头像',upload_avatar:'上传图片',avatar_saved:'头像已更新',captcha_label:'图形验证',captcha_err:'验证码不正确，请重新输入'
 },
 en:{
@@ -923,7 +926,7 @@ en:{
   e3d_shape:'Shape',e3d_mat:'Material',e3d_rough:'Roughness',e3d_metal:'Metalness',e3d_body:'Rigid body',e3d_static:'Static',e3d_dynamic:'Dynamic',e3d_phys:'Physics',e3d_phys_run:'Run Physics',e3d_phys_stop:'Stop Physics',e3d_phys_err:'Failed to load physics engine, check your network',
   mesh_box:'Box',mesh_sphere:'Sphere',mesh_plane:'Plane',mesh_cylinder:'Cylinder',mesh_cone:'Cone',mesh_torus:'Torus',mesh_tetra:'Tetrahedron',
   mat_standard:'Standard',mat_basic:'Basic',mat_wire:'Wireframe',
-  e3d_anim:'Animation',anim_none:'None',anim_spin:'Spin',anim_float:'Float',anim_track:'Keyframe Track',anim_model:'Model Clip',e3d_track:'Keyframes',e3d_track_len:'Duration (s)',e3d_track_add:'Record Current Pose',e3d_track_empty:'No keyframes yet — click to record',e3d_state_idle:'Idle',e3d_state_move:'Move',e3d_state_jump:'Jump',e3d_state_none:'None',e3d_import_model:'Import Model (.glb/.fbx)',e3d_move_hint:'WASD / arrows move the selected entity',e3d_export_local:'Export Local Project',e3d_desktop_only:'Only available in the desktop app',e3d_exported:'Exported to a local file',e3d_browse_res:'Browse Local Assets',e3d_export_web:'Export Web Build',e3d_web_ok:'Standalone web build generated',
+  e3d_anim:'Animation',anim_none:'None',anim_spin:'Spin',anim_float:'Float',anim_track:'Keyframe Track',anim_model:'Model Clip',e3d_track:'Keyframes',e3d_track_len:'Duration (s)',e3d_track_add:'Record Current Pose',e3d_track_empty:'No keyframes yet — click to record',e3d_state_idle:'Idle',e3d_state_move:'Move',e3d_state_jump:'Jump',e3d_state_run:'Run',e3d_state_climb:'Climb',e3d_state_none:'None',e3d_ease:'Easing',e3d_ease_smooth:'Smooth',e3d_ease_linear:'Linear',e3d_import_model:'Import Model (.glb/.fbx)',e3d_move_hint:'WASD / arrows move, Shift sprint, Space jump, E climb',e3d_export_local:'Export Local Project',e3d_desktop_only:'Only available in the desktop app',e3d_exported:'Exported to a local file',e3d_browse_res:'Browse Local Assets',e3d_export_web:'Export Web Build',e3d_web_ok:'Standalone web build generated',
   change_avatar:'Change Avatar',upload_avatar:'Upload Image',avatar_saved:'Avatar updated',captcha_label:'Captcha',captcha_err:'Wrong captcha, please try again'
 }};
 function t(k){return (I18N[S.lang]&&I18N[S.lang][k])||I18N.zh[k]||k;}
@@ -1751,7 +1754,7 @@ function loadModelInto(rec){
     if(rec.clips.length)rec.mixer=new THREE.AnimationMixer(model);
     if(ent.anim==='model'&&rec.mixer){
       const idx=ent.animClip||0;
-      if(rec.clips[idx]){rec.mixer.clipAction(rec.clips[idx]).play();rec._curClip=idx;}
+      if(rec.clips[idx]){const a=rec.mixer.clipAction(rec.clips[idx]);a.play();rec._curAction=a;rec._curClip=idx;}
     }
     render3dProps();render3dTexs();
   },err=>console.warn('模型解析失败：',err));
@@ -1813,7 +1816,7 @@ function render3dProps(){
   const animVal=ent.anim==='model'?'model:'+(ent.animClip||0):(ent.anim||'none');
   const sc=ent.stateClips||{};
   const stateRow=key=>`<div class="prop-row"><span>${t('e3d_state_'+key)}</span><select onchange="e3dSetStateClip('${key}',this.value)"><option value="-1">${t('e3d_state_none')}</option>${clips.map((c,i)=>`<option value="${i}" ${sc[key]===i?'selected':''}>${c.name||('Clip '+(i+1))}</option>`).join('')}</select></div>`;
-  const stateBlock=clips.length&&ent.anim==='model'?[stateRow('idle'),stateRow('move'),stateRow('jump')].join(''):'';
+  const stateBlock=clips.length&&ent.anim==='model'?[stateRow('idle'),stateRow('move'),stateRow('run'),stateRow('jump'),stateRow('climb')].join(''):'';
   el.innerHTML=`
     ${sel(t('e3d_shape'),ent.mesh,meshOpts,`e3dSetMesh(this.value)`)}
     ${row(t('e3d_pos')+' X',p[0],`e3dProp('position',0,this.value)`)}
@@ -1832,7 +1835,9 @@ function render3dProps(){
     ${ent.anim==='track'||(ent.tracks&&ent.tracks.length)?`
     <div class="sec-title" style="margin-top:10px">${t('e3d_track')}</div>
     <div class="prop-row"><span>${t('e3d_track_len')}</span><input type="number" step="0.5" min="1" value="${ent.trackLen||3}" oninput="e3dTrackLen(this.value)"></div>
+    <div class="prop-row"><span>${t('e3d_ease')}</span><select onchange="e3dSetEase(this.value)"><option value="smooth" ${ent.ease!=='linear'?'selected':''}>${t('e3d_ease_smooth')}</option><option value="linear" ${ent.ease==='linear'?'selected':''}>${t('e3d_ease_linear')}</option></select></div>
     <button class="mini-btn" onclick="e3dTrackAdd()">${t('e3d_track_add')}</button>
+    <div class="track-bar" id="e3dTrackBar">${(ent.tracks||[]).map((k,i)=>`<div class="track-dot" data-i="${i}" style="left:${(Math.min(1,k.t/(ent.trackLen||3))*100).toFixed(1)}%" onpointerdown="e3dTrackDragStart(event,${i})"></div>`).join('')}</div>
     <div class="track-list">${(ent.tracks||[]).map((k,i)=>`<div class="track-item"><span>#${i+1} · ${k.t.toFixed(1)}s · ${k.position.map(v=>+v.toFixed(1)).join(',')}</span><button class="mini-btn danger" onclick="e3dTrackDel(${i})">${t('delete')}</button></div>`).join('')||`<div class="comment-empty">${t('e3d_track_empty')}</div>`}</div>
     `:''}`;
 }
@@ -1887,6 +1892,21 @@ function e3dTrackAdd(){
   render3dProps();
 }
 function e3dTrackDel(i){const ent=selEnt();if(!ent||!ent.tracks)return;ent.tracks.splice(i,1);render3dProps();}
+function e3dSetEase(val){const ent=selEnt();if(!ent)return;ent.ease=val;}
+function e3dTrackDragStart(ev,i){
+  ev.preventDefault();ev.stopPropagation();
+  const ent=selEnt();if(!ent||!ent.tracks[i])return;
+  const bar=document.getElementById('e3dTrackBar');if(!bar)return;
+  const rect=bar.getBoundingClientRect();const len=ent.trackLen||3;
+  const move=e=>{
+    const ratio=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
+    ent.tracks[i].t=+(ratio*len).toFixed(2);
+    ent.tracks.sort((a,b)=>a.t-b.t);
+    render3dProps();
+  };
+  const up=()=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);};
+  window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);
+}
 function e3dSetAnim(val){
   const ent=selEnt();if(!ent)return;
   const rec=g3d.three.entities.get(ent.id);if(!rec)return;
@@ -1896,7 +1916,7 @@ function e3dSetAnim(val){
   if(rec.mixer)rec.mixer.stopAllAction();
   if(ent.anim==='model'&&rec.mixer){
     const idx=ent.animClip||0;
-    if(rec.clips[idx]){rec.mixer.clipAction(rec.clips[idx]).play();rec._curClip=idx;}
+    if(rec.clips[idx]){const a=rec.mixer.clipAction(rec.clips[idx]);rec.mixer.stopAllAction();a.play();rec._curAction=a;rec._curClip=idx;}
   }
 }
 function e3dModelFile(ev){
@@ -2033,27 +2053,34 @@ async function exportProjectLocal(){
 }
 function exportWebVersion(){
   if(!g3d)return;
+  const p=PROJECTS.find(x=>x.id===S._modal.arg);
   const json=JSON.stringify(g3d.data);
-  const html=buildExportHtml(json);
+  const html=buildExportHtml(json,p?p.name:'Scene');
   const blob=new Blob([html],{type:'text/html'});
   const url=URL.createObjectURL(blob);
-  const p=PROJECTS.find(x=>x.id===S._modal.arg);
   const a=document.createElement('a');a.href=url;a.download=(p?p.name:'scene')+'.html';
   document.body.appendChild(a);a.click();a.remove();
   setTimeout(()=>URL.revokeObjectURL(url),1000);
   toast(t('e3d_web_ok'));
 }
-function buildExportHtml(sceneJson){
+function buildExportHtml(sceneJson,name){
   const safe=sceneJson.replace(/</g,'\\u003c');
+  const title=String(name||'Scene').replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+  const fav='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="18" y="18" width="64" height="64" rx="16" fill="#c4b5fd"/><rect x="34" y="34" width="32" height="32" rx="8" fill="#0f0d1d"/></svg>');
   return `<!DOCTYPE html>
 <html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DevRealm Scene</title>
-<style>html,body{margin:0;height:100%;overflow:hidden;background:#0f0d1d}canvas{display:block}</style>
+<link rel="icon" href="${fav}">
+<title>${title}</title>
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#0f0d1d}canvas{display:block}
+#overlay{position:fixed;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:28px;box-sizing:border-box;background:linear-gradient(to top,rgba(15,13,29,.85),transparent 55%);color:#fff;pointer-events:none;transition:opacity .6s}
+#overlay h1{margin:0 0 6px;font-size:22px;font-weight:700}#overlay p{margin:0;font-size:13px;color:#c4b5fd;letter-spacing:1px}
+#overlay.hide{opacity:0}</style>
 <script src="https://fastly.jsdelivr.net/npm/three@0.147.0/build/three.min.js"><\/script>
 <script src="https://fastly.jsdelivr.net/npm/three@0.147.0/examples/js/loaders/GLTFLoader.js"><\/script>
 <script src="https://fastly.jsdelivr.net/npm/fflate@0.7.4/umd/index.js"><\/script>
 <script src="https://fastly.jsdelivr.net/npm/three@0.147.0/examples/js/loaders/FBXLoader.js"><\/script>
 </head><body>
+<div id="overlay"><h1>${title}</h1><p>DEVREALM SCENE</p></div>
 <script id="scene" type="application/json">${safe}<\/script>
 <script>
 (function(){
@@ -2111,7 +2138,8 @@ function loop(){
       const len=e.trackLen||3,tt=trackTime%len,tr=e.tracks.slice().sort((a,b)=>a.t-b.t);
       let a=tr[0],b=tr[tr.length-1];
       for(let i=0;i<tr.length-1;i++){if(tt>=tr[i].t&&tt<=tr[i+1].t){a=tr[i];b=tr[i+1];break;}}
-      const span=(b.t-a.t)||1,k=Math.max(0,Math.min(1,(tt-a.t)/span)),L=(x,y)=>x+(y-x)*k;
+      const span=(b.t-a.t)||1;let k=Math.max(0,Math.min(1,(tt-a.t)/span));if(e.ease!=='linear')k=k*k*(3-2*k);
+      const L=(x,y)=>x+(y-x)*k;
       rec.mesh.position.set(L(a.position[0],b.position[0]),L(a.position[1],b.position[1]),L(a.position[2],b.position[2]));
       rec.mesh.scale.set(L(a.scale[0],b.scale[0]),L(a.scale[1],b.scale[1]),L(a.scale[2],b.scale[2]));
       rec.mesh.rotation.set(L(a.rotation[0],b.rotation[0]),L(a.rotation[1],b.rotation[1]),L(a.rotation[2],b.rotation[2]));
@@ -2124,6 +2152,7 @@ function loop(){
   renderer.render(scene,camera);
 }
 loop();
+setTimeout(()=>{const o=document.getElementById('overlay');if(o)o.classList.add('hide');},2400);
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
 })();
 <\/script>
@@ -2147,7 +2176,8 @@ function stepAnimations(dt){
       const tr=ent.tracks.slice().sort((a,b)=>a.t-b.t);
       let a=tr[0],b=tr[tr.length-1];
       for(let i=0;i<tr.length-1;i++){if(tt>=tr[i].t&&tt<=tr[i+1].t){a=tr[i];b=tr[i+1];break;}}
-      const span=(b.t-a.t)||1;const k=Math.max(0,Math.min(1,(tt-a.t)/span));
+      const span=(b.t-a.t)||1;let k=Math.max(0,Math.min(1,(tt-a.t)/span));
+      if(ent.ease!=='linear')k=k*k*(3-2*k);
       const L=(x,y)=>x+(y-x)*k;
       rec.mesh.position.set(L(a.position[0],b.position[0]),L(a.position[1],b.position[1]),L(a.position[2],b.position[2]));
       rec.mesh.scale.set(L(a.scale[0],b.scale[0]),L(a.scale[1],b.scale[1]),L(a.scale[2],b.scale[2]));
@@ -2158,12 +2188,16 @@ function stepAnimations(dt){
     if(ent.anim==='model'&&rec.mixer){
       const sc=ent.stateClips;
       let idx=ent.animClip||0;
-      if(sc&&(sc.idle>=0||sc.move>=0||sc.jump>=0)){
-        const st=ent._state||'idle';const mapped=sc[st];
-        idx=(mapped==null||mapped<0)?(sc.idle>=0?sc.idle:idx):mapped;
+      if(sc&&Object.values(sc).some(v=>v>=0)){
+        const st=ent._state||'idle';
+        const chain=[st,'run','move','idle'];
+        for(const s of chain){const m=sc[s];if(m!=null&&m>=0){idx=m;break;}}
       }
       if(rec.clips[idx]&&rec._curClip!==idx){
-        rec.mixer.stopAllAction();rec.mixer.clipAction(rec.clips[idx]).play();rec._curClip=idx;
+        const next=rec.mixer.clipAction(rec.clips[idx]);
+        if(rec._curAction&&rec._curAction!==next){rec._curAction.crossFadeTo(next,0.25,true);}
+        next.reset();next.play();
+        rec._curAction=next;rec._curClip=idx;
       }
     }
     if(rec.mixer)rec.mixer.update(dt);
@@ -2180,21 +2214,24 @@ function stepMove(dt){
   if(k['a']||k['arrowleft'])dx-=1;
   if(k['d']||k['arrowright'])dx+=1;
   const ph=g3d.phys;const body=ph&&ph.running?ph.bodies.get(ent.id):null;
+  const run=!!(k['shift']&&(dx||dz));
+  if(k['e'])ent._climbUntil=performance.now()+600;
   let state='idle';
   if(body){
-    const sp=3;
+    const sp=run?5.5:3;
     body.velocity.x=dx*sp;body.velocity.z=dz*sp;
     const grounded=body.position.y<=0.6&&body.velocity.y<=0.05;
     if(k[' ']&&grounded)body.velocity.y=5;
     const airborne=body.position.y>0.65||body.velocity.y>0.1;
-    state=airborne?'jump':((dx||dz)?'move':'idle');
+    state=airborne?'jump':(run?'run':((dx||dz)?'move':'idle'));
   }else{
-    const sp=3*dt;
+    const sp=(run?5.5:3)*dt;
     if(dx||dz){ent.position[0]+=dx*sp;ent.position[2]+=dz*sp;}
     if(k[' '])ent.position[1]+=3*dt;
     const rec=g3d.three.entities.get(ent.id);if(rec)rec.mesh.position.fromArray(ent.position);
-    state=(dx||dz)?'move':'idle';
+    state=run?'run':((dx||dz)?'move':'idle');
   }
+  if(performance.now()<(ent._climbUntil||0))state='climb';
   ent._state=state;
 }
 function e3dResize(){
