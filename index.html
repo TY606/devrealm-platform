@@ -442,6 +442,8 @@ pre{margin:0;padding:16px;font-family:ui-monospace,monospace;font-size:11.5px;li
 .fsm-node{display:flex;flex-direction:column;gap:4px;background:var(--box2);border:1px solid var(--line);border-radius:10px;padding:8px}
 .fsm-node.on{border-color:#c4b5fd;box-shadow:0 0 0 1px #c4b5fd inset}
 .fsm-state{font-size:11px;color:#c4b5fd;font-weight:600}
+.fsm-cond{font-size:10px;color:#8b86a8}
+.fsm-flow{font-size:10px;color:#8b86a8;margin-bottom:8px;letter-spacing:.3px}
 .track-bar{position:relative;height:22px;margin:10px 0 6px;background:var(--box2);border:1px solid var(--line);border-radius:10px;cursor:pointer}
 .track-dot{position:absolute;top:50%;width:12px;height:12px;border-radius:50%;background:#c4b5fd;border:2px solid #fff;transform:translate(-50%,-50%);cursor:grab;touch-action:none}
 .track-dot:active{cursor:grabbing}
@@ -874,7 +876,7 @@ zh:{
   e3d_shape:'形状',e3d_mat:'材质',e3d_rough:'粗糙度',e3d_metal:'金属度',e3d_body:'刚体',e3d_static:'静态',e3d_dynamic:'动态',e3d_phys:'物理',e3d_phys_run:'运行物理',e3d_phys_stop:'停止物理',e3d_phys_err:'物理引擎加载失败，请检查网络',
   mesh_box:'立方体',mesh_sphere:'球体',mesh_plane:'平面',mesh_cylinder:'圆柱',mesh_cone:'圆锥',mesh_torus:'圆环',mesh_tetra:'四面体',
   mat_standard:'标准',mat_basic:'基础',mat_wire:'线框',
-  e3d_anim:'动画',anim_none:'无',anim_spin:'自转',anim_float:'浮动',anim_track:'关键帧轨道',anim_model:'模型动画',e3d_track:'关键帧',e3d_track_len:'时长(秒)',e3d_track_add:'记录当前姿态',e3d_track_empty:'还没有关键帧，点按钮记录',e3d_state_idle:'待机',e3d_state_move:'移动',e3d_state_jump:'跳跃',e3d_state_run:'冲刺',e3d_state_climb:'攀爬',e3d_state_none:'不使用',e3d_ease:'缓动',e3d_ease_smooth:'平滑',e3d_ease_linear:'线性',e3d_ease_in:'缓入',e3d_ease_out:'缓出',e3d_ease_bezier:'贝塞尔',e3d_handle_in:'入手柄',e3d_handle_out:'出手柄',e3d_overlay:'上层动画',e3d_overlay_w:'混合权重',e3d_root_motion:'根运动跟随',e3d_layer:'分层',e3d_layer_full:'全身',e3d_layer_upper:'上身',e3d_layer_lower:'下身',e3d_copy_to:'复制到',e3d_copy:'复制',e3d_copied:'已复制到目标场景',e3d_import_model:'导入模型(.glb/.fbx)',e3d_move_hint:'WASD / 方向键移动，Shift 冲刺，空格跳跃，E 攀爬',e3d_export_local:'导出本地工程',e3d_desktop_only:'仅桌面应用可用此功能',e3d_exported:'已导出到本地文件',e3d_browse_res:'浏览本地资源',e3d_export_web:'导出 Web 版本',e3d_web_ok:'已生成可独立打开的网页版本',e3d_lights:'灯光',e3d_light_ambient:'环境光',e3d_light_dir:'平行光',e3d_light_point:'点光源',e3d_light_intensity:'强度',e3d_light_color:'颜色',e3d_light_pos:'位置',e3d_point_on:'开启点光',e3d_emissive:'自发光',e3d_emissive_i:'发光强度',e3d_opacity:'透明度',e3d_double_side:'双面渲染',e3d_overlay_layers:'动画融合层',e3d_overlay_add:'添加覆盖层',e3d_collider:'碰撞形状',e3d_col_auto:'自动',e3d_col_box:'立方体',e3d_col_sphere:'球体',e3d_col_capsule:'胶囊体',e3d_state_machine:'状态机',e3d_env:'环境',e3d_bg:'背景色',e3d_fog_on:'开启雾效',e3d_fog_color:'雾颜色',e3d_fog_near:'雾近距',e3d_fog_far:'雾远距',e3d_upload_normal:'法线贴图',e3d_upload_rough:'粗糙度贴图',
+  e3d_anim:'动画',anim_none:'无',anim_spin:'自转',anim_float:'浮动',anim_track:'关键帧轨道',anim_model:'模型动画',e3d_track:'关键帧',e3d_track_len:'时长(秒)',e3d_track_add:'记录当前姿态',e3d_track_empty:'还没有关键帧，点按钮记录',e3d_state_idle:'待机',e3d_state_move:'移动',e3d_state_jump:'跳跃',e3d_state_run:'冲刺',e3d_state_climb:'攀爬',e3d_state_none:'不使用',e3d_ease:'缓动',e3d_ease_smooth:'平滑',e3d_ease_linear:'线性',e3d_ease_in:'缓入',e3d_ease_out:'缓出',e3d_ease_bezier:'贝塞尔',e3d_handle_in:'入手柄',e3d_handle_out:'出手柄',e3d_overlay:'上层动画',e3d_overlay_w:'混合权重',e3d_root_motion:'根运动跟随',e3d_layer:'分层',e3d_layer_full:'全身',e3d_layer_upper:'上身',e3d_layer_lower:'下身',e3d_copy_to:'复制到',e3d_copy:'复制',e3d_copied:'已复制到目标场景',e3d_import_model:'导入模型(.glb/.fbx)',e3d_move_hint:'WASD / 方向键移动，Shift 冲刺，空格跳跃，E 攀爬',e3d_export_local:'导出本地工程',e3d_desktop_only:'仅桌面应用可用此功能',e3d_exported:'已导出到本地文件',e3d_browse_res:'浏览本地资源',e3d_export_web:'导出 Web 版本',e3d_web_ok:'已生成可独立打开的网页版本',e3d_lights:'灯光',e3d_light_ambient:'环境光',e3d_light_dir:'平行光',e3d_light_point:'点光源',e3d_light_intensity:'强度',e3d_light_color:'颜色',e3d_light_pos:'位置',e3d_point_on:'开启点光',e3d_emissive:'自发光',e3d_emissive_i:'发光强度',e3d_opacity:'透明度',e3d_double_side:'双面渲染',e3d_overlay_layers:'动画融合层',e3d_overlay_add:'添加覆盖层',e3d_collider:'碰撞形状',e3d_col_auto:'自动',e3d_col_box:'立方体',e3d_col_sphere:'球体',e3d_col_capsule:'胶囊体',e3d_state_machine:'状态机',e3d_env:'环境',e3d_bg:'背景色',e3d_fog_on:'开启雾效',e3d_fog_color:'雾颜色',e3d_fog_near:'雾近距',e3d_fog_far:'雾远距',e3d_upload_normal:'法线贴图',e3d_upload_rough:'粗糙度贴图',e3d_upload_metal:'金属度贴图',e3d_upload_disp:'位移贴图',e3d_sky_on:'渐变天空盒',e3d_sky_top:'天空顶色',e3d_sky_bottom:'天空底色',e3d_refl_on:'环境反射',e3d_refl_color:'反射色',e3d_exposure:'曝光',e3d_bloom_on:'泛光',e3d_bloom_str:'泛光强度',e3d_bloom_thr:'泛光阈值',e3d_cond_idle:'无输入',e3d_cond_move:'方向键',e3d_cond_run:'Shift+方向',e3d_cond_jump:'空格离地',e3d_cond_climb:'贴墙按 E',e3d_flow_idle:'待机',e3d_flow_move:'移动',e3d_flow_run:'冲刺',e3d_flow_jump:'跳跃',e3d_flow_climb:'攀爬',e3d_particles:'粒子特效',e3d_p_color:'颜色',e3d_p_empty:'还没有粒子发射器',e3d_p_add:'添加粒子',
   change_avatar:'修改头像',upload_avatar:'上传图片',avatar_saved:'头像已更新',captcha_label:'图形验证',captcha_err:'验证码不正确，请重新输入'
 },
 en:{
@@ -932,7 +934,7 @@ en:{
   e3d_shape:'Shape',e3d_mat:'Material',e3d_rough:'Roughness',e3d_metal:'Metalness',e3d_body:'Rigid body',e3d_static:'Static',e3d_dynamic:'Dynamic',e3d_phys:'Physics',e3d_phys_run:'Run Physics',e3d_phys_stop:'Stop Physics',e3d_phys_err:'Failed to load physics engine, check your network',
   mesh_box:'Box',mesh_sphere:'Sphere',mesh_plane:'Plane',mesh_cylinder:'Cylinder',mesh_cone:'Cone',mesh_torus:'Torus',mesh_tetra:'Tetrahedron',
   mat_standard:'Standard',mat_basic:'Basic',mat_wire:'Wireframe',
-  e3d_anim:'Animation',anim_none:'None',anim_spin:'Spin',anim_float:'Float',anim_track:'Keyframe Track',anim_model:'Model Clip',e3d_track:'Keyframes',e3d_track_len:'Duration (s)',e3d_track_add:'Record Current Pose',e3d_track_empty:'No keyframes yet — click to record',e3d_state_idle:'Idle',e3d_state_move:'Move',e3d_state_jump:'Jump',e3d_state_run:'Run',e3d_state_climb:'Climb',e3d_state_none:'None',e3d_ease:'Easing',e3d_ease_smooth:'Smooth',e3d_ease_linear:'Linear',e3d_ease_in:'Ease-in',e3d_ease_out:'Ease-out',e3d_ease_bezier:'Bezier',e3d_handle_in:'In',e3d_handle_out:'Out',e3d_overlay:'Overlay Clip',e3d_overlay_w:'Blend Weight',e3d_root_motion:'Root Motion',e3d_layer:'Layer',e3d_layer_full:'Full',e3d_layer_upper:'Upper',e3d_layer_lower:'Lower',e3d_copy_to:'Copy to',e3d_copy:'Copy',e3d_copied:'Copied to target scene',e3d_import_model:'Import Model (.glb/.fbx)',e3d_move_hint:'WASD / arrows move, Shift sprint, Space jump, E climb',e3d_export_local:'Export Local Project',e3d_desktop_only:'Only available in the desktop app',e3d_exported:'Exported to a local file',e3d_browse_res:'Browse Local Assets',e3d_export_web:'Export Web Build',e3d_web_ok:'Standalone web build generated',e3d_lights:'Lights',e3d_light_ambient:'Ambient',e3d_light_dir:'Directional',e3d_light_point:'Point Light',e3d_light_intensity:'Intensity',e3d_light_color:'Color',e3d_light_pos:'Position',e3d_point_on:'Enable Point Light',e3d_emissive:'Emissive',e3d_emissive_i:'Emissive Intensity',e3d_opacity:'Opacity',e3d_double_side:'Double Side',e3d_overlay_layers:'Blend Layers',e3d_overlay_add:'Add Overlay',e3d_collider:'Collider',e3d_col_auto:'Auto',e3d_col_box:'Box',e3d_col_sphere:'Sphere',e3d_col_capsule:'Capsule',e3d_state_machine:'State Machine',e3d_env:'Environment',e3d_bg:'Background',e3d_fog_on:'Enable Fog',e3d_fog_color:'Fog Color',e3d_fog_near:'Fog Near',e3d_fog_far:'Fog Far',e3d_upload_normal:'Normal Map',e3d_upload_rough:'Roughness Map',
+  e3d_anim:'Animation',anim_none:'None',anim_spin:'Spin',anim_float:'Float',anim_track:'Keyframe Track',anim_model:'Model Clip',e3d_track:'Keyframes',e3d_track_len:'Duration (s)',e3d_track_add:'Record Current Pose',e3d_track_empty:'No keyframes yet — click to record',e3d_state_idle:'Idle',e3d_state_move:'Move',e3d_state_jump:'Jump',e3d_state_run:'Run',e3d_state_climb:'Climb',e3d_state_none:'None',e3d_ease:'Easing',e3d_ease_smooth:'Smooth',e3d_ease_linear:'Linear',e3d_ease_in:'Ease-in',e3d_ease_out:'Ease-out',e3d_ease_bezier:'Bezier',e3d_handle_in:'In',e3d_handle_out:'Out',e3d_overlay:'Overlay Clip',e3d_overlay_w:'Blend Weight',e3d_root_motion:'Root Motion',e3d_layer:'Layer',e3d_layer_full:'Full',e3d_layer_upper:'Upper',e3d_layer_lower:'Lower',e3d_copy_to:'Copy to',e3d_copy:'Copy',e3d_copied:'Copied to target scene',e3d_import_model:'Import Model (.glb/.fbx)',e3d_move_hint:'WASD / arrows move, Shift sprint, Space jump, E climb',e3d_export_local:'Export Local Project',e3d_desktop_only:'Only available in the desktop app',e3d_exported:'Exported to a local file',e3d_browse_res:'Browse Local Assets',e3d_export_web:'Export Web Build',e3d_web_ok:'Standalone web build generated',e3d_lights:'Lights',e3d_light_ambient:'Ambient',e3d_light_dir:'Directional',e3d_light_point:'Point Light',e3d_light_intensity:'Intensity',e3d_light_color:'Color',e3d_light_pos:'Position',e3d_point_on:'Enable Point Light',e3d_emissive:'Emissive',e3d_emissive_i:'Emissive Intensity',e3d_opacity:'Opacity',e3d_double_side:'Double Side',e3d_overlay_layers:'Blend Layers',e3d_overlay_add:'Add Overlay',e3d_collider:'Collider',e3d_col_auto:'Auto',e3d_col_box:'Box',e3d_col_sphere:'Sphere',e3d_col_capsule:'Capsule',e3d_state_machine:'State Machine',e3d_env:'Environment',e3d_bg:'Background',e3d_fog_on:'Enable Fog',e3d_fog_color:'Fog Color',e3d_fog_near:'Fog Near',e3d_fog_far:'Fog Far',e3d_upload_normal:'Normal Map',e3d_upload_rough:'Roughness Map',e3d_upload_metal:'Metalness Map',e3d_upload_disp:'Displacement Map',e3d_sky_on:'Gradient Skybox',e3d_sky_top:'Sky Top',e3d_sky_bottom:'Sky Bottom',e3d_refl_on:'Env Reflection',e3d_refl_color:'Reflection Color',e3d_exposure:'Exposure',e3d_bloom_on:'Bloom',e3d_bloom_str:'Bloom Strength',e3d_bloom_thr:'Bloom Threshold',e3d_cond_idle:'No Input',e3d_cond_move:'Arrow Keys',e3d_cond_run:'Shift+Arrows',e3d_cond_jump:'Space Airborne',e3d_cond_climb:'Wall+E',e3d_flow_idle:'Idle',e3d_flow_move:'Move',e3d_flow_run:'Run',e3d_flow_jump:'Jump',e3d_flow_climb:'Climb',e3d_particles:'Particles',e3d_p_color:'Color',e3d_p_empty:'No particle emitters yet',e3d_p_add:'Add Particles',
   change_avatar:'Change Avatar',upload_avatar:'Upload Image',avatar_saved:'Avatar updated',captcha_label:'Captcha',captcha_err:'Wrong captcha, please try again'
 }};
 function t(k){return (I18N[S.lang]&&I18N[S.lang][k])||I18N.zh[k]||k;}
@@ -1457,7 +1459,11 @@ function defaultLights(){return {
   dir:{color:'#ffffff',intensity:1.1,position:[4,8,6]},
   point:{enabled:false,color:'#fbbf24',intensity:0.8,position:[-3,4,-3]}
 };}
-function defaultEnv(){return {bg:'#0f0d1d',fog:{enabled:false,color:'#0f0d1d',near:6,far:22}};}
+function defaultEnv(){return {bg:'#0f0d1d',
+  sky:{enabled:false,top:'#1e1b4b',bottom:'#0f0d1d'},
+  env:{enabled:false,color:'#9aa0c8'},
+  fog:{enabled:false,color:'#0f0d1d',near:6,far:22},
+  post:{exposure:1,bloom:false,bloomStrength:0.6,bloomThreshold:0.85}};}
 function defaultScene(){return {entities:[
   {id:'e-ground',name:'地面',mesh:'plane',position:[0,0,0],scale:[6,6,1],color:'#3f3f46',texture:null,mat:'standard',roughness:0.9,metalness:0,body:'static',anim:'none'},
   {id:'e-box',name:'立方体',mesh:'box',position:[0,1.2,0],scale:[1,1,1],color:'#c4b5fd',texture:null,mat:'standard',roughness:0.5,metalness:0.1,body:'dynamic',anim:'none'},
@@ -1604,6 +1610,74 @@ function loadCannon(){
     document.head.appendChild(s);
   });
 }
+function loadPost(){
+  const base='https://fastly.jsdelivr.net/npm/three/0.147.0/examples/js/';
+  const chain=[
+    ['shaders/CopyShader.js',()=>window.THREE.CopyShader],
+    ['shaders/LuminosityHighPassShader.js',()=>window.THREE.LuminosityHighPassShader],
+    ['postprocessing/EffectComposer.js',()=>window.THREE.EffectComposer],
+    ['postprocessing/RenderPass.js',()=>window.THREE.RenderPass],
+    ['postprocessing/ShaderPass.js',()=>window.THREE.ShaderPass],
+    ['postprocessing/UnrealBloomPass.js',()=>window.THREE.UnrealBloomPass]
+  ];
+  return chain.reduce((p,[f,test])=>p.then(()=>loadScript(base+f,test)),Promise.resolve());
+}
+function applyComposer(){
+  const g=g3d&&g3d.three;if(!g||!g.renderer)return;
+  const P=getEnv().post;
+  if(!P.bloom){g.composer=null;return;}
+  if(!window.THREE.EffectComposer){loadPost().then(applyComposer).catch(()=>{});return;}
+  if(!g.composer){
+    const composer=new THREE.EffectComposer(g.renderer);
+    composer.addPass(new THREE.RenderPass(g.scene,g.camera));
+    const bloom=new THREE.UnrealBloomPass(new THREE.Vector2(g.renderer.domElement.width,g.renderer.domElement.height),P.bloomStrength,P.bloomThreshold,0.4);
+    composer.addPass(bloom);
+    g.composer=composer;g.bloomPass=bloom;
+  }
+  g.bloomPass.strength=P.bloomStrength;g.bloomPass.threshold=P.bloomThreshold;
+}
+function defaultParticle(){return {enabled:true,color:'#c4b5fd',count:120,speed:0.6,range:2,size:0.05,position:[0,1,0]};}
+function makeParticleSystem(THREE,p){
+  const n=p.count||100;
+  const geo=new THREE.BufferGeometry();
+  const pos=new Float32Array(n*3);const vel=[];
+  for(let i=0;i<n;i++){
+    pos[i*3]=(Math.random()-0.5)*p.range;
+    pos[i*3+1]=Math.random()*p.range;
+    pos[i*3+2]=(Math.random()-0.5)*p.range;
+    vel.push((Math.random()-0.5)*p.speed,Math.random()*p.speed*0.5,(Math.random()-0.5)*p.speed);
+  }
+  geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const mat=new THREE.PointsMaterial({color:new THREE.Color(p.color),size:p.size||0.05,transparent:true,opacity:0.8,depthWrite:false});
+  const pts=new THREE.Points(geo,mat);
+  pts.position.fromArray(p.position||[0,1,0]);
+  pts.userData.vel=vel;pts.userData.p=p;
+  return pts;
+}
+function buildParticles(){
+  const g=g3d.three;if(!g)return;
+  (g.particles||[]).forEach(pts=>g.scene.remove(pts));
+  g.particles=new Map();
+  (g3d.data.particles||[]).forEach((p,i)=>{
+    if(!p.enabled)return;
+    const pts=makeParticleSystem(window.THREE,p);
+    g.scene.add(pts);g.particles.set(i,pts);
+  });
+}
+function stepParticles(dt){
+  const g=g3d.three;if(!g||!g.particles)return;
+  g.particles.forEach(pts=>{
+    const p=pts.userData.p,vel=pts.userData.vel,pos=pts.geometry.attributes.position;
+    for(let i=0;i<pos.count;i++){
+      let y=pos.getY(i)+vel[i*3+1]*dt;
+      if(y>p.range)y=0;
+      pos.setY(i,y);
+      pos.setX(i,pos.getX(i)+vel[i*3]*dt);
+      pos.setZ(i,pos.getZ(i)+vel[i*3+2]*dt);
+    }
+    pos.needsUpdate=true;
+  });
+}
 function loadScript(src,test){
   return new Promise((res,rej)=>{
     if(test())return res();
@@ -1631,7 +1705,9 @@ function openEditor3d(p){
   if(!data.lights)data.lights=defaultLights();
   data.lights=Object.assign(defaultLights(),data.lights);
   if(!data.env)data.env=defaultEnv();
-  data.env=Object.assign(defaultEnv(),data.env);data.env.fog=Object.assign(defaultEnv().fog,data.env.fog||{});
+  const _de=defaultEnv();data.env=Object.assign(_de,data.env);
+  ['sky','env','fog','post'].forEach(k=>{data.env[k]=Object.assign(_de[k],data.env[k]||{});});
+  if(!Array.isArray(data.particles))data.particles=[];
   data.scenes.forEach(s=>s.entities.forEach(ent=>{
     if(!Array.isArray(ent.overlays)){ent.overlays=[];if(ent.overlayClip!=null&&ent.overlayClip>=0)ent.overlays.push({clip:ent.overlayClip,weight:ent.overlayWeight==null?0.5:ent.overlayWeight,layer:ent.overlayLayer||'full'});}
   }));
@@ -1654,6 +1730,8 @@ function openEditor3d(p){
       <div style="padding:12px" id="e3dLights"></div>
       <div class="editor-bar">${t('e3d_env')}</div>
       <div style="padding:12px" id="e3dEnv"></div>
+      <div class="editor-bar">${t('e3d_particles')}</div>
+      <div style="padding:12px" id="e3dParticles"></div>
       <div class="editor-bar">${t('e3d_props')}</div>
       <div style="padding:12px" id="e3dProps"></div>
       <div class="editor-bar">${t('e3d_tex')}</div>
@@ -1665,6 +1743,10 @@ function openEditor3d(p){
         <input type="file" id="e3dNormalFile" accept="image/*" hidden onchange="e3dNormalFile(event)">
         <button class="mini-btn" style="margin-top:10px" onclick="document.getElementById('e3dRoughFile').click()">${t('e3d_upload_rough')}</button>
         <input type="file" id="e3dRoughFile" accept="image/*" hidden onchange="e3dRoughFile(event)">
+        <button class="mini-btn" style="margin-top:10px" onclick="document.getElementById('e3dMetalFile').click()">${t('e3d_upload_metal')}</button>
+        <input type="file" id="e3dMetalFile" accept="image/*" hidden onchange="e3dMetalFile(event)">
+        <button class="mini-btn" style="margin-top:10px" onclick="document.getElementById('e3dDispFile').click()">${t('e3d_upload_disp')}</button>
+        <input type="file" id="e3dDispFile" accept="image/*" hidden onchange="e3dDispFile(event)">
         <button class="mini-btn" style="margin-top:10px" onclick="document.getElementById('e3dModelFile').click()">${t('e3d_import_model')}</button>
         <input type="file" id="e3dModelFile" accept=".glb,.gltf,.fbx" hidden onchange="e3dModelFile(event)">
         <button class="mini-btn" id="e3dResBtn" hidden style="margin-top:10px" onclick="loadDesktopResources()">${t('e3d_browse_res')}</button>
@@ -1696,18 +1778,20 @@ function init3d(){
   const scene=new THREE.Scene();scene.background=new THREE.Color(0x0f0d1d);
   const camera=new THREE.PerspectiveCamera(50,w/h,0.1,100);
   g3d.three={renderer,scene,camera,entities:new Map(),lights:[]};
-  applyLights();applyEnv();
+  applyLights();applyEnv();applyComposer();buildParticles();
   g3d.phys=null;g3d.keys={};
   bind3dKeys();
   curEntities().forEach(buildEnt);
   bind3dControls(vp,camera);
-  render3dSceneSel();render3dList();render3dProps();render3dTexs();render3dLights();render3dEnv();
+  render3dSceneSel();render3dList();render3dProps();render3dTexs();render3dLights();render3dEnv();render3dParticles();
   if(renderer){
     let last=performance.now();
     const loop=()=>{
       const now=performance.now();const dt=Math.min(0.05,(now-last)/1000);last=now;
-      stepPhys();stepAnimations(dt);stepMove(dt);
-      updateCamera(camera);renderer.render(scene,camera);g3d.raf=requestAnimationFrame(loop);
+      stepPhys();stepAnimations(dt);stepMove(dt);stepParticles(dt);
+      updateCamera(camera);
+      if(g3d.three.composer)g3d.three.composer.render();else renderer.render(scene,camera);
+      g3d.raf=requestAnimationFrame(loop);
     };
     g3d.raf=requestAnimationFrame(loop);
   }else{
@@ -1767,28 +1851,93 @@ function e3dLightNum(kind,field,val){const L=getLights();L[kind][field]=parseFlo
 function e3dLightPos(kind,idx,val){const L=getLights();L[kind].position[idx]=parseFloat(val)||0;applyLights();}
 function e3dLightToggle(c){const L=getLights();L.point.enabled=!!c;applyLights();render3dLights();}
 function getEnv(){return g3d.data.env||defaultEnv();}
+function skyTexture(THREE,top,bottom){
+  const c=document.createElement('canvas');c.width=2;c.height=256;
+  const ctx=c.getContext('2d');
+  const g=ctx.createLinearGradient(0,0,0,256);g.addColorStop(0,top);g.addColorStop(1,bottom);
+  ctx.fillStyle=g;ctx.fillRect(0,0,2,256);
+  return new THREE.CanvasTexture(c);
+}
 function applyEnv(){
   const THREE=window.THREE,g=g3d.three;if(!THREE||!g)return;
   const E=getEnv();
-  g.scene.background=new THREE.Color(E.bg);
+  if(E.sky.enabled){
+    if(g._skyTex)g._skyTex.dispose();
+    g._skyTex=skyTexture(THREE,E.sky.top,E.sky.bottom);
+    g.scene.background=g._skyTex;
+  }else{
+    if(g._skyTex){g._skyTex.dispose();g._skyTex=null;}
+    g.scene.background=new THREE.Color(E.bg);
+  }
   g.scene.fog=E.fog.enabled?new THREE.Fog(new THREE.Color(E.fog.color),E.fog.near,E.fog.far):null;
+  if(E.env.enabled&&g.renderer){
+    try{
+      const pm=new THREE.PMREMGenerator(g.renderer);
+      const es=new THREE.Scene();
+      const ec=new THREE.Color(E.env.color);
+      es.add(new THREE.AmbientLight(ec,1));
+      es.add(new THREE.Mesh(new THREE.SphereGeometry(10,16,16),new THREE.MeshBasicMaterial({color:ec,side:THREE.BackSide})));
+      g.scene.environment=pm.fromScene(es).texture;pm.dispose();
+    }catch(err){console.warn('环境反射生成失败：',err);}
+  }else g.scene.environment=null;
+  if(g.renderer){
+    g.renderer.toneMapping=THREE.ACESFilmicToneMapping;
+    g.renderer.toneMappingExposure=E.post.exposure==null?1:E.post.exposure;
+  }
 }
 function render3dEnv(){
   const el=document.getElementById('e3dEnv');if(!el||!g3d)return;
-  const E=getEnv(),F=E.fog;
+  const E=getEnv(),F=E.fog,S=E.sky,R=E.env,P=E.post;
   const num=(label,val,fn)=>`<div class="prop-row"><span>${label}</span><input type="number" step="0.5" value="${val}" oninput="${fn}"></div>`;
+  const col=(label,val,fn)=>`<div class="prop-row"><span>${label}</span><input type="color" value="${esc(val)}" oninput="${fn}"></div>`;
+  const rng=(label,val,min,max,step,fn)=>`<div class="prop-row"><span>${label}</span><input type="range" min="${min}" max="${max}" step="${step}" value="${val}" oninput="${fn}"></div>`;
   el.innerHTML=`
     <div class="sec-title" style="margin:0 0 8px">${t('e3d_env')}</div>
     <div class="prop-row"><span>${t('e3d_bg')}</span><input type="color" value="${esc(E.bg)}" oninput="e3dEnvBg(this.value)"></div>
+    <div class="prop-row"><span>${t('e3d_sky_on')}</span><input type="checkbox" ${S.enabled?'checked':''} onchange="e3dSkyToggle(this.checked)"></div>
+    ${S.enabled?col(t('e3d_sky_top'),S.top,'e3dSkyColor("top",this.value)')+col(t('e3d_sky_bottom'),S.bottom,'e3dSkyColor("bottom",this.value)'):''}
+    <div class="prop-row"><span>${t('e3d_refl_on')}</span><input type="checkbox" ${R.enabled?'checked':''} onchange="e3dReflToggle(this.checked)"></div>
+    ${R.enabled?col(t('e3d_refl_color'),R.color,'e3dReflColor(this.value)'):''}
     <div class="prop-row"><span>${t('e3d_fog_on')}</span><input type="checkbox" ${F.enabled?'checked':''} onchange="e3dFogToggle(this.checked)"></div>
-    ${F.enabled?`<div class="prop-row"><span>${t('e3d_fog_color')}</span><input type="color" value="${esc(F.color)}" oninput="e3dFogColor(this.value)"></div>
-    ${num(t('e3d_fog_near'),F.near,'e3dFogNum("near",this.value)')}
-    ${num(t('e3d_fog_far'),F.far,'e3dFogNum("far",this.value)')}`:''}`;
+    ${F.enabled?col(t('e3d_fog_color'),F.color,'e3dFogColor(this.value)')+num(t('e3d_fog_near'),F.near,'e3dFogNum("near",this.value)')+num(t('e3d_fog_far'),F.far,'e3dFogNum("far",this.value)'):''}
+    ${rng(t('e3d_exposure'),P.exposure,0.2,2,0.05,'e3dPostExposure(this.value)')}
+    <div class="prop-row"><span>${t('e3d_bloom_on')}</span><input type="checkbox" ${P.bloom?'checked':''} onchange="e3dBloomToggle(this.checked)"></div>
+    ${P.bloom?rng(t('e3d_bloom_str'),P.bloomStrength,0,2,0.05,'e3dBloomStrength(this.value)')+rng(t('e3d_bloom_thr'),P.bloomThreshold,0,1,0.05,'e3dBloomThreshold(this.value)'):''}`;
 }
 function e3dEnvBg(v){getEnv().bg=v;applyEnv();}
+function e3dSkyToggle(c){const E=getEnv();E.sky.enabled=!!c;applyEnv();render3dEnv();}
+function e3dSkyColor(k,v){getEnv().sky[k]=v;applyEnv();}
+function e3dReflToggle(c){const E=getEnv();E.env.enabled=!!c;applyEnv();render3dEnv();}
+function e3dReflColor(v){getEnv().env.color=v;applyEnv();}
 function e3dFogToggle(c){const E=getEnv();E.fog.enabled=!!c;applyEnv();render3dEnv();}
 function e3dFogColor(v){getEnv().fog.color=v;applyEnv();}
 function e3dFogNum(f,v){const E=getEnv();E.fog[f]=parseFloat(v)||0;applyEnv();}
+function e3dPostExposure(v){const E=getEnv();E.post.exposure=parseFloat(v);applyEnv();}
+function e3dBloomToggle(c){const E=getEnv();E.post.bloom=!!c;applyComposer();render3dEnv();}
+function e3dBloomStrength(v){getEnv().post.bloomStrength=parseFloat(v);applyComposer();}
+function e3dBloomThreshold(v){getEnv().post.bloomThreshold=parseFloat(v);applyComposer();}
+function render3dParticles(){
+  const el=document.getElementById('e3dParticles');if(!el||!g3d)return;
+  const list=g3d.data.particles||[];
+  const num=(i,field,val)=>`<div class="prop-row"><span>${field}</span><input type="number" step="0.1" value="${val}" oninput="e3dParticleNum(${i},'${field}',this.value)"></div>`;
+  el.innerHTML=`
+    ${list.map((p,i)=>`<div class="fsm-node">
+      <div class="prop-row"><span>${t('e3d_state_none')}</span><input type="checkbox" ${p.enabled?'checked':''} onchange="e3dParticleToggle(${i},this.checked)"></div>
+      <div class="prop-row"><span>${t('e3d_p_color')}</span><input type="color" value="${esc(p.color)}" oninput="e3dParticleColor(${i},this.value)"></div>
+      ${num(i,'count',p.count)}${num(i,'speed',p.speed)}${num(i,'range',p.range)}${num(i,'size',p.size)}
+      <div class="prop-row"><span>X</span><input type="number" step="0.1" value="${p.position[0]}" oninput="e3dParticlePos(${i},0,this.value)"></div>
+      <div class="prop-row"><span>Y</span><input type="number" step="0.1" value="${p.position[1]}" oninput="e3dParticlePos(${i},1,this.value)"></div>
+      <div class="prop-row"><span>Z</span><input type="number" step="0.1" value="${p.position[2]}" oninput="e3dParticlePos(${i},2,this.value)"></div>
+      <button class="mini-btn danger" onclick="e3dParticleDel(${i})">${t('delete')}</button>
+    </div>`).join('')||`<div class="comment-empty">${t('e3d_p_empty')}</div>`}
+    <button class="mini-btn" style="margin-top:8px" onclick="e3dParticleAdd()">${t('e3d_p_add')}</button>`;
+}
+function e3dParticleAdd(){g3d.data.particles=g3d.data.particles||[];g3d.data.particles.push(defaultParticle());buildParticles();render3dParticles();}
+function e3dParticleDel(i){g3d.data.particles.splice(i,1);buildParticles();render3dParticles();}
+function e3dParticleToggle(i,c){g3d.data.particles[i].enabled=!!c;buildParticles();}
+function e3dParticleColor(i,v){g3d.data.particles[i].color=v;buildParticles();}
+function e3dParticleNum(i,field,v){g3d.data.particles[i][field]=parseFloat(v)||0;buildParticles();}
+function e3dParticlePos(i,idx,v){g3d.data.particles[i].position[idx]=parseFloat(v)||0;buildParticles();}
 const MESH_TYPES=['box','sphere','plane','cylinder','cone','torus','tetra'];
 function makeGeo(THREE,mesh){
   switch(mesh){
@@ -1815,6 +1964,8 @@ function makeMaterial(THREE,ent){
   if(ent.texture)new THREE.TextureLoader().load(ent.texture,tex=>{mat.map=tex;mat.needsUpdate=true;});
   if(ent.normalMap&&mat.normalMap!==undefined)new THREE.TextureLoader().load(ent.normalMap,tex=>{mat.normalMap=tex;mat.needsUpdate=true;});
   if(ent.roughnessMap&&mat.roughnessMap!==undefined)new THREE.TextureLoader().load(ent.roughnessMap,tex=>{mat.roughnessMap=tex;mat.needsUpdate=true;});
+  if(ent.metalnessMap&&mat.metalnessMap!==undefined)new THREE.TextureLoader().load(ent.metalnessMap,tex=>{mat.metalnessMap=tex;mat.needsUpdate=true;});
+  if(ent.displacementMap&&mat.displacementMap!==undefined)new THREE.TextureLoader().load(ent.displacementMap,tex=>{mat.displacementMap=tex;mat.displacementScale=ent.displacementScale==null?0.1:ent.displacementScale;mat.needsUpdate=true;});
   return mat;
 }
 function buildEnt(ent){
@@ -1930,7 +2081,7 @@ function e3dSwitchScene(idx){
     if(g3d.phys)stopPhys();
     curEntities().forEach(buildEnt);
     g3d.selectedId=curEntities()[0]?curEntities()[0].id:null;
-    render3dSceneSel();render3dList();render3dProps();render3dTexs();render3dLights();render3dEnv();
+    render3dSceneSel();render3dList();render3dProps();render3dTexs();render3dLights();render3dEnv();render3dParticles();
     if(fade)fade.classList.remove('on');
   };
   if(fade){fade.classList.add('on');setTimeout(apply,180);}else apply();
@@ -1967,10 +2118,12 @@ function render3dProps(){
   const sc=ent.stateClips||{};
   const stateKeys=['idle','move','run','jump','climb'];
   const stateBlock=clips.length&&ent.anim==='model'?`<div class="sec-title" style="margin-top:10px">${t('e3d_state_machine')}</div>
+  <div class="fsm-flow">${t('e3d_flow_idle')} → ${t('e3d_flow_move')} → ${t('e3d_flow_run')} ｜ ${t('e3d_flow_jump')} / ${t('e3d_flow_climb')}</div>
   <div class="fsm-nodes">${stateKeys.map(k=>{
     const m=sc[k],active=ent._state===k;
     return `<div class="fsm-node ${active?'on':''}">
       <span class="fsm-state">${t('e3d_state_'+k)}</span>
+      <span class="fsm-cond">${t('e3d_cond_'+k)}</span>
       <select onchange="e3dSetStateClip('${k}',this.value)"><option value="-1">${t('e3d_state_none')}</option>${clips.map((c,i)=>`<option value="${i}" ${m===i?'selected':''}>${c.name||('Clip '+(i+1))}</option>`).join('')}</select>
     </div>`;
   }).join('')}</div>`:'';
@@ -2216,6 +2369,8 @@ function e3dUploadTex(ev,field,matKey){
 }
 function e3dNormalFile(ev){e3dUploadTex(ev,'normalMap','normalMap');}
 function e3dRoughFile(ev){e3dUploadTex(ev,'roughnessMap','roughnessMap');}
+function e3dMetalFile(ev){e3dUploadTex(ev,'metalnessMap','metalnessMap');}
+function e3dDispFile(ev){e3dUploadTex(ev,'displacementMap','displacementMap');}
 async function loadDesktopResources(){
   if(!window.devRealmAPI||!window.devRealmAPI.listResources)return;
   const res=await window.devRealmAPI.listResources();
@@ -2350,14 +2505,17 @@ function buildExportHtml(sceneJson,name){
 (function(){
 const data=JSON.parse(document.getElementById('scene').textContent);
 const scene=new THREE.Scene();
-const E=data.env||{bg:'#0f0d1d',fog:{enabled:false,color:'#0f0d1d',near:6,far:22}};
-scene.background=new THREE.Color(E.bg);
+const E=data.env||{bg:'#0f0d1d',sky:{enabled:false,top:'#1e1b4b',bottom:'#0f0d1d'},env:{enabled:false,color:'#9aa0c8'},fog:{enabled:false,color:'#0f0d1d',near:6,far:22},post:{exposure:1,bloom:false,bloomStrength:0.6,bloomThreshold:0.85}};
+function skyTex(top,bottom){const c=document.createElement('canvas');c.width=2;c.height=256;const x=c.getContext('2d');const g=x.createLinearGradient(0,0,0,256);g.addColorStop(0,top);g.addColorStop(1,bottom);x.fillStyle=g;x.fillRect(0,0,2,256);return new THREE.CanvasTexture(c);}
+if(E.sky&&E.sky.enabled)scene.background=skyTex(E.sky.top,E.sky.bottom);else scene.background=new THREE.Color(E.bg);
 if(E.fog&&E.fog.enabled)scene.fog=new THREE.Fog(new THREE.Color(E.fog.color),E.fog.near,E.fog.far);
 const camera=new THREE.PerspectiveCamera(50,innerWidth/innerHeight,0.1,100);
 let renderer;
 try{renderer=new THREE.WebGLRenderer({antialias:true});}catch(e){document.body.innerHTML='<p style="color:#fff;padding:20px">WebGL 不可用</p>';return;}
 renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
 renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=(E.post&&E.post.exposure==null?1:E.post.exposure);
+if(E.env&&E.env.enabled){try{const pm=new THREE.PMREMGenerator(renderer);const es=new THREE.Scene();const ec=new THREE.Color(E.env.color);es.add(new THREE.AmbientLight(ec,1));es.add(new THREE.Mesh(new THREE.SphereGeometry(10,16,16),new THREE.MeshBasicMaterial({color:ec,side:THREE.BackSide})));scene.environment=pm.fromScene(es).texture;pm.dispose();}catch(err){}}
 document.body.appendChild(renderer.domElement);
 const L=data.lights||{ambient:{color:'#ffffff',intensity:0.75},dir:{color:'#ffffff',intensity:1.1,position:[4,8,6]},point:{enabled:false,color:'#fbbf24',intensity:0.8,position:[-3,4,-3]}};
 scene.add(new THREE.AmbientLight(new THREE.Color(L.ambient.color),L.ambient.intensity));
@@ -2383,11 +2541,25 @@ function applyMaps(m,e){
   if(e.texture)new THREE.TextureLoader().load(e.texture,t=>{m.map=t;m.needsUpdate=true;});
   if(e.normalMap&&m.normalMap!==undefined)new THREE.TextureLoader().load(e.normalMap,t=>{m.normalMap=t;m.needsUpdate=true;});
   if(e.roughnessMap&&m.roughnessMap!==undefined)new THREE.TextureLoader().load(e.roughnessMap,t=>{m.roughnessMap=t;m.needsUpdate=true;});
+  if(e.metalnessMap&&m.metalnessMap!==undefined)new THREE.TextureLoader().load(e.metalnessMap,t=>{m.metalnessMap=t;m.needsUpdate=true;});
+  if(e.displacementMap&&m.displacementMap!==undefined)new THREE.TextureLoader().load(e.displacementMap,t=>{m.displacementMap=t;m.displacementScale=e.displacementScale==null?0.1:e.displacementScale;m.needsUpdate=true;});
 }
 function buf(url){const b64=String(url).split(',')[1];const bin=atob(b64),ab=new ArrayBuffer(bin.length),u8=new Uint8Array(ab);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);return ab;}
 const scenes=Array.isArray(data.scenes)?data.scenes:[{name:'Scene',entities:data.entities||[]}];
 let recs=[];
 function clearRecs(){recs.forEach(r=>{scene.remove(r.mesh);});recs=[];}
+let parts=[];
+function buildParts(){parts.forEach(pr=>scene.remove(pr.points));parts=[];
+  (data.particles||[]).forEach(pt=>{
+    if(!pt.enabled)return;
+    const n=pt.count||100;const geo=new THREE.BufferGeometry();const pos=new Float32Array(n*3);const vel=[];
+    for(let i=0;i<n;i++){pos[i*3]=(Math.random()-0.5)*pt.range;pos[i*3+1]=Math.random()*pt.range;pos[i*3+2]=(Math.random()-0.5)*pt.range;vel.push((Math.random()-0.5)*pt.speed,Math.random()*pt.speed*0.5,(Math.random()-0.5)*pt.speed);}
+    geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+    const m=new THREE.PointsMaterial({color:new THREE.Color(pt.color),size:pt.size||0.05,transparent:true,opacity:0.8,depthWrite:false});
+    const points=new THREE.Points(geo,m);points.position.fromArray(pt.position||[0,1,0]);points.userData.vel=vel;points.userData.p=pt;scene.add(points);parts.push({points,vel});
+  });
+}
+function stepParts(dt){parts.forEach(pr=>{const p=pr.points.userData.p,vel=pr.points.userData.vel,pos=pr.points.geometry.attributes.position;for(let i=0;i<pos.count;i++){let y=pos.getY(i)+vel[i*3+1]*dt;if(y>p.range)y=0;pos.setY(i,y);pos.setX(i,pos.getX(i)+vel[i*3]*dt);pos.setZ(i,pos.getZ(i)+vel[i*3+2]*dt);}pos.needsUpdate=true;});}
 function cubicBezier(x1,y1,x2,y2){const cx=3*x1,bx=3*(x2-x1)-cx,ax=1-cx-bx;const cy=3*y1,by=3*(y2-y1)-cy,ay=1-cy-by;const sx=t=>((ax*t+bx)*t+cx)*t,sy=t=>((ay*t+by)*t+cy)*t,dx=t=>(3*ax*t+2*bx)*t+cx;return x=>{let t=x;for(let i=0;i<6;i++){const d=dx(t);if(Math.abs(d)<1e-4)break;t-=(sx(t)-x)/d;}return sy(Math.max(0,Math.min(1,t)));};}
 function easeFn(type,k,frame){switch(type){case 'linear':return k;case 'in':return k*k;case 'out':return 1-(1-k)*(1-k);case 'bezier':{const f=cubicBezier(frame&&frame.bx1!=null?frame.bx1:0.42,frame&&frame.bx1!=null?frame.bx1:0.42,frame&&frame.bx2!=null?frame.bx2:0.58,frame&&frame.bx2!=null?frame.bx2:0.58);return f(k);}default:return k*k*(3-2*k);}}
 function filterClip(clip,mode){if(!clip||mode==='full')return clip;const up=/spine|chest|neck|head|shoulder|arm|hand|finger|collar|upperarm|forearm/i;const lo=/hip|leg|thigh|calf|foot|toe|knee|shin|pelvis/i;const re=mode==='upper'?up:lo;const tracks=(clip.tracks||[]).filter(tr=>re.test(tr.name));if(typeof clip.clone==='function'){const c=clip.clone();c.tracks=tracks;return c;}return {name:clip.name,duration:clip.duration,tracks};}
@@ -2414,7 +2586,7 @@ function buildEntity(e){
     },()=>{});
   }
 }
-function loadScene(idx){clearRecs();(scenes[idx].entities||[]).forEach(buildEntity);}
+function loadScene(idx){clearRecs();(scenes[idx].entities||[]).forEach(buildEntity);buildParts();}
 const sel=document.getElementById('sceneSel');
 if(sel){scenes.forEach((s,i)=>{const o=document.createElement('option');o.value=i;o.textContent=s.name||('Scene '+(i+1));sel.appendChild(o);});sel.onchange=()=>loadScene(+sel.value);}
 loadScene(0);
@@ -2472,6 +2644,7 @@ function loop(){
       else if(e.anim==='float')rec.mesh.position.y=rec.baseY+Math.sin(now/500*2)*0.2;
     }
   });
+  stepParts(dt);
   renderer.render(scene,camera);
 }
 loop();
@@ -2558,6 +2731,14 @@ function wallAhead(ent,dx,dz){
   const others=[...g.entities.values()].filter(r=>r.data.id!==ent.id&&r.data.mesh!=='plane').map(r=>r.mesh);
   return ray.intersectObjects(others,true).length>0;
 }
+function groundHeight(ent,x,z){
+  const g=g3d.three;if(!g||!g.renderer||!window.THREE)return null;
+  const ray=new THREE.Raycaster();
+  ray.set(new THREE.Vector3(x,50,z),new THREE.Vector3(0,-1,0));ray.far=50;
+  const others=[...g.entities.values()].filter(r=>r.data.id!==ent.id&&r.data.mesh!=='model').map(r=>r.mesh);
+  const hits=ray.intersectObjects(others,true);
+  return hits.length?hits[0].point.y:null;
+}
 function faceToward(rec,dx,dz,dt){
   if(!rec||(!dx&&!dz))return;
   const target=Math.atan2(dx,dz);
@@ -2608,6 +2789,8 @@ function stepMove(dt){
     ent.position[0]+=v.x*dt;
     ent.position[2]+=v.z*dt;
     if(ent._groundY==null)ent._groundY=ent.position[1];
+    const gy=groundHeight(ent,ent.position[0],ent.position[2]);
+    if(gy!=null&&(ent._vy||0)<=0)ent._groundY=gy+0.5;
     ent._vy=ent._vy||0;
     const grounded=ent.position[1]<=ent._groundY+0.01;
     if(k[' ']&&grounded)ent._vy=3;
@@ -2629,6 +2812,7 @@ function e3dResize(){
   const w=vp.clientWidth,h=vp.clientHeight;
   g3d.three.camera.aspect=w/h;g3d.three.camera.updateProjectionMatrix();
   if(g3d.three.renderer)g3d.three.renderer.setSize(w,h);
+  if(g3d.three.composer)g3d.three.composer.setSize(w,h);
 }
 function stopEditor3d(){
   if(!g3d)return;
@@ -2641,6 +2825,7 @@ function stopEditor3d(){
       if(rec.mesh.geometry)rec.mesh.geometry.dispose();
       if(rec.mesh.material)rec.mesh.material.dispose();
     });
+    (g3d.three.particles||[]).forEach(pts=>{if(pts.geometry)pts.geometry.dispose();if(pts.material)pts.material.dispose();});
     if(g3d.three.renderer)g3d.three.renderer.dispose();
   }
   g3d=null;
