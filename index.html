@@ -666,7 +666,7 @@ async function initSupabase(){
 
 /* ================= 登录鉴权 ================= */
 function normAccount(a){a=String(a||'').trim();if(!a)return '';return a.includes('@')?a:`${a}@example.com`;}
-function showLoginMask(show){document.getElementById('loginMask').hidden=!show;}
+function showLoginMask(show){const el=document.getElementById('loginMask');el.hidden=!show;el.style.display=show?'grid':'none';}
 function loginErr(msg){const el=document.getElementById('loginErr');if(msg){el.textContent=msg;el.hidden=false;}else{el.hidden=true;}}
 async function resolveProfile(uid){
   if(!sbClient||!uid) return null;
@@ -3086,10 +3086,12 @@ function updateTopUser(){
   const b=el.querySelector('.meta b'),span=el.querySelector('.meta span');
   if(currentUser&&currentUser.profile){
     const p=currentUser.profile;
+    el.style.cursor='default';el.onclick=null;
     const old=el.querySelector('.avatar');
     old.insertAdjacentHTML('beforebegin',avatarHTML(p.name,p.avatar));old.remove();
     b.textContent=p.name;span.textContent=p.role==='admin'?t('role_admin'):t('role_dev');
   }else{
+    el.style.cursor='pointer';el.onclick=()=>showLoginMask(true);
     const av=el.querySelector('.avatar');if(av){av.classList.remove('has-img');av.style.backgroundImage='';av.textContent='?';}
     b.textContent=t('guest');span.textContent=t('guest');
   }
@@ -3107,7 +3109,7 @@ async function boot(){
   bindEditorKeys();
   await loadRemoteData();
   buildNav();updateNotifBadge();updateTopUser();
-  showLoginMask(!currentUser);
+  showLoginMask(false);
   go(landingTab());
 }
 boot();
