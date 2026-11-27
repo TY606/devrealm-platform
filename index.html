@@ -1477,9 +1477,11 @@ const PROJECT_TEMPLATES={
 };
 let PROJECTS=loadProjectsLocal()||[
   {id:'p-demo-1',name:'点击得分 Demo',template:'tap',kind:'2d',code:TPL_TAP,status:'开发中',updated:'刚刚',owner:'李承宇'},
-  {id:'p-demo-2',name:'方向键移动方块',template:'move',kind:'2d',code:TPL_MOVE,status:'预览中',updated:'2 小时前',owner:'李承宇'}
+  {id:'p-demo-2',name:'方向键移动方块',template:'move',kind:'2d',code:TPL_MOVE,status:'预览中',updated:'2 小时前',owner:'李承宇'},
+  {id:'p-demo-3',name:'3D 场景示例',template:'scene3d',kind:'3d',code:PROJECT_TEMPLATES.scene3d.code,status:'开发中',updated:'刚刚',owner:'李承宇'}
 ];
 PROJECTS.forEach(x=>{if(!x.kind)x.kind='2d';});
+if(!PROJECTS.some(x=>x.id==='p-demo-3')){PROJECTS.push({id:'p-demo-3',name:'3D 场景示例',template:'scene3d',kind:'3d',code:PROJECT_TEMPLATES.scene3d.code,status:'开发中',updated:'刚刚',owner:'李承宇'});}
 function loadProjectsLocal(){try{return JSON.parse(localStorage.getItem(PROJ_KEY))}catch(e){return null}}
 function saveProjectsLocal(){try{localStorage.setItem(PROJ_KEY,JSON.stringify(PROJECTS))}catch(e){}}
 function projectCard(p,i){
